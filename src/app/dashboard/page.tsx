@@ -3,7 +3,7 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { AppDispatch } from "@/utils/redux/store";
-import { setHeaderData } from "@/utils/redux/slices/headerSlice";
+import { setHeaderData } from "@/Hook/Redux/Slice/headerSlice";
 import Dashboard from "@/components/Dashboard";
 
 function Page() {
