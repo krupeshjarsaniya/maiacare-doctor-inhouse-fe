@@ -376,7 +376,12 @@ const ProfileBasicDetails = () => {
     documents: any[];
   }
   const [user, setUser] = useState<DoctorDataType | null>(null)
-
+  const [showMore, setShowMore] = useState(false);
+  const [showAllDocs, setShowAllDocs] = useState(false);
+  let MAX_DOCS = 3;
+  const visibleDocuments = showAllDocs
+    ? documents
+    : documents.slice(0, MAX_DOCS);
   // const getUser = () => {
   //   getLoggedInUser()
   //     .then((response) => {
@@ -968,7 +973,25 @@ const ProfileBasicDetails = () => {
                 </>
               ) : (
                 <p className="mb-0 about-text">
-                  {user ? user.about : ""}
+
+
+                  {user?.about && (
+                    <>
+                      {showMore
+                        ? user.about
+                        : user.about.slice(0, 130)}
+
+                      {user.about.length > 25 && (
+                        <span
+                          className="ms-1 text-primary cursor-pointer"
+                          onClick={() => setShowMore(!showMore)}
+                        >
+                          {showMore ? " See less" : " See more"}
+                        </span>
+                      )}
+                    </>
+                  )}
+
                 </p>
               )}
 
@@ -1014,7 +1037,7 @@ const ProfileBasicDetails = () => {
                   </div>
                 </>
               ) : (
-                documents.map((doc, index) => {
+                visibleDocuments.map((doc, index) => {
                   const docName =
                     doc.originalName ||
                     doc.reportName ||
@@ -1071,6 +1094,16 @@ const ProfileBasicDetails = () => {
                     </div>
                   );
                 })
+
+
+              )}
+              {documents.length > MAX_DOCS && (
+                <span
+                  className="ms-1 text-primary cursor-pointer"
+                  onClick={() => setShowAllDocs(!showAllDocs)}
+                >
+                  {showAllDocs ? "See less" : "See more"}
+                </span>
               )}
 
             </ContentContainer>

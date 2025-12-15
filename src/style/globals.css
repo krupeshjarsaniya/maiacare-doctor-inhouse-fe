@@ -488,3 +488,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   font-size: 18px;
   font-weight: 500;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
