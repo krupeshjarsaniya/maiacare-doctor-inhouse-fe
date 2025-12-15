@@ -272,8 +272,8 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
   const cameraInputRef = useRef<HTMLInputElement>(null); // camera image select 
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);  //previewImage 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);//selectedImage 
-
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);//selectedImage
+  
   const handleOpenModal = () => {
     setPreviewImage(selectedImage || Simpleeditpro.src); // show image in modal
     setShowModal(true);

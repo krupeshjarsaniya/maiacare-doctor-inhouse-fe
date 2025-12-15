@@ -152,8 +152,8 @@ const formatPhone = (num?: string) => {
                                 <Image
                                     src={user?.profilePicture || ""}
                                     // src={doctor.image}
-                                    width={100}
-                                    height={100}
+                                    width={130}
+                                    height={130}
                                     alt="Profile"
                                     className="profile-img"
                                 />

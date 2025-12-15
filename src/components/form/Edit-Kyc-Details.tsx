@@ -55,13 +55,15 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
+  console.log("formError", formError);
+
   const [completedFiles, setCompletedFiles] = useState<UploadedFile[]>([]);
-  
+
   const [apiOtherDocs, setApiOtherDocs] = useState<UploadedFile[]>([]);
 
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [aadharFile, setAadharFile] = useState<UploadedFile | null>(null);
-  
+
   const [panFile, setPanFile] = useState<UploadedFile | null>(null);
   const [licenceFile, setLicenceFile] = useState<UploadedFile | null>(null);
 
@@ -101,6 +103,9 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
     Adcard: string,
     Pancard: string,
     LicNumber: string,
+    Adphoto?: File | null,
+    Panphoto?: File | null,
+    Licphoto?: File | null,
   };
   const [aadharNumber, setAadharNumber] = useState(null);
   const [aadharImg, setAadharImg] = useState(null);
@@ -133,6 +138,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
 
   const validateForm = (data: FormData): FormError => {
     const errors: FormError = {};
+    console.log("data---", data);
 
     // if (!data.Adcard.trim()) errors.Adcard = "Adcard  \number is required";
     if (!data.Adcard.trim()) {
@@ -145,8 +151,9 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
       }
     }
 
-    if (!data.Adcard) errors.Adphoto = "Aadhar card photo is required";
-    if (!data.Pancard) errors.Panphoto = "Pancard photo is required";
+    if (!aadharFile) errors.Adphoto = "Aadhar card photo is required"; 
+
+    if (!panFile) errors.Panphoto = "Pancard photo is required";
     // if (!data.Pancard.trim()) errors.Pancard = "Pancard is required";
 
 
@@ -164,7 +171,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
     } else if (data.LicNumber.length !== 10) {
       errors.LicNumber = "Licence Number must be exactly 10 digits";
     }
-    if (!data.LicNumber) errors.Licphoto = "Licence photo is required";
+    if (!licenceFile) errors.Licphoto = "Licence photo is required";
 
     return errors;
   };
@@ -226,7 +233,10 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
   // Aadhar Card image select //
   const handleAadharFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      setFormError((prev) => ({ ...prev, Adphoto: "Aadhar card photo is required" }))
+      return
+    };
 
     // Allowed file types
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
@@ -266,6 +276,10 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
       reportName: "Aadhar Card",
     };
     setAadharFile(newFile)
+    setFormData(prev => ({
+      ...prev,
+      Adphoto: file,
+    }));
 
     setFormError((prev) => ({ ...prev, Adphoto: "" }));
   };
@@ -304,6 +318,10 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
       reportName: "Pan Card",
     };
     setPanFile(newFile)
+    setFormData(prev => ({
+      ...prev,
+      Panphoto: file,
+    }));
     const passData = {
       type: "doctor",
       files: file
@@ -312,7 +330,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
       .then((res) => {
         setPanFileUrl(res.data.files[0]);
         console.log("Done--");
-        
+
       })
       .catch((err) => {
         console.log(err);
@@ -364,6 +382,10 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
     };
 
     setLicenceFile(newFile);
+    setFormData(prev => ({
+      ...prev,
+     Licphoto: file,
+    }));
     setFormError((prev) => ({ ...prev, Licphoto: "" }));
   };
 
@@ -621,9 +643,9 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
         url: aadharImg,
         name: "Aadhar Document",
         size: aadharSize || "",
-        status: "completed",      
+        status: "completed",
         reportName: "Aadhar Card",
-        fromAPI: true,            
+        fromAPI: true,
       });
 
       setAadharFileUrl(aadharImg);
