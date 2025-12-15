@@ -153,12 +153,13 @@ body::-webkit-scrollbar {
 }
 
 .qualification-certificates-data {
-  height: 180px;
-  width: 180px;
+  height: 204px;
+  width: 204px;
+  /* gap: 24px; */
 }
 
 .qualification-certificates {
-  border: 2px dotted #DDE1E8 !important;
+  border: 2px solid #DDE1E8 !important;
 }
 
 .qualification-certificates-btn {
@@ -172,8 +173,8 @@ body::-webkit-scrollbar {
 }
 
 .qualification-certificates-add-new-file {
-  width: 160px;
-  height: 160px;
+  width: 204px !important;
+  height: 204px !important;
   cursor: pointer;
 }
 
@@ -200,6 +201,7 @@ body::-webkit-scrollbar {
   height: 160px;
   border-radius: 16px;
 }
+
 .edit-basic-details-image {
   object-fit: cover !important;
   border-radius: 15.87px;
@@ -380,9 +382,9 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 @media (max-width: 991px) and (min-width: 768px) {
 
-.pation-profile-dataa .content-layout {
- padding: 16px !important;
-}
+  .pation-profile-dataa .content-layout {
+    padding: 16px !important;
+  }
 }
 
 /* code form doctor start*/
@@ -491,4 +493,26 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.upload-documents-clickHere {
+  color: #2B4360;
+  font-weight: 500;
+}
+
+.upload-documents-uploadFile {
+  color: #475569;
+  font-weight: 500;
+}
+
+.upload-documents-BTN {
+  border: 1px solid #3E4A57;
+}
+
+.upload-documents-completed {
+  color: #3E4A57;
+}
+
+.personal-details-sub-text {
+  color: #8A8D93;
 }

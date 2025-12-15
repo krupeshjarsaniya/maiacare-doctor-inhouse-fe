@@ -94,33 +94,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(request: NextRequest) {
-  try {
-    const { to, otp } = await request.json();
+    try {
+        const { to, otp } = await request.json();
 
-    console.log('=== SENDING RESET PASSWORD EMAIL ===');
-    console.log('To:', to);
-    console.log('OTP:', otp);
+        console.log('=== SENDING RESET PASSWORD EMAIL ===');
+        console.log('To:', to);
+        console.log('OTP:', otp);
 
-    // Extract name from email
-    const name = to.split('@')[0];
-    const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+        // Extract name from email
+        const name = to.split('@')[0];
+        const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.EMAIL_PORT || '587'),
-      secure: false,
-      requireTLS: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-      debug: true,
-      logger: true,
-    });
+        // Create transporter
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.EMAIL_PORT || '587'),
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+            debug: true,
+            logger: true,
+        });
 
-    // HTML template matching your screenshot EXACTLY
-    const htmlContent = `
+        // HTML template matching your screenshot EXACTLY
+        const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,14 +154,14 @@ export async function POST(request: NextRequest) {
         .greeting {
             font-size: 16px;
             color: #000000;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             line-height: 1.5;
         }
         
         .message {
             font-size: 16px;
             color: #000000;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             line-height: 1.6;
         }
         
@@ -195,9 +195,8 @@ export async function POST(request: NextRequest) {
         
         .validity-note {
             font-size: 15px;
-            color: #666666;
             margin-top: 10px;
-            text-align: center;
+            text-align: left;
         }
         
         .security-note {
@@ -209,13 +208,13 @@ export async function POST(request: NextRequest) {
         }
         
         .signature {
-            margin-top: 40px;
+            margin-top: 20px;
         }
         
         .signature-line {
             font-size: 16px;
             color: #000000;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             line-height: 1.6;
         }
         
@@ -232,6 +231,7 @@ export async function POST(request: NextRequest) {
         }
         
         .support-section {
+        padding: 40px;
             margin-top: 45px;
             padding-top: 30px;
             border-top: 1px solid #eeeeee;
@@ -240,14 +240,14 @@ export async function POST(request: NextRequest) {
         .support-title {
             font-size: 16px;
             color: #3E4A57;
-            margin-bottom: 20px;
+            margin-bottom: 3px;
             line-height: 1.5;
         }
         
         .support-info {
             font-size: 15px;
             color: #3E4A57;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
             line-height: 1.6;
         }
         
@@ -279,10 +279,15 @@ export async function POST(request: NextRequest) {
             color: #000000;
             margin-bottom: 10px;
         }
+
+        .white {
+            background-color: white;
+        }
     </style>
 </head>
 <body>
     <div class="email-wrapper">
+    <div class="white">
         <div class="logo"># maia</div>
         
         <div class="greeting">Hi ${capitalizedName},</div>
@@ -302,16 +307,15 @@ export async function POST(request: NextRequest) {
         <div class="signature">
             <div class="signature-line thank-you">Thank you for choosing Maia Care!</div>
             <div class="signature-line sincerely">Sincerely,</div>
-            <div class="signature-line team-name">The Maia Care Team</div>
+            <div class="signature-line">The Maia Care Team</div>
         </div>
-        
+        </div>
         <div class="support-section">
             <div class="support-title">If you have any questions or require assistance, please don't hesitate to contact our support team:</div>
             <div class="support-info">Email: <a class="support-email" href="mailto:milkmitracare@gmail.com">milkmitracare@gmail.com</a></div>
             <div class="support-info">Phone: <a class="support-phone" href="tel:9878987987">9878987987</a></div>
         </div>
         
-        <div class="divider"></div>
         
         <div class="footer">
             <div class="footer-logo"><strong>maia</strong></div>
@@ -321,8 +325,8 @@ export async function POST(request: NextRequest) {
 </body>
 </html>`;
 
-    // Plain text version matching your screenshot
-    const textContent = `# maia
+        // Plain text version matching your screenshot
+        const textContent = `# maia
 
 Hi ${capitalizedName},
 
@@ -348,36 +352,36 @@ Phone: 9878987987
 
 **maia**`;
 
-    // Send email
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || 'Maia Care <noreply@maiacare.com>',
-      to: to,
-      subject: 'Reset Your Password - Maia Care',
-      html: htmlContent,
-      text: textContent,
-    });
+        // Send email
+        const info = await transporter.sendMail({
+            from: process.env.EMAIL_FROM || 'Maia Care <noreply@maiacare.com>',
+            to: to,
+            subject: 'Reset Your Password - Maia Care',
+            html: htmlContent,
+            text: textContent,
+        });
 
-    console.log('✅ Email sent successfully!');
-    console.log('Message ID:', info.messageId);
+        console.log('✅ Email sent successfully!');
+        console.log('Message ID:', info.messageId);
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Email sent successfully',
-      messageId: info.messageId
-    });
+        return NextResponse.json({
+            success: true,
+            message: 'Email sent successfully',
+            messageId: info.messageId
+        });
 
-  } catch (error: any) {
-    console.error('❌ EMAIL SENDING ERROR ===');
-    console.error('Error:', error.message);
-    console.error('Code:', error.code);
+    } catch (error: any) {
+        console.error('❌ EMAIL SENDING ERROR ===');
+        console.error('Error:', error.message);
+        console.error('Code:', error.code);
 
-    return NextResponse.json(
-      { 
-        success: false,
-        error: 'Failed to send email',
-        details: error.message
-      },
-      { status: 500 }
-    );
-  }
+        return NextResponse.json(
+            {
+                success: false,
+                error: 'Failed to send email',
+                details: error.message
+            },
+            { status: 500 }
+        );
+    }
 }
