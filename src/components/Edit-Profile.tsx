@@ -32,17 +32,17 @@ const EditProfile = () => {
         </>
       ),
     },
-    {
-      key: "Clinic",
-      label: "Clinic Details",
-      content: (
-        <>
-          <ContentContainer className="mt-5">
-            <h1>Clinic Details</h1>
-          </ContentContainer>
-        </>
-      ),
-    },
+    // {
+    //   key: "Clinic",
+    //   label: "Clinic Details",
+    //   content: (
+    //     <>
+    //       <ContentContainer className="mt-5">
+    //         <h1>Clinic Details</h1>
+    //       </ContentContainer>
+    //     </>
+    //   ),
+    // },
     {
       key: "KYC",
       label: "KYC Details",

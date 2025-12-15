@@ -153,8 +153,8 @@ body::-webkit-scrollbar {
 }
 
 .qualification-certificates-data {
-  height: 160px;
-  width: 160px;
+  height: 180px;
+  width: 180px;
 }
 
 .qualification-certificates {
@@ -187,6 +187,12 @@ body::-webkit-scrollbar {
   margin-top: 30px;
 }
 
+.qualification-certificates-file-size-date {
+  font-size: 12px;
+  margin-top: 2px;
+  width: 100%;
+}
+
 /* Edit-Kyc-Details-End */
 /* Edit-Basic-Details-Start */
 .edit-basic-details-modal {
@@ -194,9 +200,9 @@ body::-webkit-scrollbar {
   height: 160px;
   border-radius: 16px;
 }
-
 .edit-basic-details-image {
   object-fit: cover !important;
+  border-radius: 15.87px;
 }
 
 .edit-basic-details-error-font {
@@ -337,7 +343,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .form-select {
-  --bs-form-select-bg-img: url(../assets/images/Arrow.png);
+  --bs-form-select-bg-img: url(../assets/images/ArrowNew.png);
   width: 100%;
   color: var(--bs-body-color);
   -webkit-appearance: none;

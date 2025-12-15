@@ -34,6 +34,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
   const initialFormError: FormError = {};
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
+
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [qualifications, setQualifications] = useState([
     { degree: "", field: "", university: "", startYear: "", endYear: "" }
@@ -104,6 +105,14 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
     const errors: FormError = {};
 
     if (!data.Name.trim()) errors.Name = "Name is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!data.Email.trim()) {
+      errors.Email = "Email is required";
+    } else if (!emailRegex.test(data.Email)) {
+      errors.Email = "Please enter a valid email";
+    }
+
     if (!data.Specialty.trim()) errors.Specialty = "Speciality is required";
     if (!data.Experience.trim()) errors.Experience = "Experience is required";
     if (!data.date.trim()) errors.date = "DOB is required";
@@ -511,7 +520,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     <img
                       src={selectedImage ? selectedImage : Simpleeditpro.src}
                       alt="Profile"
-                      className="profile-image"
+                      className="profile-image mt-1"
                       width={160}
                       height={160}
                     />
@@ -716,14 +725,13 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   name="date"
                   placeholder="Select DOB"
                   value={formData.date}
-                  onChange={(e) => {
-                    handleChange(e);
-                    if (formError.date) setFormError({ ...formError, date: "" });
-                  }}
+                  onChange={(e) => { handleChange(e); if (formError.date) setFormError({ ...formError, date: "" }); }}
                   required
                   error={formError.date}
                   max={new Date().toISOString().split("T")[0]}
                 />
+
+
               )}
             </Col>
 
@@ -790,7 +798,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                 <InputFieldGroup
                   label="Email ID"
                   name="Email"
-                  type="text"
+                  type="email"
                   value={formData.Email}
                   onChange={(e) => {
                     setFormData({ ...formData, Email: e.target.value });
@@ -870,11 +878,9 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   name="MF"
                   placeholder="Select Time"
                   value={formData.MF}
-                  onChange={(e) => {
-                    const time = e.target.value;
-                    setFormData({ ...formData, MF: time });
-                  }}
+                  onChange={(e) => { const time = e.target.value; setFormData({ ...formData, MF: time }); }}
                 />
+
               </Col>
 
               <Col md={6} className="mt-2 edit-basic-detail-timepicker">
@@ -959,9 +965,9 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
               {index > 0 && (
                 <div className="d-flex justify-content-end mb-1">
                   <Button
-                    variant="danger"
+                    // variant="danger"
                     size="sm"
-                    className="d-flex align-items-center justify-content-center edit-basic-qualification-button"
+                    className="d-flex align-items-center justify-content-center edit-basic-qualification-button maiacare-button"
                     onClick={() => {
                       const updatedQuals = qualifications.filter((_, i) => i !== index);
                       const updatedErrors = formErrors.filter((_, i) => i !== index); // keep errors in sync
@@ -1090,7 +1096,10 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
         {/* Add Qualification Button */}
         {!loading && (
           <Button variant="default" className="maiacare-button" onClick={handleAddQualification}>
-            + Add Qualification
+            <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18.75 9.375C18.75 9.67337 18.6315 9.95952 18.4205 10.1705C18.2095 10.3815 17.9234 10.5 17.625 10.5H10.5V17.625C10.5 17.9234 10.3815 18.2095 10.1705 18.4205C9.95952 18.6315 9.67337 18.75 9.375 18.75C9.07663 18.75 8.79048 18.6315 8.5795 18.4205C8.36853 18.2095 8.25 17.9234 8.25 17.625V10.5H1.125C0.826631 10.5 0.540483 10.3815 0.329505 10.1705C0.118526 9.95952 0 9.67337 0 9.375C0 9.07663 0.118526 8.79048 0.329505 8.5795C0.540483 8.36853 0.826631 8.25 1.125 8.25H8.25V1.125C8.25 0.826631 8.36853 0.540483 8.5795 0.329505C8.79048 0.118526 9.07663 0 9.375 0C9.67337 0 9.95952 0.118526 10.1705 0.329505C10.3815 0.540483 10.5 0.826631 10.5 1.125V8.25H17.625C17.9234 8.25 18.2095 8.36853 18.4205 8.5795C18.6315 8.79048 18.75 9.07663 18.75 9.375Z" fill="white" />
+            </svg>&nbsp;
+            Add Qualification
           </Button>
         )}
       </ContentContainer>

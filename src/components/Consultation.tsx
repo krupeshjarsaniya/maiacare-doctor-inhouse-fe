@@ -612,6 +612,8 @@ import Skeleton from "react-loading-skeleton";
 import { getAll } from "@/utils/apis/apiHelper";
 import { patientDelete } from "@/utils/apis/apiHelper";
 import patientImage from "@/assets/images/Img-1.png";
+import Modal from "./ui/Modal";
+
 export type ConsultationStatus =
     | "Completed"
     | "Pending"
@@ -623,10 +625,12 @@ export type ConsultationStatus =
 export default function Consultation() {
     const searchParams = useSearchParams();
     const filter = searchParams.get("filter");
-   const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [patientData, setPatientData] = useState<any[]>([]);
     const [filteredData, setFilteredData] = useState<any[]>([]);
+    const [patientDeleteId, setPatientDeleteId] = useState<string | undefined>("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [showModal, setShowModal] = useState(false);
     const [timeFilter, setTimeFilter] = useState("All Time");
     const handleDownload = (url: string, name: string) => {
         const link = document.createElement("a");
@@ -640,9 +644,9 @@ export default function Consultation() {
     // 🔹 FETCH DATA FROM API
     // --------------------------------------
     useEffect(() => {
-        
+
         const fetchPatients = async () => {
-               setLoading(true); // start loader
+            setLoading(true); // start loader
             try {
                 const res = await getAll();
 
@@ -652,9 +656,9 @@ export default function Consultation() {
                 setPatientData(list);
             } catch (error) {
                 console.error("Error fetching patients:", error);
-            }finally {
-            setLoading(false); // stop loader
-        }
+            } finally {
+                setLoading(false); // stop loader
+            }
         };
 
         fetchPatients();
@@ -662,7 +666,7 @@ export default function Consultation() {
     const handleDelete = async (appointmentId: string) => {
         try {
             await patientDelete(appointmentId);
-
+            setShowModal(false)
             setFilteredData(prev =>
                 prev.filter(item => item.appointment_id !== appointmentId)
             );
@@ -754,7 +758,7 @@ export default function Consultation() {
             header: "Name",
             cell: (info) => {
                 const row = info.row.original;
-                
+
                 const id = info.row.original.patient_id; // <-- Make sure you have an `id`
 
                 return (
@@ -773,6 +777,13 @@ export default function Consultation() {
                                 height={36}
                                 className="rounded-circle me-3"
                             />
+                            {/* <img
+                                            src={row?.profileImage ? row.profileImage : patientImage}
+                                            alt="Patient"
+                                            width={60}
+                                            height={60}
+                                            className="rounded-circle me-3"
+                                          /> */}
                             {row.name}
                         </div>
                     </Link>
@@ -815,92 +826,148 @@ export default function Consultation() {
                             variant="light"
                             size="sm"
                             className="btn btn-sm profile-card-boeder border bg-white me-2"
-                            onClick={() => handleDelete(row.appointment_id)}
+                            onClick={() => { setPatientDeleteId(row.appointment_id); setShowModal(true) }}
                         >
                             <LuTrash2 className="trash" />
                         </Button>
 
+                        <Modal
+                            show={showModal}
+                            onHide={() => setShowModal(false)}
+                            size="md"
+                            backdrop={false}
+                            dialogClassName="delete-modal"
+                            header="Patient Delete"
+                            centered
+                        >
+                            <div className="delete-content text-center">
+
+                                {/* Icon */}
+                                <div className="delete-icon-wrapper mx-auto mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" fill="#ff4d4d" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 1 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                    </svg>
+                                </div>
+
+                                {/* Title */}
+                                <h4 className="fw-bold mb-2">Are you sure?</h4>
+
+                                {/* Subtitle */}
+                                <p className="text-muted mb-4">
+                                    This action cannot be undone. Do you really want to delete this patient?
+                                </p>
+
+                                <div className="w-100 border-top pt-3 d-flex justify-content-between align-items-center flex-wrap">
+
+                                    <div className="d-flex justify-content-center gap-3 w-100">
+
+                                        <button
+                                            className="btn btn-light border px-4 flex-fill"
+                                            onClick={() => setShowModal(false)}
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <Button
+                                            contentSize="small"
+                                            className="px-4 maiacare-button flex-fill"
+                                            onClick={() => handleDelete(patientDeleteId || "")}
+                                        >
+                                            Delete
+                                        </Button>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </Modal>
+
+
                     </div>
+
+
                 );
             },
         },
     ];
 
     return (
-    <div>
-    {/* 🔹 Search + Summary Section */}
-    <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
+        <div>
+            {/* 🔹 Search + Summary Section */}
+            <div className="d-flex justify-content-between align-items-center flex-wrap mb-3 searchbar-content">
 
-        {/* Search */}
-        <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
-            {loading ? (
-                <Skeleton width={250} height={45} />
-            ) : (
-                <InputGroup className="custom-search-group">
-                    <Form.Control
-                        placeholder="Search"
-                        className="custom-search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    <InputGroup.Text className="custom-search-icon">
-                        <IoSearch className="search-icon" />
-                    </InputGroup.Text>
-                </InputGroup>
-            )}
+                {/* Search */}
+                <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
+                    {loading ? (
+                        <Skeleton width={250} height={45} />
+                    ) : (
+                        <InputGroup className="custom-search-group">
+                            <Form.Control
+                                placeholder="Search"
+                                className="custom-search-input"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <InputGroup.Text className="custom-search-icon">
+                                <IoSearch className="search-icon" />
+                            </InputGroup.Text>
+                        </InputGroup>
+                    )}
 
+                    {loading ? (
+                        <div className="d-flex align-items-center gap-2">
+                            <Skeleton circle height={50} width={50} />
+                            <Skeleton width={120} height={20} />
+                        </div>
+                    ) : (
+                        <div className="border custom-filter-button p-2 consultations-image-summary-cards">
+                            <Image src={woman} alt="Total" className="img-fluid women-image" />
+                            <div className="consultations-image-book">
+                                <div className="Consultations-book">{filteredData.length} Consultations</div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Sort Filter */}
+                <div className="d-flex align-items-center gap-2 mb-2">
+                    {loading ? (
+                        <>
+                            <Skeleton width={60} />
+                            <Skeleton width={120} height={40} />
+                            <Skeleton width={45} height={40} />
+                        </>
+                    ) : (
+                        <>
+                            <span className="text-muted small short-by">Sort by:</span>
+                            <Form.Select
+                                className="custom-sort-select"
+                                value={timeFilter}
+                                onChange={(e) => setTimeFilter(e.target.value)}
+                            >
+                                <option>All Time</option>
+                                <option>Today</option>
+                                <option>This Week</option>
+                                <option>This Month</option>
+                            </Form.Select>
+
+                            <Button variant="light" className="border custom-filter-button">
+                                <PiSlidersDuotone />
+                            </Button>
+                        </>
+                    )}
+                </div>
+            </div>
+
+            {/* Table */}
             {loading ? (
-                <div className="d-flex align-items-center gap-2">
-                    <Skeleton circle height={50} width={50} />
-                    <Skeleton width={120} height={20} />
-                </div>
+                <Skeleton count={5} height={40} style={{ marginBottom: '10px' }} />
             ) : (
-                <div className="border custom-filter-button p-2 consultations-image-summary-cards">
-                    <Image src={woman} alt="Total" className="img-fluid women-image" />
-                    <div className="consultations-image-book">
-                        <div className="Consultations-book">{filteredData.length} Consultations</div>
-                    </div>
-                </div>
+                <CommonTable data={filteredData} columns={columns} />
             )}
         </div>
-
-        {/* Sort Filter */}
-        <div className="d-flex align-items-center gap-2 mb-2">
-            {loading ? (
-                <>
-                    <Skeleton width={60} />
-                    <Skeleton width={120} height={40} />
-                    <Skeleton width={45} height={40} />
-                </>
-            ) : (
-                <>
-                    <span className="text-muted small short-by">Sort by:</span>
-                    <Form.Select
-                        className="custom-sort-select"
-                        value={timeFilter}
-                        onChange={(e) => setTimeFilter(e.target.value)}
-                    >
-                        <option>All Time</option>
-                        <option>Today</option>
-                        <option>This Week</option>
-                        <option>This Month</option>
-                    </Form.Select>
-
-                    <Button variant="light" className="border custom-filter-button">
-                        <PiSlidersDuotone />
-                    </Button>
-                </>
-            )}
-        </div>
-    </div>
-
-    {/* Table */}
-    {loading ? (
-        <Skeleton count={5} height={40} style={{ marginBottom: '10px' }} />
-    ) : (
-        <CommonTable data={filteredData} columns={columns} />
-    )}
-</div>
 
     );
 }

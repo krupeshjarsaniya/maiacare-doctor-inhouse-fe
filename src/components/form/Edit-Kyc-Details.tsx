@@ -56,11 +56,11 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState<FormError>(initialFormError);
   const [completedFiles, setCompletedFiles] = useState<UploadedFile[]>([]);
+  
   const [apiOtherDocs, setApiOtherDocs] = useState<UploadedFile[]>([]);
 
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [aadharFile, setAadharFile] = useState<UploadedFile | null>(null);
-  console.log("aadharFile.name",aadharFile?.name);
   
   const [panFile, setPanFile] = useState<UploadedFile | null>(null);
   const [licenceFile, setLicenceFile] = useState<UploadedFile | null>(null);
@@ -561,7 +561,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
         setPanSize(res?.data?.data?.panCard?.panSize)
         setLicSize(res?.data?.data?.licenceCard?.licenceSize)
         const mappedDocs = res?.data?.data?.otherDocuments?.map((doc: any) => ({
-          name: doc.fileName || "",
+          name: doc.fileName || doc.originalName || "",
           url: doc.filePath || "",
           reportName: doc.reportName || "",
           size: doc.fileSize || "",
@@ -884,7 +884,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
               value={formData.LicNumber}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 
-                let value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                let value = e.target.value.replace(/[^0-9]/g, "");
 
 
 
@@ -1091,7 +1091,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
                 </div>
 
                 {/* File Size & Date */}
-                <div className="card-year">
+                <div className="card-year qualification-certificates-file-size-date">
                   {file.size} •{" "}
                   {file.uploadedAt
                     ? new Date(file.uploadedAt).toLocaleDateString("en-GB", {
