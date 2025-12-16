@@ -272,7 +272,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
   const cameraInputRef = useRef<HTMLInputElement>(null); // camera image select 
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);  //previewImage 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);//selectedImage 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);//selectedImage
 
   const handleOpenModal = () => {
     setPreviewImage(selectedImage || Simpleeditpro.src); // show image in modal
@@ -483,6 +483,19 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
   }, []);
 
 
+  const formatDOB = (date?: string) => {
+    if (!date) return "";
+
+    const d = new Date(date);
+
+    return d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+
   return (
     <div>
       <ContentContainer className="mt-3">
@@ -542,8 +555,8 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                 </div>
               ) : (
                 <div>
-                  <div className="fw-semibold">Add Profile Picture</div>
-                  <div className="text-muted small">
+                  <div className="fw-semibold upload-documents-completed">Add Profile Picture</div>
+                  <div className="small personal-details-sub-text">
                     Allowed Jpg, png of max size 5MB
                   </div>
                 </div>
@@ -729,6 +742,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   required
                   error={formError.date}
                   max={new Date().toISOString().split("T")[0]}
+
                 />
 
 
@@ -874,12 +888,24 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
             <Row className="mb-3">
               <Col md={6} className="edit-basic-detail-timepicker">
                 <TimePickerFieldGroup
+                  required={true}
                   label="Monday-Friday"
                   name="MF"
                   placeholder="Select Time"
                   value={formData.MF}
                   onChange={(e) => { const time = e.target.value; setFormData({ ...formData, MF: time }); }}
                 />
+                {/* <TimePickerFieldGroup
+                  label="Monday-Friday"
+                  name="MF"
+                  placeholder="Select Time"
+                  value={formData.MF}
+                  required={true}
+                  error={formError.MF}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                  }}
+                /> */}
 
               </Col>
 
@@ -900,6 +926,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
               <Col md={6} className="edit-basic-detailsat-sun">
                 <TimePickerFieldGroup
                   label="Saturday-Sunday"
+                  required={true}
                   name="SS"
                   placeholder="Select Time"
                   value={formData.SS}

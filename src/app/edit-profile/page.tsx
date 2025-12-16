@@ -3,7 +3,7 @@
 import { AppDispatch } from "@/utils/redux/store";
 import { useDispatch } from "react-redux";
 import { Suspense, useEffect } from "react";
-import { setHeaderData } from "@/utils/redux/slices/headerSlice";
+import { setHeaderData } from "@/Hook/Redux/Slice/headerSlice";
 import EditProfile from "../../components/Edit-Profile";
 
 function Page() {

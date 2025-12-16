@@ -241,7 +241,6 @@ const ProfileBasicDetails = () => {
         endYear: Number(q.endYear),
       }));
 
-      console.log("Send data:", passData);
 
 
       addQualification(passData)
@@ -376,7 +375,12 @@ const ProfileBasicDetails = () => {
     documents: any[];
   }
   const [user, setUser] = useState<DoctorDataType | null>(null)
-
+  const [showMore, setShowMore] = useState(false);
+  const [showAllDocs, setShowAllDocs] = useState(false);
+  let MAX_DOCS = 4;
+  const visibleDocuments = showAllDocs
+    ? documents
+    : documents.slice(0, MAX_DOCS);
   // const getUser = () => {
   //   getLoggedInUser()
   //     .then((response) => {
@@ -776,58 +780,7 @@ const ProfileBasicDetails = () => {
                     </div>
                   ))
                 )}
-                <Modal
-                  show={showDeleteModal}
-                  onHide={() => setDeleteShowModal(false)}
-                  size="md"
-                  backdrop={false}
-                  dialogClassName="delete-modal"
-                  header="Qualification Delete"
-                  centered
-                >
-                  <div className="delete-content text-center">
 
-                    {/* Icon */}
-                    <div className="delete-icon-wrapper mx-auto mb-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" fill="#ff4d4d" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 1 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                      </svg>
-                    </div>
-
-                    {/* Title */}
-                    <h4 className="fw-bold mb-2">Are you sure?</h4>
-
-                    {/* Subtitle */}
-                    <p className="text-muted mb-4">
-                      This action cannot be undone. Do you really want to delete this Qualification?
-                    </p>
-
-                    <div className="w-100 border-top pt-3 d-flex justify-content-between align-items-center flex-wrap">
-
-                      <div className="d-flex justify-content-center gap-3 w-100">
-
-                        <button
-                          className="btn btn-light border px-4 flex-fill"
-                          onClick={() => setDeleteShowModal(false)}
-                        >
-                          Cancel
-                        </button>
-
-                        <Button
-                          contentSize="small"
-                          className="px-4 maiacare-button flex-fill"
-                          onClick={() => handleDelete(deleteId || "")}
-                        >
-                          Delete
-                        </Button>
-
-                      </div>
-
-
-                    </div>
-                  </div>
-                </Modal>
               </ContentContainer>
             </div>
           </div>
@@ -944,7 +897,6 @@ const ProfileBasicDetails = () => {
 
         </Col>
 
-
         {/* ======RIGHT COLUMN =========== */}
         {/* About */}
 
@@ -968,7 +920,25 @@ const ProfileBasicDetails = () => {
                 </>
               ) : (
                 <p className="mb-0 about-text">
-                  {user ? user.about : ""}
+
+
+                  {user?.about && (
+                    <>
+                      {showMore
+                        ? user.about
+                        : user.about.slice(0, 130)}
+
+                      {user.about.length > 25 && (
+                        <span
+                          className="ms-1 text-primary cursor-pointer"
+                          onClick={() => setShowMore(!showMore)}
+                        >
+                          {showMore ? " See less" : " See more"}
+                        </span>
+                      )}
+                    </>
+                  )}
+
                 </p>
               )}
 
@@ -1014,7 +984,7 @@ const ProfileBasicDetails = () => {
                   </div>
                 </>
               ) : (
-                documents.map((doc, index) => {
+                visibleDocuments.map((doc, index) => {
                   const docName =
                     doc.originalName ||
                     doc.reportName ||
@@ -1071,6 +1041,16 @@ const ProfileBasicDetails = () => {
                     </div>
                   );
                 })
+
+
+              )}
+              {documents.length > MAX_DOCS && (
+                <span
+                  className="ms-1 text-primary cursor-pointer"
+                  onClick={() => setShowAllDocs(!showAllDocs)}
+                >
+                  {showAllDocs ? "See less" : "See more"}
+                </span>
               )}
 
             </ContentContainer>
@@ -1078,6 +1058,55 @@ const ProfileBasicDetails = () => {
         </Col>
 
       </Row>
+
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setDeleteShowModal(false)}
+        size="md"
+        dialogClassName="delete-modal"
+        header="Qualification Delete"
+        centered
+      >
+        <div className="delete-content text-center">
+
+          <div className="delete-icon-wrapper mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" fill="#ff4d4d" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 1 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+            </svg>
+          </div>
+
+          <h4 className="fw-bold mb-2">Are you sure?</h4>
+
+          <p className="text-muted mb-4">
+            This action cannot be undone. Do you really want to delete this Qualification?
+          </p>
+
+          <div className="w-100 border-top pt-3 d-flex justify-content-between align-items-center flex-wrap">
+
+            <div className="d-flex justify-content-center gap-3 w-100">
+
+              <button
+                className="btn btn-light border px-4 flex-fill"
+                onClick={() => setDeleteShowModal(false)}
+              >
+                Cancel
+              </button>
+
+              <Button
+                contentSize="small"
+                className="px-4 maiacare-button flex-fill"
+                onClick={() => handleDelete(deleteId || "")}
+              >
+                Delete
+              </Button>
+
+            </div>
+
+
+          </div>
+        </div>
+      </Modal>
     </div>
     // </Container>
   );
