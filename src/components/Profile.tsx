@@ -160,7 +160,7 @@ const formatPhone = (num?: string) => {
                             )}
                         </div>
 
-                        <div className='col-12 ms-4 mt-3 mt-md-0'>
+                        <div className='col-12 ms-4 mt-3 mt-md-0 ms-md-3 ms-lg-5 ms-xxl-5'>
                             {/* col-md-9 col-lg-9 col-xl-9    nedd to  above div */}
                             <div>
                                 <div className="d-flex flex-md-row align-items-start align-items-md-center gap-1 ">

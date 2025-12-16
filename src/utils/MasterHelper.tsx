@@ -30,7 +30,7 @@ export default Master;
 
 function MasterHelper({ children }: MasterProps) {
   const [collapsed, setCollapsed] = useState(true);
-const authPages = ["/login", "/register", "/forgotppassword","/resetpassword","/verification"];
+  const authPages = ["/login", "/register", "/forgotppassword", "/resetpassword", "/verification"];
   const pathName = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -40,17 +40,17 @@ const authPages = ["/login", "/register", "/forgotppassword","/resetpassword","/
   const getUser = async () => {
     const response = await getLoginUser();
     if (response.status) {
-        dispatch(setAuthData(response?.data?.data));
+      dispatch(setAuthData(response?.data?.data));
     }
   }
-  
-    useEffect(() => {
+
+  useEffect(() => {
     // const localToken = localStorage.getItem("token");
     const localToken = getTokenFromCookie();
     // console.log("localToken", localToken);
 
     if (localToken) {
-      if(authPages.includes(pathName)){
+      if (authPages.includes(pathName)) {
         router.push("/dashboard")
       }
       dispatch(setToken(localToken));
@@ -60,18 +60,19 @@ const authPages = ["/login", "/register", "/forgotppassword","/resetpassword","/
         // router.push("/");
       }
     }
-  }, [pathname, token]);  
+  }, [pathname, token]);
 
   return (
     <main>
       {authPages.includes(pathName) ? (
         children //Implement auth layout here 
       ) : (
-          <div className="d-flex">
+        <div className="d-flex">
           <SiteLayout collapsed={collapsed} setCollapsed={setCollapsed}>
             {children}
           </SiteLayout>
         </div>
       )}
     </main>
-)}
+  )
+}

@@ -169,7 +169,7 @@ const ProfileBasicDetails = () => {
     const errors = quals.map((q) => ({
 
       degree: !q.degree ? "Degree is required" : "",
-      fieldOfStudy: !q.fieldOfStudy ? "fieldOfStudy is required" : "",
+      fieldOfStudy: !q.fieldOfStudy ? "Field of Study is required" : "",
       university: !q.university ? "University is required" : "",
       startYear: !q.startYear ? "Start Year is required" : "",
       endYear: !q.endYear ? "End Year is required" : "",
@@ -299,7 +299,7 @@ const ProfileBasicDetails = () => {
     const errors: FormError = {};
 
     if (!data.degree.trim()) errors.degree = "Degree is required";
-    if (!data.fieldOfStudy.trim()) errors.fieldOfStudy = "fieldOfStudy is required";
+    if (!data.fieldOfStudy.trim()) errors.fieldOfStudy = "Field of Study is required";
     if (!data.university.trim()) errors.university = "University is required";
     if (!data.startYear) errors.startYear = "Start year is required";
     if (!data.endYear) errors.endYear = "End year is required";
@@ -377,6 +377,9 @@ const ProfileBasicDetails = () => {
   const [user, setUser] = useState<DoctorDataType | null>(null)
   const [showMore, setShowMore] = useState(false);
   const [showAllDocs, setShowAllDocs] = useState(false);
+  const [showAllQualification, setShowAllQualification] = useState(false);
+  let MAX_Qualifications = 3
+  const visibleQualifications = showAllQualification ? defaultQualifications : defaultQualifications.slice(0, MAX_Qualifications)
   let MAX_DOCS = 4;
   const visibleDocuments = showAllDocs
     ? documents
@@ -569,7 +572,7 @@ const ProfileBasicDetails = () => {
                         <div key={index} className="mb-4"> {/* ← Add margin-bottom here for spacing */}
                           <Accordion.Item eventKey={index.toString()}>
                             <Accordion.Header>
-                              Qualification {index + 1}
+                              {qualifications[index]?.degree}
                             </Accordion.Header>
 
                             <Accordion.Body>
@@ -594,7 +597,9 @@ const ProfileBasicDetails = () => {
                                       value={q.degree}
                                       onChange={(e) => {
                                         const updated = [...qualifications];
-                                        updated[index].degree = e.target.value;
+                                        const { name, value } = e.target;
+                                        const onlyText = value.replace(/[0-9]/g, "");
+                                        updated[index].degree = onlyText;
                                         setQualifications(updated);
 
                                         const updatedErrors = [...formErrors];
@@ -657,7 +662,9 @@ const ProfileBasicDetails = () => {
 
                                   <Col md={6} className="mt-3">
                                     <InputSelect
+                                      placeholder='Select Start Year'
                                       label="Start Year"
+                                      className="edit-profile-field-placeholder"
                                       name="startYear"
                                       value={q.startYear}
                                       onChange={(e) => {
@@ -679,7 +686,9 @@ const ProfileBasicDetails = () => {
 
                                   <Col md={6} className="mt-3">
                                     <InputSelect
+                                      placeholder='Select End Year'
                                       label="End Year"
+                                      className="edit-profile-field-placeholder"
                                       name="endYear"
                                       value={q.endYear}
                                       onChange={(e) => {
@@ -755,7 +764,7 @@ const ProfileBasicDetails = () => {
                     "Data not found. Please Add Data"
                   </div>
                 ) : (
-                  defaultQualifications.map((item, idx) => (
+                  visibleQualifications.map((item, idx) => (
                     <div
                       key={idx}
                       className="d-flex justify-content-between align-items-start p-3 mb-3 bg-white border rounded-4 profile-card-boeder"
@@ -780,6 +789,12 @@ const ProfileBasicDetails = () => {
                     </div>
                   ))
                 )}
+                <span
+                  className="ms-1 text-primary cursor-pointer"
+                  onClick={() => setShowAllQualification(!showAllQualification)}
+                >
+                  {showAllQualification ? "See Less" : "See More"}
+                </span>
 
               </ContentContainer>
             </div>
@@ -802,7 +817,11 @@ const ProfileBasicDetails = () => {
                     type="text"
                     value={formData.degree}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleChange(e);
+                      const { name, value } = e.target;
+                      const onlyText = value.replace(/[0-9]/g, "");
+
+                      setFormData((prev) => ({ ...prev, [name]: onlyText }));
+                      setFormError((prev) => ({ ...prev, [name]: "" }));
                     }}
                     onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
                     placeholder="Enter degree"
@@ -854,6 +873,7 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputSelect
                     label="Start Year"
+                    className='edit-profile-field'
                     name="startYear"
                     value={formData.startYear}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -871,6 +891,7 @@ const ProfileBasicDetails = () => {
                   <InputSelect
                     label="End Year"
                     name="endYear"
+                    className='edit-profile-field'
                     value={formData.endYear}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                       handleChange(e);
