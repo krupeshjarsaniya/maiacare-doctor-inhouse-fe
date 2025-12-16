@@ -3,15 +3,16 @@ import { NextResponse } from "next/server";
 import apiServer from "@/utils/apis/axiosBackendHelper";
 import { handleApiError } from "@/utils/apis/errorHandler";
 
-export async function POST() {
-  const API_BASE_URL = "/patient/getAll";
+export async function POST(req: Request) {
+  const API_BASE_URL = "patient/getAll";
 
   try {
-    const response = await apiServer.post(API_BASE_URL);
+    // ✅ Parse request body correctly
+    const body = await req.json();
 
-    return new NextResponse(JSON.stringify(response.data), {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await apiServer.post(API_BASE_URL, body);
+
+    return NextResponse.json(response.data);
   } catch (error) {
     return handleApiError(error);
   }
