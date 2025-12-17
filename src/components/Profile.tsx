@@ -92,6 +92,17 @@ const formatPhone = (num?: string) => {
   return `+${cc} ${formattedMain}`;
 };
 
+const formatMemberSince = (dateString?: string) => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: '2-digit',
+  });
+};
+
 
     // const [user, setUser] = useState<DoctorDataType | null>(null)
 
@@ -273,7 +284,7 @@ text-center text-md-start     ======= small screen all data center */}
                                     {loading ? (
                                         <Skeleton width={120} height={18} />
                                     ) : (
-                                        <>Member since {doctor?.memberSince || ''}</>
+                                          <>Member since {formatMemberSince(user?.memberSince)}</>
                                     )}
                                 </div>
 

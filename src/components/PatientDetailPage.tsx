@@ -57,7 +57,7 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
       label: "Basic Details",
       content: (
         <>
-          <PatientBasicDetail patientId={id} patient={patient}     loading={loading}/>
+          <PatientBasicDetail patientId={id} patient={patient} loading={loading} />
         </>
       ),
     },
@@ -100,9 +100,15 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                     </div>
                   ) : (
                     <>
-                      <img
+                      {/* <img
                         src={p?.profileImage ? p.profileImage : patientImage}
                         alt="Patient"
+                        width={60}
+                        height={60}
+                        className="rounded-circle me-3"
+                      /> */}
+                      <img
+                        src={p?.profileImage || patientImage.src}
                         width={60}
                         height={60}
                         className="rounded-circle me-3"
