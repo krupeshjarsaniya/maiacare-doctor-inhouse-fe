@@ -12,7 +12,7 @@ export default function PatientsPage() {
 
 
   useEffect(() => {
-   dispatch(setHeaderData({ title: "Consultation Bookings ", }));
+   dispatch(setHeaderData({ title: "Appointments  ", }));
   }, []);
 
   return (

@@ -114,14 +114,9 @@ export const uploadkycdetails = (data: { aadharNumber: string; aadharFile: strin
   });
 };
 
-export const getAll = () => {
-  const token = localStorage.getItem("token");
-  return apiClient.post("/patient/getAll", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+export const getAll = (data: object) => {
+  return apiClient.post("/patient/getAll", data);
+}
 export const getOne = async (id: string | number) => {
   return await api.get(`/patient/${id}`);   // FIXED ✔
 };

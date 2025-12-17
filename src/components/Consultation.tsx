@@ -613,6 +613,7 @@ import { getAll } from "@/utils/apis/apiHelper";
 import { patientDelete } from "@/utils/apis/apiHelper";
 import patientImage from "@/assets/images/Img-1.png";
 import Modal from "./ui/Modal";
+import toast from "react-hot-toast";
 
 export type ConsultationStatus =
     | "Completed"
@@ -623,6 +624,10 @@ export type ConsultationStatus =
     | "Cancelled";
 
 export default function Consultation() {
+       const [patientTotal, setPatientTotal] = useState<number>(0);
+    const [tableLimit, setTableLimit] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0)
+    const [activePage, setActivePage] = useState<number>(1);
     const searchParams = useSearchParams();
     const filter = searchParams.get("filter");
     const [loading, setLoading] = useState<boolean>(true);
@@ -643,26 +648,59 @@ export default function Consultation() {
     // --------------------------------------
     // 🔹 FETCH DATA FROM API
     // --------------------------------------
+
+const fetchallpatient = (searchValue = "") => {
+    const tableobj = {
+        page: activePage,
+        search: searchValue, // 🔥 pass search here
+    };
+
+    setLoading(true);
+
+    setTimeout(() => {
+        getAll(tableobj)
+            .then((response) => {
+                if (response.data.status) {
+                   setPatientData(response.data.data);
+      setPatientTotal(response.data.totalConsults); // ✅ FIX HERE
+      setTableLimit(response.data.limit);
+      setTotalPages(response.data.pages);
+                } else {
+                    console.log("Error...");
+                }
+            })
+            .catch((err) => {
+                console.log("error", err?.response);
+
+                const apiError = err?.response?.data;
+                const fieldError = apiError?.details?.errors
+                    ? Object.values(apiError.details.errors)[0]
+                    : null;
+
+                const message =
+                    fieldError ||
+                    apiError?.details?.message ||
+                    apiError?.message ||
+                    "Something went wrong";
+
+                toast.error(message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, 500);
+};
+
+
     useEffect(() => {
+        fetchallpatient();
+    }, [])
 
-        const fetchPatients = async () => {
-            setLoading(true); // start loader
-            try {
-                const res = await getAll();
+   useEffect(() => {
+  fetchallpatient(searchQuery);
+}, [activePage]);
 
-                // Adjust based on your API response structure
-                const list = res?.data?.data || res?.data || [];
-
-                setPatientData(list);
-            } catch (error) {
-                console.error("Error fetching patients:", error);
-            } finally {
-                setLoading(false); // stop loader
-            }
-        };
-
-        fetchPatients();
-    }, []);
+    
     const handleDelete = async (appointmentId: string) => {
         try {
             await patientDelete(appointmentId);
@@ -773,8 +811,8 @@ export default function Consultation() {
                             /> */}
                               <img
                                 src={row?.profileImage || patientImage.src}
-                                width={36}
-                                height={36}
+                                width={48}
+                                height={48}
                                 className="rounded-circle me-3"
                             />
                             {/* <img
@@ -791,7 +829,7 @@ export default function Consultation() {
             },
         },
 
-        { header: "Mobile", accessorKey: "contactNumber", },
+        { header: " Mobile No", accessorKey: "contactNumber", },
         { header: "Email", accessorKey: "email" },
         { header: "Pin Code", accessorKey: "pincode" },
 
@@ -813,11 +851,11 @@ export default function Consultation() {
                         <Button
                             variant="light"
                             size="sm"
-                            className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder rounded Download-border me-2"
+                            className="d-flex bg-white justify-content-center align-items-center border profile-card-boeder  Download-border me-2"
                             onClick={() => handleDownload(`/files/${name}.pdf`, `${name}.pdf`)}
                         >
                             {/* <LuArrowDown className="arrow-down" /> */}
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M15.2594 3.85684L11.768 0.366217C11.6519 0.250114 11.5141 0.158014 11.3624 0.0951779C11.2107 0.0323417 11.0482 0 10.884 0C10.7198 0 10.5572 0.0323417 10.4056 0.0951779C10.2539 0.158014 10.1161 0.250114 10 0.366217L0.366412 9.99981C0.249834 10.1155 0.157407 10.2531 0.0945056 10.4048C0.0316038 10.5565 -0.000518312 10.7192 6.32418e-06 10.8834V14.3748C6.32418e-06 14.7063 0.131702 15.0243 0.366123 15.2587C0.600543 15.4931 0.918486 15.6248 1.25001 15.6248H14.375C14.5408 15.6248 14.6997 15.559 14.8169 15.4418C14.9342 15.3245 15 15.1656 15 14.9998C15 14.8341 14.9342 14.6751 14.8169 14.5579C14.6997 14.4407 14.5408 14.3748 14.375 14.3748H6.50938L15.2594 5.62481C15.3755 5.50873 15.4676 5.37092 15.5304 5.21925C15.5933 5.06757 15.6256 4.905 15.6256 4.74083C15.6256 4.57665 15.5933 4.41408 15.5304 4.26241C15.4676 4.11073 15.3755 3.97292 15.2594 3.85684ZM4.74141 14.3748H1.25001V10.8834L8.12501 4.0084L11.6164 7.49981L4.74141 14.3748ZM12.5 6.61622L9.00938 3.12481L10.8844 1.24981L14.375 4.74122L12.5 6.61622Z" fill="#2B4360" />
                             </svg>
 
@@ -828,7 +866,9 @@ export default function Consultation() {
                             className="btn btn-sm profile-card-boeder border bg-white me-2"
                             onClick={() => { setPatientDeleteId(row.appointment_id); setShowModal(true) }}
                         >
-                            <LuTrash2 className="trash" />
+                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 17" fill="none">
+<path d="M14.375 2.5H11.25V1.875C11.25 1.37772 11.0525 0.900806 10.7008 0.549175C10.3492 0.197544 9.87228 0 9.375 0H5.625C5.12772 0 4.65081 0.197544 4.29917 0.549175C3.94754 0.900806 3.75 1.37772 3.75 1.875V2.5H0.625C0.45924 2.5 0.300269 2.56585 0.183058 2.68306C0.0658481 2.80027 0 2.95924 0 3.125C0 3.29076 0.0658481 3.44973 0.183058 3.56694C0.300269 3.68415 0.45924 3.75 0.625 3.75H1.25V15C1.25 15.3315 1.3817 15.6495 1.61612 15.8839C1.85054 16.1183 2.16848 16.25 2.5 16.25H12.5C12.8315 16.25 13.1495 16.1183 13.3839 15.8839C13.6183 15.6495 13.75 15.3315 13.75 15V3.75H14.375C14.5408 3.75 14.6997 3.68415 14.8169 3.56694C14.9342 3.44973 15 3.29076 15 3.125C15 2.95924 14.9342 2.80027 14.8169 2.68306C14.6997 2.56585 14.5408 2.5 14.375 2.5ZM5 1.875C5 1.70924 5.06585 1.55027 5.18306 1.43306C5.30027 1.31585 5.45924 1.25 5.625 1.25H9.375C9.54076 1.25 9.69973 1.31585 9.81694 1.43306C9.93415 1.55027 10 1.70924 10 1.875V2.5H5V1.875ZM12.5 15H2.5V3.75H12.5V15ZM6.25 6.875V11.875C6.25 12.0408 6.18415 12.1997 6.06694 12.3169C5.94973 12.4342 5.79076 12.5 5.625 12.5C5.45924 12.5 5.30027 12.4342 5.18306 12.3169C5.06585 12.1997 5 12.0408 5 11.875V6.875C5 6.70924 5.06585 6.55027 5.18306 6.43306C5.30027 6.31585 5.45924 6.25 5.625 6.25C5.79076 6.25 5.94973 6.31585 6.06694 6.43306C6.18415 6.55027 6.25 6.70924 6.25 6.875ZM10 6.875V11.875C10 12.0408 9.93415 12.1997 9.81694 12.3169C9.69973 12.4342 9.54076 12.5 9.375 12.5C9.20924 12.5 9.05027 12.4342 8.93306 12.3169C8.81585 12.1997 8.75 12.0408 8.75 11.875V6.875C8.75 6.70924 8.81585 6.55027 8.93306 6.43306C9.05027 6.31585 9.20924 6.25 9.375 6.25C9.54076 6.25 9.69973 6.31585 9.81694 6.43306C9.93415 6.55027 10 6.70924 10 6.875Z" fill="#E85966"/>
+</svg>
                         </Button>
                     </div>
 
@@ -845,7 +885,7 @@ export default function Consultation() {
 
                 {/* Search */}
                 <div className="d-flex align-items-center gap-2 mb-1 Consultations-image">
-                    {loading ? (
+            {loading ? (
                         <Skeleton width={250} height={45} />
                     ) : (
                         <InputGroup className="custom-search-group">
@@ -870,7 +910,7 @@ export default function Consultation() {
                         <div className="border custom-filter-button p-2 consultations-image-summary-cards">
                             <Image src={woman} alt="Total" className="img-fluid women-image" />
                             <div className="consultations-image-book">
-                                <div className="Consultations-book">{filteredData.length} Consultations</div>
+                                <div className="Consultations-book">  {searchQuery || filter ? filteredData.length : patientTotal} Consultations</div>
                             </div>
                         </div>
                     )}
@@ -899,7 +939,9 @@ export default function Consultation() {
                             </Form.Select>
 
                             <Button variant="light" className="border custom-filter-button">
-                                <PiSlidersDuotone />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+<path d="M6.00002 9.84375V3.75C6.00002 3.55109 5.92101 3.36032 5.78035 3.21967C5.6397 3.07902 5.44894 3 5.25002 3C5.05111 3 4.86035 3.07902 4.71969 3.21967C4.57904 3.36032 4.50002 3.55109 4.50002 3.75V9.84375C3.85471 10.009 3.28274 10.3843 2.87429 10.9105C2.46584 11.4367 2.24414 12.0839 2.24414 12.75C2.24414 13.4161 2.46584 14.0633 2.87429 14.5895C3.28274 15.1157 3.85471 15.491 4.50002 15.6562V20.25C4.50002 20.4489 4.57904 20.6397 4.71969 20.7803C4.86035 20.921 5.05111 21 5.25002 21C5.44894 21 5.6397 20.921 5.78035 20.7803C5.92101 20.6397 6.00002 20.4489 6.00002 20.25V15.6562C6.64533 15.491 7.2173 15.1157 7.62575 14.5895C8.0342 14.0633 8.25591 13.4161 8.25591 12.75C8.25591 12.0839 8.0342 11.4367 7.62575 10.9105C7.2173 10.3843 6.64533 10.009 6.00002 9.84375ZM5.25002 14.25C4.95335 14.25 4.66334 14.162 4.41667 13.9972C4.16999 13.8324 3.97774 13.5981 3.8642 13.324C3.75067 13.0499 3.72097 12.7483 3.77885 12.4574C3.83672 12.1664 3.97958 11.8991 4.18936 11.6893C4.39914 11.4796 4.66642 11.3367 4.95739 11.2788C5.24836 11.2209 5.54996 11.2506 5.82405 11.3642C6.09814 11.4777 6.33241 11.67 6.49723 11.9166C6.66205 12.1633 6.75002 12.4533 6.75002 12.75C6.75002 13.1478 6.59199 13.5294 6.31068 13.8107C6.02938 14.092 5.64785 14.25 5.25002 14.25ZM12.75 5.34375V3.75C12.75 3.55109 12.671 3.36032 12.5304 3.21967C12.3897 3.07902 12.1989 3 12 3C11.8011 3 11.6103 3.07902 11.4697 3.21967C11.329 3.36032 11.25 3.55109 11.25 3.75V5.34375C10.6047 5.50898 10.0327 5.88428 9.62429 6.41048C9.21584 6.93669 8.99414 7.58387 8.99414 8.25C8.99414 8.91613 9.21584 9.56331 9.62429 10.0895C10.0327 10.6157 10.6047 10.991 11.25 11.1562V20.25C11.25 20.4489 11.329 20.6397 11.4697 20.7803C11.6103 20.921 11.8011 21 12 21C12.1989 21 12.3897 20.921 12.5304 20.7803C12.671 20.6397 12.75 20.4489 12.75 20.25V11.1562C13.3953 10.991 13.9673 10.6157 14.3758 10.0895C14.7842 9.56331 15.0059 8.91613 15.0059 8.25C15.0059 7.58387 14.7842 6.93669 14.3758 6.41048C13.9673 5.88428 13.3953 5.50898 12.75 5.34375ZM12 9.75C11.7034 9.75 11.4133 9.66203 11.1667 9.4972C10.92 9.33238 10.7277 9.09811 10.6142 8.82403C10.5007 8.54994 10.471 8.24834 10.5288 7.95736C10.5867 7.66639 10.7296 7.39912 10.9394 7.18934C11.1491 6.97956 11.4164 6.8367 11.7074 6.77882C11.9984 6.72094 12.3 6.75065 12.574 6.86418C12.8481 6.97771 13.0824 7.16997 13.2472 7.41665C13.412 7.66332 13.5 7.95333 13.5 8.25C13.5 8.64782 13.342 9.02936 13.0607 9.31066C12.7794 9.59196 12.3978 9.75 12 9.75ZM21.75 15.75C21.7494 15.0849 21.5282 14.4388 21.121 13.9129C20.7139 13.387 20.1438 13.011 19.5 12.8438V3.75C19.5 3.55109 19.421 3.36032 19.2804 3.21967C19.1397 3.07902 18.9489 3 18.75 3C18.5511 3 18.3603 3.07902 18.2197 3.21967C18.079 3.36032 18 3.55109 18 3.75V12.8438C17.3547 13.009 16.7827 13.3843 16.3743 13.9105C15.9658 14.4367 15.7441 15.0839 15.7441 15.75C15.7441 16.4161 15.9658 17.0633 16.3743 17.5895C16.7827 18.1157 17.3547 18.491 18 18.6562V20.25C18 20.4489 18.079 20.6397 18.2197 20.7803C18.3603 20.921 18.5511 21 18.75 21C18.9489 21 19.1397 20.921 19.2804 20.7803C19.421 20.6397 19.5 20.4489 19.5 20.25V18.6562C20.1438 18.489 20.7139 18.113 21.121 17.5871C21.5282 17.0612 21.7494 16.4151 21.75 15.75ZM18.75 17.25C18.4534 17.25 18.1633 17.162 17.9167 16.9972C17.67 16.8324 17.4777 16.5981 17.3642 16.324C17.2507 16.0499 17.221 15.7483 17.2788 15.4574C17.3367 15.1664 17.4796 14.8991 17.6894 14.6893C17.8991 14.4796 18.1664 14.3367 18.4574 14.2788C18.7484 14.2209 19.05 14.2506 19.324 14.3642C19.5981 14.4777 19.8324 14.67 19.9972 14.9166C20.1621 15.1633 20.25 15.4533 20.25 15.75C20.25 16.1478 20.092 16.5294 19.8107 16.8107C19.5294 17.092 19.1478 17.25 18.75 17.25Z" fill="#2B4360"/>
+</svg>
                             </Button>
                         </>
                     )}
@@ -907,11 +949,19 @@ export default function Consultation() {
             </div>
 
             {/* Table */}
-            {loading ? (
-                <Skeleton count={5} height={40} style={{ marginBottom: '10px' }} />
-            ) : (
-                <CommonTable data={filteredData} columns={columns} />
-            )}
+        
+        <CommonTable
+  data={filteredData}   // ✅ USE FILTERED DATA
+  columns={columns}
+  tableTotal={patientTotal}
+  totalPages={totalPages}
+  loading={loading}
+  setActivePage={setActivePage}
+  activePage={activePage}
+/>
+
+
+            
 
                       <Modal
                             show={showModal}
