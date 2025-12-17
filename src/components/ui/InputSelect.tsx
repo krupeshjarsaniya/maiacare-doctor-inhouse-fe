@@ -154,12 +154,12 @@ export function InputSelect({
         onBlur={onBlur}
         onClick={onClick}
         // required={required}
-        disabled={disabled}
+        // disabled={disabled}
         className={`maiacare-input-field ${className}`}
         {...rest}
 
       >
-        <option value={""}>{placeholder}</option>
+        <option value={""} disabled={disabled}>{placeholder}</option>
         {options.map(option => (
           <option key={option.id} value={option.value}>{option.label}</option>
 
