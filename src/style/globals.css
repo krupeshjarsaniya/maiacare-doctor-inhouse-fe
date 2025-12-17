@@ -516,3 +516,74 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .personal-details-sub-text {
   color: #8A8D93;
 }
+
+
+.edit-profile-field input {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+.edit-profile-field input:focus {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+.edit-profile-field input:-webkit-autofill,
+.edit-profile-field input:-webkit-autofill:hover,
+.edit-profile-field input:-webkit-autofill:focus,
+.edit-profile-field input:-webkit-autofill:active {
+  -webkit-text-fill-color: #3E4A57 !important;
+  caret-color: #3E4A57 !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 0s;
+}
+
+/* For select and input */
+.edit-profile-field input,
+.edit-profile-field select {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+/* Focus state */
+.edit-profile-field input:focus,
+.edit-profile-field select:focus {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+
+
+.edit-profile-field-placeholder input {
+  color: #b0b4c1 !important;
+  caret-color: #b0b4c1;
+}
+
+.edit-profile-field-placeholder input:focus {
+  color: #b0b4c1 !important;
+  caret-color: #b0b4c1;
+}
+
+.edit-profile-field-placeholder input:-webkit-autofill,
+.edit-profile-field-placeholder input:-webkit-autofill:hover,
+.edit-profile-field-placeholder input:-webkit-autofill:focus,
+.edit-profile-field-placeholder input:-webkit-autofill:active {
+  -webkit-text-fill-color: #b0b4c1 !important;
+  caret-color: #b0b4c1 !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 0s;
+}
+
+/* For select and input */
+.edit-profile-field-placeholder input,
+.edit-profile-field-placeholder select {
+  color: #b0b4c1 !important;
+  caret-color: #b0b4c1;
+}
+
+/* Focus state */
+.edit-profile-field-placeholder input:focus,
+.edit-profile-field-placeholder select:focus {
+  color: #b0b4c1 !important;
+  caret-color: #b0b4c1;
+}

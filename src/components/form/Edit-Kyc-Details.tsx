@@ -712,7 +712,7 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
     <div>
       <ContentContainer className="mt-4">
         {/* <div className=" p-4"> */}
-        <h5 className="mb-5 mb-xxl-2 profile-card-main-titile">KYC Details</h5>
+        <h5 className="mb-2 mb-xxl-2 profile-card-main-titile">KYC Details</h5>
 
         {/* Aadhar & Pan Card Inputs */}
         <Row className="g-3 mt-2  " >
@@ -1195,137 +1195,140 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
             </div>
 
             {/* Uploaded files list (below browse) */}
-            {[...uploadedFiles].reverse().map((file, index) => (
-              <div
-                key={index}
-                className="p-3 mb-4 bg-white modal-border-color rounded-4 border"
-              >
-                <div className="modal-bg p-3 rounded-3 upload-documents-file">
-                  <div className="d-flex justify-content-between align-items-start">
-                    {/* File Info */}
-                    <div className="d-flex align-items-center gap-3">
-                      {/* <Image src={Jpgimg} alt="pdf" width={45} height={50} /> */}
-                      <Image
-                        src={
-                          file.name.toLowerCase().endsWith(".pdf")
-                            ? PDFAddhar
-                            : [".jpg", ".jpeg", ".png", ".gif"].some((ext) =>
-                              file.name.toLowerCase().endsWith(ext)
-                            )
-                              ? Jpgimg
-                              : PDFAddhar // fallback = pdf icon
-                        }
-                        alt={file.name}
-                        width={45}
-                        height={50}
-                      />
-
-                      <div>
-                        <div className="fw-semibold">
-                          {file.name}
-                        </div>
-                        <div className="d-flex align-items-center gap-1">
-                          <span className="profile-sub-title">{file.size}</span>
-                          <span className="profile-sub-title">•</span>
-                          {file.status === "uploading" ? (
-                            <span className="d-flex align-items-center gap-1 upload-text">
-                              <Image src={Loading} alt="loading" width={20} height={20} />
-                              Uploading...
-                            </span>
-                          ) : (
-                            <span className="d-flex align-items-center gap-1 upload-documents-completed">
-                              <Image src={Completed} alt="completed" width={20} height={20} />
-                              Completed
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Close/Delete Icon */}
-                    <button
-                      className="border-0 bg-transparent"
-                      onClick={() => {
-                        setUploadedFiles((prev) =>
-                          prev.filter((_, i) => i !== index)
-                        );
-                      }}
-                    >
-                      {file.status === "uploading" ? (
-                        <Image src={Cross} alt="edit" width={22} height={22} />
-                      ) : (
-                        <Image src={Delete} alt="edit" width={22} height={22} />
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Progress Bar */}
-                  {file.status === "uploading" && (
-                    <div className="mt-3">
-                      <div className="progress rounded-pill qualification-certificates-progress-bar">
-                        <div
-                          className="progress-bar rounded-pill custom-progress"
-                          role="progressbar"
-                          style={{ width: `${file.progress}%` }}
+            {[...uploadedFiles].reverse().map((file, revIndex) => {
+              const originalIndex = uploadedFiles.length - 1 - revIndex;
+              return (
+                <div
+                  key={originalIndex}
+                  className="p-3 mb-4 bg-white modal-border-color rounded-4 border"
+                >
+                  <div className="modal-bg p-3 rounded-3 upload-documents-file">
+                    <div className="d-flex justify-content-between align-items-start">
+                      {/* File Info */}
+                      <div className="d-flex align-items-center gap-3">
+                        {/* <Image src={Jpgimg} alt="pdf" width={45} height={50} /> */}
+                        <Image
+                          src={
+                            file.name.toLowerCase().endsWith(".pdf")
+                              ? PDFAddhar
+                              : [".jpg", ".jpeg", ".png", ".gif"].some((ext) =>
+                                file.name.toLowerCase().endsWith(ext)
+                              )
+                                ? Jpgimg
+                                : PDFAddhar // fallback = pdf icon
+                          }
+                          alt={file.name}
+                          width={45}
+                          height={50}
                         />
+
+                        <div>
+                          <div className="fw-semibold">
+                            {file.name}
+                          </div>
+                          <div className="d-flex align-items-center gap-1">
+                            <span className="profile-sub-title">{file.size}</span>
+                            <span className="profile-sub-title">•</span>
+                            {file.status === "uploading" ? (
+                              <span className="d-flex align-items-center gap-1 upload-text">
+                                <Image src={Loading} alt="loading" width={20} height={20} />
+                                Uploading...
+                              </span>
+                            ) : (
+                              <span className="d-flex align-items-center gap-1 upload-documents-completed">
+                                <Image src={Completed} alt="completed" width={20} height={20} />
+                                Completed
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
+
+                      {/* Close/Delete Icon */}
+                      <button
+                        className="border-0 bg-transparent"
+                        onClick={() => {
+                          setUploadedFiles((prev) =>
+                            prev.filter((_, i) => i !== originalIndex)
+                          );
+                        }}
+                      >
+                        {file.status === "uploading" ? (
+                          <Image src={Cross} alt="edit" width={22} height={22} />
+                        ) : (
+                          <Image src={Delete} alt="edit" width={22} height={22} />
+                        )}
+                      </button>
                     </div>
-                  )}
-                </div>
 
-                {/* Report Name Input */}
-                <div className="mt-4 mb-3">
-
-                  <div className="d-flex align-items-center gap-2">
-                    <InputFieldGroup
-                      label="Report Name"
-                      name="university"
-                      className="w-100 upload-documents-completed"
-                      type="text"
-                      value={file.reportName}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setUploadedFiles((prev) =>
-                          prev.map((f, i) =>
-                            i === index ? { ...f, reportName: value } : f
-                          )
-                        );
-                        setErrors((prev) => {
-                          const updated = { ...prev };
-                          delete updated[index];
-                          return updated;
-                        });
-                      }}
-                      onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
-                      placeholder="Enter Report Name"
-                      required={true}
-                      disabled={false}
-                      readOnly={false}
-                      error={formError.university}
-                    />
-                    <div
-                      className="d-flex align-items-center justify-content-center border rounded-3 p-2 bg-white qualification-certificates-edit-btn"
-
-                    >
-                      {file.status === "completed" ? (
-                        // <Image src={EditProfile} alt="edit" width={20} height={20} />
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15.2594 4.23184L11.768 0.741217C11.6519 0.625114 11.5141 0.533014 11.3624 0.470178C11.2107 0.407342 11.0482 0.375 10.884 0.375C10.7198 0.375 10.5572 0.407342 10.4056 0.470178C10.2539 0.533014 10.1161 0.625114 10 0.741217L0.366412 10.3748C0.249834 10.4905 0.157407 10.6281 0.0945056 10.7798C0.0316038 10.9315 -0.000518312 11.0942 6.32418e-06 11.2584V14.7498C6.32418e-06 15.0813 0.131702 15.3993 0.366123 15.6337C0.600543 15.8681 0.918486 15.9998 1.25001 15.9998H14.375C14.5408 15.9998 14.6997 15.934 14.8169 15.8168C14.9342 15.6995 15 15.5406 15 15.3748C15 15.2091 14.9342 15.0501 14.8169 14.9329C14.6997 14.8157 14.5408 14.7498 14.375 14.7498H6.50938L15.2594 5.99981C15.3755 5.88373 15.4676 5.74592 15.5304 5.59425C15.5933 5.44257 15.6256 5.28 15.6256 5.11583C15.6256 4.95165 15.5933 4.78908 15.5304 4.63741C15.4676 4.48573 15.3755 4.34792 15.2594 4.23184ZM4.74141 14.7498H1.25001V11.2584L8.12501 4.3834L11.6164 7.87481L4.74141 14.7498ZM12.5 6.99122L9.00938 3.49981L10.8844 1.62481L14.375 5.11622L12.5 6.99122Z" fill="#2B4360" />
-                        </svg>
-
-                      ) : (
-                        <Image src={GreenRight} alt="editing" width={20} height={20} />
-                      )}
-                    </div>
+                    {/* Progress Bar */}
+                    {file.status === "uploading" && (
+                      <div className="mt-3">
+                        <div className="progress rounded-pill qualification-certificates-progress-bar">
+                          <div
+                            className="progress-bar rounded-pill custom-progress"
+                            role="progressbar"
+                            style={{ width: `${file.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Error Message */}
-                  {errors[index] && (
-                    <div className="text-danger mt-1">{errors[index]}</div>
-                  )}
+                  {/* Report Name Input */}
+                  <div className="mt-4 mb-3">
+
+                    <div className="d-flex align-items-center gap-2">
+                      <InputFieldGroup
+                        label="Report Name"
+                        name="university"
+                        className="w-100 upload-documents-completed edit-profile-field"
+                        type="text"
+                        value={file.reportName}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setUploadedFiles((prev) =>
+                            prev.map((f, i) =>
+                              i === originalIndex ? { ...f, reportName: value } : f
+                            )
+                          );
+                          setErrors((prev) => {
+                            const updated = { ...prev };
+                            delete updated[originalIndex];
+                            return updated;
+                          });
+                        }}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
+                        placeholder="Enter Report Name"
+                        required={true}
+                        disabled={false}
+                        readOnly={false}
+                        error={formError.university}
+                      />
+                      <div
+                        className="d-flex align-items-center justify-content-center border rounded-3 p-2 bg-white qualification-certificates-edit-btn"
+
+                      >
+                        {file.status === "completed" ? (
+                          // <Image src={EditProfile} alt="edit" width={20} height={20} />
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.2594 4.23184L11.768 0.741217C11.6519 0.625114 11.5141 0.533014 11.3624 0.470178C11.2107 0.407342 11.0482 0.375 10.884 0.375C10.7198 0.375 10.5572 0.407342 10.4056 0.470178C10.2539 0.533014 10.1161 0.625114 10 0.741217L0.366412 10.3748C0.249834 10.4905 0.157407 10.6281 0.0945056 10.7798C0.0316038 10.9315 -0.000518312 11.0942 6.32418e-06 11.2584V14.7498C6.32418e-06 15.0813 0.131702 15.3993 0.366123 15.6337C0.600543 15.8681 0.918486 15.9998 1.25001 15.9998H14.375C14.5408 15.9998 14.6997 15.934 14.8169 15.8168C14.9342 15.6995 15 15.5406 15 15.3748C15 15.2091 14.9342 15.0501 14.8169 14.9329C14.6997 14.8157 14.5408 14.7498 14.375 14.7498H6.50938L15.2594 5.99981C15.3755 5.88373 15.4676 5.74592 15.5304 5.59425C15.5933 5.44257 15.6256 5.28 15.6256 5.11583C15.6256 4.95165 15.5933 4.78908 15.5304 4.63741C15.4676 4.48573 15.3755 4.34792 15.2594 4.23184ZM4.74141 14.7498H1.25001V11.2584L8.12501 4.3834L11.6164 7.87481L4.74141 14.7498ZM12.5 6.99122L9.00938 3.49981L10.8844 1.62481L14.375 5.11622L12.5 6.99122Z" fill="#2B4360" />
+                          </svg>
+
+                        ) : (
+                          <Image src={GreenRight} alt="editing" width={20} height={20} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Error Message */}
+                    {errors[originalIndex] && (
+                      <div className="text-danger mt-1">{errors[originalIndex]}</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
 
 
             {/* Action Buttons */}

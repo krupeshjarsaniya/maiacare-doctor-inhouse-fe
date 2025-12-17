@@ -1,4 +1,9 @@
 "use client";
+// declare global {
+//     interface Window {
+//         google?: any;
+//     }
+// }
 
 import React, { useState } from "react";
 import { InputFieldGroup } from "../ui/InputField";
@@ -100,6 +105,39 @@ export function LoginForms() {
         return isValid;
     };
     const router = useRouter();
+
+
+    // const handleGoogleLogin = () => {
+    //     if (typeof window === "undefined") return;
+
+    //     if (!window.google) {
+    //         console.error("Google SDK not loaded yet");
+    //         return;
+    //     }
+
+    //     window.google.accounts.id.initialize({
+    //         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+    //         callback: handleGoogleResponse,
+    //     });
+
+    //     window.google.accounts.id.prompt();
+    // };
+
+
+    // const handleGoogleResponse = async (response: any) => {
+    //     try {
+    //         const googleToken = response.credential;
+
+    //         const res = await loginWithGoogle(googleToken);
+
+    //         if (res.status) {
+    //             localStorage.setItem("token", res.token);
+    //             router.push("/dashboard");
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // };
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -253,6 +291,21 @@ export function LoginForms() {
                     {" "}
                     Log In
                 </Button>
+
+
+                <button
+                    type="button"
+                    // onClick={handleGoogleLogin}
+                    className="btn mt-4 w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold shadow-lg"
+                >
+                    <img
+                        src="https://developers.google.com/identity/images/g-logo.png"
+                        alt="Google"
+                        width={18}
+                        height={18}
+                    />
+                    <span>Continue with Google</span>
+                </button>
             </form>
         </div>
     );
@@ -413,6 +466,7 @@ export function ForgotPassword() {
                     {" "}
                     Submit
                 </Button>
+
             </form>
         </div>
     );
