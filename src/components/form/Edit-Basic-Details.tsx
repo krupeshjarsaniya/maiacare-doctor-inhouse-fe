@@ -665,6 +665,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   label="Name"
                   name="Name"
                   type="text"
+                  className="edit-profile-field"
                   value={formData.Name}
                   onChange={(e) => {
                     setFormData({ ...formData, Name: e.target.value });
@@ -688,6 +689,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                 <InputFieldGroup
                   label="Speciality"
                   name="Speciality"
+                  className="edit-profile-field"
                   type="text"
                   value={formData.Specialty}
                   onChange={(e) => {
@@ -713,6 +715,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   label="Year Of Experience"
                   name="Experience"
                   type="text"
+                  className="edit-profile-field"
                   value={formData.Experience}
                   onChange={(e) => {
                     setFormData({ ...formData, Experience: e.target.value });
@@ -737,6 +740,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   label="DOB"
                   name="date"
                   placeholder="Select DOB"
+                  className="edit-profile-field"
                   value={formData.date}
                   onChange={(e) => { handleChange(e); if (formError.date) setFormError({ ...formError, date: "" }); }}
                   required
@@ -774,6 +778,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     { label: "Female", value: "female" },
                   ]}
                   error={formError.gender}
+                  className="edit-profile-field"
                 />
               )}
             </Col>
@@ -789,6 +794,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                 <PhoneNumberInput
                   label="Contact Number"
                   value={formData.Contact}
+                  className="edit-profile-field"
                   inputMode="numeric"
                   onChange={(phone: string) => {
                     let value = phone.replace(/\D/g, "").slice(0, 12);
@@ -820,6 +826,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   }}
                   placeholder="Email"
                   required
+                  className="edit-profile-field"
                   error={formError.Email}
                 />
               )}
@@ -833,7 +840,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   <Skeleton width="100%" height={90} className="mb-3" />
                 </>
               ) : (
-                <Textarea label="About" name="About" value={formData.About} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange(e); if (formError.About) { setFormError({ ...formError, About: "" }); } }} onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => { }} placeholder="About" required={true} disabled={false} error={formError.About} maxLength={500} />
+                <Textarea label="About" name="About" value={formData.About} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange(e); if (formError.About) { setFormError({ ...formError, About: "" }); } }} onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => { }} placeholder="About" required={true} disabled={false} error={formError.About} maxLength={500} className="edit-profile-field" />
               )}
             </Col>
 
@@ -1018,7 +1025,10 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                       value={q.degree}
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
-                        updatedQuals[index].degree = e.target.value;
+                        const { name, value } = e.target;
+                        const onlyText = value.replace(/[0-9]/g, "");
+
+                        updatedQuals[index].degree = onlyText;
                         setQualifications(updatedQuals);
 
                         const updatedErrors = [...formErrors];
@@ -1039,7 +1049,10 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                       value={q.field}
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
-                        updatedQuals[index].field = e.target.value;
+                        const { name, value } = e.target;
+                        const onlyText = value.replace(/[0-9]/g, "");
+
+                        updatedQuals[index].field = onlyText;
                         setQualifications(updatedQuals);
 
                         const updatedErrors = [...formErrors];
@@ -1078,6 +1091,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                       label="Start Year"
                       name="startYear"
                       value={q.startYear}
+                      className="edit-profile-field-placeholder"
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
                         updatedQuals[index].startYear = e.target.value;
@@ -1098,6 +1112,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                       label="End Year"
                       name="endYear"
                       value={q.endYear}
+                      className="edit-profile-field-placeholder"
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
                         updatedQuals[index].endYear = e.target.value;
