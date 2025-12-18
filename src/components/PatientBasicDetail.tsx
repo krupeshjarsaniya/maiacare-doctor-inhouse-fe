@@ -287,12 +287,13 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                 diastolic: item?.bloodPressure?.diastolic || "",
 
                 // ⭐ Date Formatting (converted from ISO → readable)
-                date: new Date(item.createdAt).toLocaleDateString("en-US", {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                }),
+              date: new Date(item.createdAt).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+}),
+
             }));
 
             setModalFormPhisicalData(mapped);
@@ -489,7 +490,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                     ) : (
                         <div>
                             <Accordion defaultActiveKey="0">
-                                <Button className='mb-3 add-new-button' onClick={() => setShowPhisicalAssessment(true)} variant="outline" disabled={false} contentSize="small"  >
+                                <Button className='mb-3 add-new-button ' onClick={() => setShowPhisicalAssessment(true)} variant="outline" disabled={false} contentSize="small"  >
                                     <div className='d-flex align-items-center gap-1  '>
                                         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M15.1641 8C15.1641 8.16576 15.0982 8.32473 14.981 8.44194C14.8638 8.55915 14.7048 8.625 14.5391 8.625H8.28906V14.875C8.28906 15.0408 8.22322 15.1997 8.10601 15.3169C7.9888 15.4342 7.82982 15.5 7.66406 15.5C7.4983 15.5 7.33933 15.4342 7.22212 15.3169C7.10491 15.1997 7.03906 15.0408 7.03906 14.875V8.625H0.789063C0.623302 8.625 0.464331 8.55915 0.347121 8.44194C0.229911 8.32473 0.164062 8.16576 0.164062 8C0.164062 7.83424 0.229911 7.67527 0.347121 7.55806C0.464331 7.44085 0.623302 7.375 0.789063 7.375H7.03906V1.125C7.03906 0.95924 7.10491 0.800269 7.22212 0.683058C7.33933 0.565848 7.4983 0.5 7.66406 0.5C7.82982 0.5 7.9888 0.565848 8.10601 0.683058C8.22322 0.800269 8.28906 0.95924 8.28906 1.125V7.375H14.5391C14.7048 7.375 14.8638 7.44085 14.981 7.55806C15.0982 7.67527 15.1641 7.83424 15.1641 8Z" fill="#2B4360" />
@@ -499,9 +500,9 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                 </Button>
                                 {modalFormPhisicalData?.map((item: any, index: number): any => {
                                     return (
-                                        <Accordion.Item eventKey={index.toString()} className='phisical-assessment-accordion-item mb-3' key={index}>
+                                        <Accordion.Item eventKey={index.toString()} className='phisical-assessment-accordion-item mb-3 all-subheading' key={index}>
                                             <Accordion.Header >
-                                                <div className='d-flex align-items-center gap-2'>
+                                                <div className='d-flex align-items-center gap-2 '>
                                                     <h6 className='phisical-assessment-accordion-title-showData m-0'>
                                                         {item.date}
                                                     </h6>
@@ -706,7 +707,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                     </p>
                                     <Button onClick={() => setShowFertilityAssessment(true)}
                                         variant="outline"
-                                        disabled={false}
+                                        disabled={false}    
                                         contentSize="medium"
                                     >
                                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -737,7 +738,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                             {/* Accordion */}
                             <Accordion defaultActiveKey="0">
                                 {/* MENSTRUAL CYCLE */}
-                                <Accordion.Item eventKey="0" className='phisical-assessment-accordion-item mb-3'>
+                                <Accordion.Item eventKey="0" className='phisical-assessment-accordion-item mb-3 all-subheading'>
                                     <Accordion.Header>
                                         <div className='d-flex justify-content-center align-items-center gap-2'>
                                                  <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35" fill="none">
@@ -759,7 +760,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Age at first menstruation</span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.ageAtFirstMenstruation}
                                                     </span>
                                                 </div>
@@ -768,7 +769,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Cycle Length</span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.cycleLength}
                                                     </span>
                                                 </div>
@@ -777,7 +778,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Period Length</span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.periodLength}
                                                     </span>
                                                 </div>
@@ -786,16 +787,28 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Last Period Date</span>
-                                                    <span className="accordion-title-detail">
+                                                    {/* <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.lastPeriodDate}
-                                                    </span>
+                                                    </span> */}
+                                                    <span className="accordion-subtitle-detail">
+  {modalFormFertilityData?.menstrualCycle?.lastPeriodDate
+    ? new Date(
+        modalFormFertilityData.menstrualCycle.lastPeriodDate
+      ).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "--"}
+</span>
+
                                                 </div>
                                             </Col>
 
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Is your cycle regular?</span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.isCycleRegular}
                                                     </span>
                                                 </div>
@@ -806,7 +819,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                                     <span className="contact-details-emergency">
                                                         Do you experience menstrual issues?
                                                     </span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.menstrualCycle?.menstrualIssues}
                                                     </span>
                                                 </div>
@@ -827,7 +840,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                 </Accordion.Item>
 
                                 {/* PREGNANCY */}
-                                <Accordion.Item eventKey="1" className='phisical-assessment-accordion-item mb-3'>
+                                <Accordion.Item eventKey="1" className='phisical-assessment-accordion-item mb-3 all-subheading'>
                                     <Accordion.Header>
                                         <div className='d-flex justify-content-center align-items-center gap-2'>
                                              <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35" fill="none">
@@ -854,7 +867,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                             <Col sm={6}>
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Have you been pregnant before?</span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.pregnancy?.pregnantBefore}
                                                     </span>
                                                 </div>
@@ -874,7 +887,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                                     <span className="contact-details-emergency">
                                                         How long trying to conceive?
                                                     </span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.pregnancy?.tryingToConceiveDuration}
                                                     </span>
                                                 </div>
@@ -885,7 +898,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                                                     <span className="contact-details-emergency">
                                                         History of miscarriage or ectopic pregnancy?
                                                     </span>
-                                                    <span className="accordion-title-detail">
+                                                    <span className="accordion-subtitle-detail">
                                                         {modalFormFertilityData?.pregnancy?.miscarriageOrEctopicHistory}
                                                     </span>
                                                 </div>
@@ -1033,7 +1046,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                     <Row>
                         <Col sm={5}>
                             <h6 className="contact-details-emergency">Current Medications</h6>
-                            <p className="accordion-title-detail">
+                            <p className="accordion-subtitle-detail">
                                 {medicalHistoryFormData?.medications?.status === "Yes"
                                     ? medicalHistoryFormData?.medications?.medicationsDetails || "Yes"
                                     : "No"}
@@ -1042,7 +1055,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
 
                         <Col sm={7}>
                             <h6 className="contact-details-emergency">Surgeries</h6>
-                            <p className="accordion-title-detail">
+                            <p className="accordion-subtitle-detail">
                                 {medicalHistoryFormData?.surgeries?.status === "Yes"
                                     ? medicalHistoryFormData?.surgeries?.surgeriesDetails || "Yes"
                                     : "No"}
@@ -1052,7 +1065,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                         <Col sm={12}>
                             <h6 className="contact-details-emergency">Medical condition / Allergies</h6>
                             {medicalHistoryFormData?.conditions?.map((item: any, index: number) => (
-                                <p key={index} className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2">
+                                <p key={index} className="accordion-subtitle-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2">
                                     {item}
                                 </p>
                             ))}
@@ -1060,8 +1073,8 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
 
                         <Col sm={5}>
                             <h6 className="contact-details-emergency">Family History</h6>
-                            <ul>
-                                <li className="medical-emergency-fimily-history">
+                            <ul className="accordion-subtitle-detail">
+                                <li className="medical-emergency-fimily-history accordion-subtitle-detail">
                                     {medicalHistoryFormData?.familyHistory || "No added family history"}
                                 </li>
                             </ul>
@@ -1070,7 +1083,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                         <Col sm={7}>
                             <h6 className="contact-details-emergency">Lifestyle</h6>
                             {medicalHistoryFormData?.lifestyle?.map((item: any, index: number) => (
-                                <p key={index} className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2">
+                                <p key={index} className="accordion-subtitle-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2">
                                     {item}
                                 </p>
                             ))}
@@ -1078,14 +1091,14 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
 
                         <Col sm={5}>
                             <h6 className="contact-details-emergency">Physical Exercise</h6>
-                            <p className="accordion-title-detail border-box-orange-font box-border-orange d-inline-block">
+                            <p className="accordion-subtitle-detail border-box-orange-font box-border-orange d-inline-block">
                                 {medicalHistoryFormData?.exerciseFrequency}
                             </p>
                         </Col>
 
                         <Col sm={7}>
                             <h6 className="contact-details-emergency">Stress Level</h6>
-                            <p className="accordion-title-detail border-box-red-font box-border-red d-inline-block">
+                            <p className="accordion-subtitle-detail border-box-red-font box-border-red d-inline-block">
                                 {medicalHistoryFormData?.stressLevel}
                             </p>
                         </Col>
@@ -1101,10 +1114,10 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
     return (
         <>
             <div className="mt-3">
-                <Accordion className="mb-3" alwaysOpen activeKey={activeAccordion}>
+                <Accordion className="mb-3 " alwaysOpen activeKey={activeAccordion}>
                     {accordionData.map((item) => (
-                        <Accordion.Item eventKey={item.id} key={item.id} className='patient-accordion-item shadow-sm mb-3'>
-                            <Accordion.Header onClick={() => setActiveAccordion(prev =>
+                        <Accordion.Item  eventKey={item.id} key={item.id} className='patient-accordion-item shadow-sm mb-3 all-heading'>
+                            <Accordion.Header  onClick={() => setActiveAccordion(prev =>
                                 prev.includes(item.id)
                                     ? prev.filter(id => id !== item.id)
                                     : [...prev, item.id]
@@ -1122,9 +1135,10 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
 
         <ContentContainer className="shadow-sm border-0 mb-4">
             <Card.Body>
-                <strong className="d-block mb-2 heading-patient">
-                    Consultation Review *
-                </strong>
+           <strong className="d-block mb-2 review-patient">
+  Consultation Review <span className="required-star">*</span>
+</strong>
+
 
                 {/* ⬇⬇ SHOW SKELETON WHILE LOADING ⬇⬇ */}
                 {loading ? (
@@ -1139,7 +1153,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
                     /* ⬇⬇ SHOW ACTUAL UI WHEN NOT LOADING ⬇⬇ */
                     <>
                         <textarea
-                            className="form-control border rounded p-3 Patient-review"
+                            className="form-control border p-3 Patient-review"
                             rows={8}
                             value={review}
                             onChange={(e) => setReview(e.target.value)}

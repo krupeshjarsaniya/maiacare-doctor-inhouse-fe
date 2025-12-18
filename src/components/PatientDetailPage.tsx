@@ -49,7 +49,20 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
     fetchPatient();
   }, [id]);
 
+const formatPhoneNumber = (number?: string) => {
+  if (!number) return "N/A";
 
+  // remove all non-digits
+  const cleaned = number.replace(/\D/g, "");
+
+  // assuming Indian number (10 digits)
+  if (cleaned.length === 10) {
+    return `+91 ${cleaned}`;
+  }
+
+  return `+91 ${cleaned.slice(-10)}`;
+};
+  
 
   const tabOptions = [
     {
@@ -109,8 +122,8 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                       /> */}
                       <img
                         src={p?.profileImage || patientImage.src}
-                        width={60}
-                        height={60}
+                        width={70}
+                        height={70}
                         className="rounded-circle me-3"
                       />
                       <div>
@@ -137,7 +150,7 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                       <Skeleton width={110} height={18} style={{ marginTop: "6px" }} />
                     ) : (
                       <p className="mb-2 sub-heading-patient">
-                        {p?.contactNumber || "N/A"}
+                          {formatPhoneNumber(p?.contactNumber)}
                       </p>
                     )}
                   </div>
@@ -181,7 +194,7 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                     {loading ? (
                       <Skeleton width={50} height={18} />
                     ) : (
-                      <p className="mb-2 sub-heading-patient">{p?.age ?? "N/A"}</p>
+                      <p className="mb-2 sub-heading-patient">{p?.age ?? "N/A"} years </p>
                     )}
                   </div>
 
@@ -226,7 +239,7 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                   {loading ? (
                     <Skeleton width={80} height={18} className="mb-2" />
                   ) : (
-                    <strong className="d-block mb-2 heading-patient">Type:</strong>
+                    <strong className="d-block mb-2 heading-patient">Type</strong>
                   )}
 
                   {/* Tag skeletons */}
@@ -258,7 +271,7 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
                   {loading ? (
                     <Skeleton width={90} height={18} className="mb-2" />
                   ) : (
-                    <strong className="d-block mb-1 heading-patient">Concerns:</strong>
+                    <strong className="d-block mb-1 heading-patient">Concerns</strong>
                   )}
 
                   {/* Review text skeleton */}
@@ -289,11 +302,11 @@ export default function PatientDetailPageComponent({ onPatientLoaded, }: any) {
           position: "fixed",
           bottom: 0,
           right: 0,
-          zIndex: 1050
+          zIndex: 1050,
         }}
       >
-        <Button variant="light" className="edit-profile-btn">Cancel</Button>
-        <Button className="Button-login" variant="primary">Mark as Complete</Button>
+        <Button variant="light" className="cancel-profile-btn">Cancel</Button>
+        <Button className="Button-login" variant="primary">Finish Consultation</Button>
       </div>
 
       {/* TABS */}

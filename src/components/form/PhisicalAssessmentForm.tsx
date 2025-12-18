@@ -219,7 +219,7 @@ const PhisicalAssessmentForm = ({
                                 }
                             }}
                             onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
-                            placeholder="Enter height "
+                            placeholder="Enter Height(in) "
                             required={true}
                             disabled={false}
                             readOnly={false}
