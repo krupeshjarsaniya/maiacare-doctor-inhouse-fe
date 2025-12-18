@@ -54,6 +54,7 @@ const ProfileTabes = () => {
           activeKey={activeTab}
           setActiveKey={setActiveTab}
           tabOptions={tabOptions}
+          // className='profile-tabs'
         />
 
         {/* {activeTab === 'basic' && (

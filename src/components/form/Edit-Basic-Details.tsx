@@ -1021,6 +1021,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     <InputFieldGroup
                       label="Degree"
                       name="degree"
+                      className="edit-profile-field-placeholder edit-profile-field"
                       type="text"
                       value={q.degree}
                       onChange={(e) => {
@@ -1045,6 +1046,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     <InputFieldGroup
                       label="Field of study"
                       name="field"
+                      className="edit-profile-field-placeholder edit-profile-field"
                       type="text"
                       value={q.field}
                       onChange={(e) => {
@@ -1069,6 +1071,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     <InputFieldGroup
                       label="University"
                       name="university"
+                      className="edit-profile-field-placeholder edit-profile-field"
                       type="text"
                       value={q.university}
                       onChange={(e) => {
@@ -1089,9 +1092,11 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   <Col md={6}>
                     <InputSelect
                       label="Start Year"
+                      placeholder="Slect Start Year"
+                      disabled={true}
                       name="startYear"
                       value={q.startYear}
-                      className="edit-profile-field-placeholder"
+                      className="edit-profile-field-placeholder edit-profile-field"
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
                         updatedQuals[index].startYear = e.target.value;
@@ -1111,8 +1116,10 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                     <InputSelect
                       label="End Year"
                       name="endYear"
+                      placeholder="Select End Year"
+                      disabled={true}
                       value={q.endYear}
-                      className="edit-profile-field-placeholder"
+                      className="edit-profile-field-placeholder edit-profile-field"
                       onChange={(e) => {
                         const updatedQuals = [...qualifications];
                         updatedQuals[index].endYear = e.target.value;

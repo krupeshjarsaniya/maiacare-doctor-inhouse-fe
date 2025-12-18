@@ -319,7 +319,6 @@ const ProfileBasicDetails = () => {
       .then((response) => {
 
         if (response.status == 200) {
-          console.log("Qualification Edited : ", response.data);
           getUser()
         } else {
           console.log("Error");
@@ -330,7 +329,7 @@ const ProfileBasicDetails = () => {
         console.log("Qualification adding error", err);
       });
 
-    console.log("Form updated:", formData);
+    // console.log("Form updated:", formData);
 
     closeQualificationModal();
     setEditIndex(null);
@@ -572,7 +571,7 @@ const ProfileBasicDetails = () => {
                         <div key={index} className="mb-4"> {/* ← Add margin-bottom here for spacing */}
                           <Accordion.Item eventKey={index.toString()}>
                             <Accordion.Header>
-                              {qualifications[index]?.degree}
+                              <p className='fs-5 fw-semibold upload-documents-completed m-0'>{qualifications[index]?.degree}</p>
                             </Accordion.Header>
 
                             <Accordion.Body>
@@ -592,6 +591,7 @@ const ProfileBasicDetails = () => {
                                   <Col md={6} className="mt-3">
                                     <InputFieldGroup
                                       label="Degree"
+                                      className='edit-profile-field-placeholder edit-profile-field'
                                       name="degree"
                                       type="text"
                                       value={q.degree}
@@ -617,12 +617,16 @@ const ProfileBasicDetails = () => {
                                   <Col md={6} className="mt-3">
                                     <InputFieldGroup
                                       label="Field of study"
+                                      className='edit-profile-field-placeholder edit-profile-field'
                                       name="field"
                                       type="text"
                                       value={q.fieldOfStudy}
                                       onChange={(e) => {
                                         const updated = [...qualifications];
-                                        updated[index].fieldOfStudy = e.target.value;
+                                        const { name, value } = e.target;
+                                        const onlyText = value.replace(/[0-9]/g, "");
+
+                                        updated[index].fieldOfStudy = onlyText;
                                         setQualifications(updated);
 
                                         const updatedErrors = [...formErrors];
@@ -641,6 +645,7 @@ const ProfileBasicDetails = () => {
                                     <InputFieldGroup
                                       label="University"
                                       name="university"
+                                      className='edit-profile-field-placeholder edit-profile-field'
                                       type="text"
                                       value={q.university}
                                       onChange={(e) => {
@@ -662,9 +667,10 @@ const ProfileBasicDetails = () => {
 
                                   <Col md={6} className="mt-3">
                                     <InputSelect
+                                      disabled={true}
                                       placeholder='Select Start Year'
                                       label="Start Year"
-                                      className="edit-profile-field-placeholder"
+                                      className="edit-profile-field-placeholder edit-profile-field"
                                       name="startYear"
                                       value={q.startYear}
                                       onChange={(e) => {
@@ -686,9 +692,10 @@ const ProfileBasicDetails = () => {
 
                                   <Col md={6} className="mt-3">
                                     <InputSelect
+                                      disabled={true}
                                       placeholder='Select End Year'
                                       label="End Year"
-                                      className="edit-profile-field-placeholder"
+                                      className="edit-profile-field-placeholder edit-profile-field"
                                       name="endYear"
                                       value={q.endYear}
                                       onChange={(e) => {
@@ -790,7 +797,7 @@ const ProfileBasicDetails = () => {
                   ))
                 )}
                 <span
-                  className="ms-1 text-primary cursor-pointer"
+                  className="ms-1 text-primary cursor-pointer text-decoration-underline"
                   onClick={() => setShowAllQualification(!showAllQualification)}
                 >
                   {showAllQualification ? "See Less" : "See More"}
@@ -813,6 +820,7 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputFieldGroup
                     label="Degree"
+                    className='edit-profile-field-placeholder edit-profile-field'
                     name="degree"
                     type="text"
                     value={formData.degree}
@@ -836,11 +844,16 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputFieldGroup
                     label="Field of study"
+                    className='edit-profile-field-placeholder edit-profile-field'
                     name="field"
                     type="text"
                     value={formData.fieldOfStudy}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleChange(e);
+                      const { name, value } = e.target;
+                      const onlyText = value.replace(/[0-9]/g, "");
+
+                      setFormData((prev) => ({ ...prev, [name]: onlyText }));
+                      setFormError((prev) => ({ ...prev, [name]: "" }));
                     }}
                     onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
                     placeholder="Enter field"
@@ -854,6 +867,7 @@ const ProfileBasicDetails = () => {
                 <Col md={12} className="mt-3">
                   <InputFieldGroup
                     label="University"
+                    className='edit-profile-field-placeholder edit-profile-field'
                     name="university"
                     type="text"
                     value={formData.university}
@@ -873,7 +887,8 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputSelect
                     label="Start Year"
-                    className='edit-profile-field'
+                    placeholder='Select Start Year'
+                    className='edit-profile-field-placeholder edit-profile-field'
                     name="startYear"
                     value={formData.startYear}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -881,7 +896,7 @@ const ProfileBasicDetails = () => {
                     }}
                     onBlur={(e: React.FocusEvent<HTMLSelectElement>) => { }}
                     required={true}
-                    disabled={false}
+                    disabled={true}
                     error={formError.startYear}
                     options={yearOptions}
                   />
@@ -890,15 +905,16 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputSelect
                     label="End Year"
+                    placeholder='Select End Year'
                     name="endYear"
-                    className='edit-profile-field'
+                    className='edit-profile-field-placeholder edit-profile-field'
                     value={formData.endYear}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                       handleChange(e);
                     }}
                     onBlur={(e: React.FocusEvent<HTMLSelectElement>) => { }}
                     required={true}
-                    disabled={false}
+                    disabled={true}
                     error={formError.endYear}
                     options={yearOptions}
                   />
@@ -951,10 +967,10 @@ const ProfileBasicDetails = () => {
 
                       {user.about.length > 25 && (
                         <span
-                          className="ms-1 text-primary cursor-pointer"
+                          className="ms-1 text-primary cursor-pointer text-decoration-underline"
                           onClick={() => setShowMore(!showMore)}
                         >
-                          {showMore ? " See less" : " See more"}
+                          {showMore ? "See less" : "See more"}
                         </span>
                       )}
                     </>
@@ -1067,7 +1083,7 @@ const ProfileBasicDetails = () => {
               )}
               {documents.length > MAX_DOCS && (
                 <span
-                  className="ms-1 text-primary cursor-pointer"
+                  className="ms-1 text-primary cursor-pointer text-decoration-underline"
                   onClick={() => setShowAllDocs(!showAllDocs)}
                 >
                   {showAllDocs ? "See less" : "See more"}
