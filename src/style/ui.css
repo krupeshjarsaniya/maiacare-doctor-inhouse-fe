@@ -242,7 +242,7 @@ input[type=number] {
 }
 
 .maiacare-button.default-layout {
-    border: none !important;
+    /* border: none !important; */
 }
 
 .content-layout {

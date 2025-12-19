@@ -11,9 +11,15 @@ export default function PatientDetailPage() {
     const dispatch: AppDispatch = useDispatch();
 
     // receives patient name from child & updates header
-    const handleHeaderUpdate = useCallback((name: string) => {
-        dispatch(setHeaderData({ title: name }));
-    }, [dispatch]);
+const handleHeaderUpdate = useCallback((name: string) => {
+  dispatch(
+    setHeaderData({
+      title: name,
+      subtitle: `Appointments   > ${name}`,
+    })
+  );
+}, [dispatch]);
+
 
     return (
         <div>

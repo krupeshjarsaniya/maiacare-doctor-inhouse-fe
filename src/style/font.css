@@ -23,7 +23,7 @@
 .maiacare-input-field {
     font-size: 16px;
     font-weight: 500;
-    color: var(--color-brand);
+    color: var(--color-brand) !important;
 }
 
 .maiacare-input-field::placeholder {
@@ -89,6 +89,7 @@
 .default-layout {
     background-color: var(--color-brand);
     color: var(--color-white);
+    border-color: #2B4360 ;
 }
 
 .default-layout:hover {
@@ -189,7 +190,7 @@
 }
 
 .edit-profile-btn {
-    border: 1px solid var(--color-radio-lable);
+    border: 1px solid #3E4A57 ;
     color: var(--color-brand);
     font-weight: 500;
     background-color: transparent;
@@ -197,7 +198,15 @@
     padding: 9px 15px;
     border-radius: 8px;
 }
-
+.cancel-profile-btn{
+        border: 1px solid #3E4A57 ;
+    color: var(--color-brand);
+    font-weight: 500;
+    background-color: transparent;
+    font-size: 18px;
+    padding: 9px 15px;
+    border-radius: 8px;
+}
 .edit-profile-btn:hover,
 .edit-profile-btn:focus,
 .edit-profile-btn:active {
@@ -607,6 +616,11 @@
     font-size: 12px;
 }
 
+.review-patient{
+       color: #3E4A57 ;
+    font-weight: 600;
+    font-size: 14px;
+}
 
 .sub-heading-patient {
     color: #131D2A;
@@ -625,16 +639,17 @@
 }
 
 .Patient-review {
-    color: #292929;
+    color: #292929 ;
     font-size: 14px;
     font-weight: 400;
+    border-radius: 8px;
 }
 
 .sub-patient {
     color: #E29578;
     border: 1px solid #E29578;
     font-weight: 400;
-    font-size: 13px;
+    font-size: 16px;
     padding: 4px 8px;
     border-radius: 4px;
 }
@@ -799,7 +814,7 @@
 
 .contact-details-heading {
     font-weight: 600;
-    font-size: 20px;
+    font-size: 22px;
     line-height: 26px;
     font-style: SemiBold;
     color: var(--color-heading);
@@ -819,7 +834,7 @@
     font-size: 16px !important;
     line-height: 20px !important;
     font-style: SemiBold !important;
-    color: var(--color-radio-lable) !important;
+    color: var(--color-radio-lable) !important; 
 }
 
 .select-profile-subtitle {
@@ -1186,8 +1201,8 @@
     color: var(--color-radio-lable);
 }
 
-.accordion-title-detail {
-    font-weight: 600;
+.accordion-subtitle-detail {
+    font-weight: 500;
     font-size: 16px;
     line-height: 20px;
     font-style: SemiBold;
@@ -1283,4 +1298,8 @@
 
 .btn-outline-danger:hover {
     color: white !important;
+}
+
+.required-star {
+  color: #E85966;
 }

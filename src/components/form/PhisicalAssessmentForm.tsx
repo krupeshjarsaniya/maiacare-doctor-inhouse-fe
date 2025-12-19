@@ -18,7 +18,8 @@ interface PropsPhisicalAssessmentForm {
     editPhysicalAssessment?: PhysicalAssessmentDataModel,
     setEditPhysicalAssessment?: React.Dispatch<React.SetStateAction<PhysicalAssessmentDataModel>>,
     modalFormPhisicalData?: PhysicalAssessmentDataModel[],
-    handleSavePhysicalAssessment?: (data: PhysicalAssessmentDataModel) => void;
+    // handleSavePhysicalAssessment?: (data: PhysicalAssessmentDataModel) => void;
+    handleSavePhysicalAssessment: (data: PhysicalAssessmentDataModel) => void;
 }
 
 // React.Dispatch<React.SetStateAction<PhysicalAssessmentDataModel>>  PhysicalAssessmentDataModel
@@ -74,11 +75,14 @@ const PhisicalAssessmentForm = ({
             if (!data.bloodGroup.trim()) errors.bloodGroup = "Blood group is required";
         }
 
-        if (!String(data.systolic).trim() && !data.diastolic.trim()) {
-            errors.systolic = " systolic is required";
+          // 🔴 Blood Pressure (BOTH REQUIRED)
+    if (!String(data.systolic).trim()) {
+        errors.systolic = "Systolic is required";
+    }
 
-            // errors.diastolic = "At least one of systolic or diastolic is required";
-        }
+    if (!String(data.diastolic).trim()) {
+        errors.diastolic = "Diastolic is required";
+    }
         if (!String(data.heartRate).trim()) errors.heartRate = "Heart rate is required";
 
         return errors;
@@ -101,105 +105,180 @@ const PhisicalAssessmentForm = ({
     };
 
     // Submit Handler
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const errors = validateForm(formData);
-        setFormError(errors);
+    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     const errors = validateForm(formData);
+    //     setFormError(errors);
 
-        if (Object.keys(errors).length === 0) {
+    //     if (Object.keys(errors).length === 0) {
 
-            const formattedDate = new Date().toLocaleDateString('en-GB', {
-                weekday: 'short',
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            }).replace(/^(\w+)/, '$1');
+    //         const formattedDate = new Date().toLocaleDateString('en-GB', {
+    //             weekday: 'short',
+    //             day: '2-digit',
+    //             month: 'short',
+    //             year: 'numeric'
+    //         }).replace(/^(\w+)/, '$1');
 
-            const updatedFormData = {
-                ...formData,
-                date: formattedDate,
-                id: editPhysicalAssessment?.id || generateRandomId(),
-            };
+    //         const updatedFormData = {
+    //             ...formData,
+    //             date: formattedDate,
+    //             id: editPhysicalAssessment?.id || generateRandomId(),
+    //         };
 
-            // ⭐ EDIT MODE
-            if (editPhysicalAssessment && editPhysicalAssessment.id) {
+    //         // ⭐ EDIT MODE
+    //         if (editPhysicalAssessment && editPhysicalAssessment.id) {
+
+    //             setModalFormPhisicalData(prev =>
+    //                 prev.map(item =>
+    //                     item.id === editPhysicalAssessment.id
+    //                         ? { ...item, ...updatedFormData }
+    //                         : item
+    //                 )
+    //             );
+    //             console.log("formData", formData);
+    //             const passData = {
+    //                 weight: formData.weight,
+    //                 height: formData.height,
+    //                 bmi: formData.bmi,
+    //                 bloodGroup: formData.bloodGroup,
+    //                 bloodPressureSystolic: formData.systolic,
+    //                 bloodPressureDiastolic: formData.diastolic,
+    //                 heartRate: formData.heartRate
+    //             }
+    //             // updatephysicalassessment(passData, formData.id)
+    //             //     .then((res) => {
+    //             //         console.log("Res : ", res.data);
+    //             //         setEditPhysicalAssessment?.(initialFormDataForClear);
+    //             //         setShowPhisicalAssessment(false);
+    //             //         setFormError(initialFormError);
+
+    //             //         toast.success("Changes saved successfully", {
+    //             //             icon: <BsInfoCircle size={22} color="white" />
+    //             //         });               
+    //             //     })
+    //             //     .catch((err) => {
+    //             //         console.log("Error :", err);
+    //             //     })
+    //             updatephysicalassessment(passData, formData.id)
+    //                 .then((res) => {
+    //                     const response = res?.data?.data;
+
+    //                     const updatedData = {
+    //                         ...response,
+    //                         systolic: response?.bloodPressure?.systolic || "",
+    //                         diastolic: response?.bloodPressure?.diastolic || ""
+    //                     };
+
+    //                     setModalFormPhisicalData(prev =>
+    //                         prev.map(item =>
+    //                             item._id === response?._id ? { ...item, ...updatedData } : item
+    //                         )
+    //                     );
+
+    //                     setEditPhysicalAssessment?.(initialFormDataForClear);
+    //                     setShowPhisicalAssessment(false);
+    //                     setFormError(initialFormError);
+    //                     toast.success("Changes saved successfully");
+    //                 })
+    //                 .catch(err => console.log(err));
+
+
+
+
+    //         } else {
+    //             // ⭐ ADD MODE
+    //             setModalFormPhisicalData(prev => [...prev, updatedFormData]);
+
+    //             // API callback
+    //             handleSavePhysicalAssessment?.(updatedFormData);
+
+    //             setShowPhisicalAssessment(false);
+    //             setFormError(initialFormError);
+    //             setFormData(initialFormDataForClear);
+
+    //             toast.success("Physical assessment added successfully", {
+    //                 icon: <BsInfoCircle size={22} color="white" />
+    //             });
+    //         }
+    //     }
+    // };
+
+const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const errors = validateForm(formData);
+    setFormError(errors);
+
+    if (Object.keys(errors).length !== 0) return;
+
+    const formattedDate = new Date().toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+
+    const updatedFormData: PhysicalAssessmentDataModel = {
+        ...formData,
+        date: formattedDate,
+    };
+
+    /* ================= EDIT MODE ================= */
+    if (editPhysicalAssessment?._id) {
+        const passData = {
+            weight: formData.weight,
+            height: formData.height,
+            bmi: formData.bmi,
+            bloodGroup: formData.bloodGroup,
+            bloodPressureSystolic: formData.systolic,
+            bloodPressureDiastolic: formData.diastolic,
+            heartRate: formData.heartRate,
+        };
+
+        updatephysicalassessment(passData, editPhysicalAssessment._id)
+            .then((res) => {
+                const response = res?.data?.data;
+
+                const updatedData = {
+                    ...response,
+                    systolic: response?.bloodPressure?.systolic || "",
+                    diastolic: response?.bloodPressure?.diastolic || "",
+                      date: new Date(response.updatedAt).toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    }),
+                };
 
                 setModalFormPhisicalData(prev =>
                     prev.map(item =>
-                        item.id === editPhysicalAssessment.id
-                            ? { ...item, ...updatedFormData }
-                            : item
+                        item._id === response._id ? updatedData : item
                     )
                 );
-                console.log("formData", formData);
-                const passData = {
-                    weight: formData.weight,
-                    height: formData.height,
-                    bmi: formData.bmi,
-                    bloodGroup: formData.bloodGroup,
-                    bloodPressureSystolic: formData.systolic,
-                    bloodPressureDiastolic: formData.diastolic,
-                    heartRate: formData.heartRate
-                }
-                // updatephysicalassessment(passData, formData.id)
-                //     .then((res) => {
-                //         console.log("Res : ", res.data);
-                //         setEditPhysicalAssessment?.(initialFormDataForClear);
-                //         setShowPhisicalAssessment(false);
-                //         setFormError(initialFormError);
 
-                //         toast.success("Changes saved successfully", {
-                //             icon: <BsInfoCircle size={22} color="white" />
-                //         });               
-                //     })
-                //     .catch((err) => {
-                //         console.log("Error :", err);
-                //     })
-                updatephysicalassessment(passData, formData.id)
-                    .then((res) => {
-                        const response = res?.data?.data;
-
-                        const updatedData = {
-                            ...response,
-                            systolic: response?.bloodPressure?.systolic || "",
-                            diastolic: response?.bloodPressure?.diastolic || ""
-                        };
-
-                        setModalFormPhisicalData(prev =>
-                            prev.map(item =>
-                                item._id === response?._id ? { ...item, ...updatedData } : item
-                            )
-                        );
-
-                        setEditPhysicalAssessment?.(initialFormDataForClear);
-                        setShowPhisicalAssessment(false);
-                        setFormError(initialFormError);
-                        toast.success("Changes saved successfully");
-                    })
-                    .catch(err => console.log(err));
-
-
-
-
-            } else {
-                // ⭐ ADD MODE
-                setModalFormPhisicalData(prev => [...prev, updatedFormData]);
-
-                // API callback
-                handleSavePhysicalAssessment?.(updatedFormData);
-
+                setEditPhysicalAssessment?.(initialFormDataForClear);
                 setShowPhisicalAssessment(false);
                 setFormError(initialFormError);
-                setFormData(initialFormDataForClear);
 
-                toast.success("Physical assessment added successfully", {
-                    icon: <BsInfoCircle size={22} color="white" />
-                });
-            }
-        }
-    };
+                toast.success("Changes saved successfully");
+            })
+            .catch(err => console.error("Update error:", err));
 
+        return;
+    }
 
+    /* ================= ADD MODE ================= */
+    handleSavePhysicalAssessment(updatedFormData);
+
+    setShowPhisicalAssessment(false);
+    setFormError(initialFormError);
+    setFormData(initialFormDataForClear);
+
+    toast.success("Physical assessment added successfully", {
+        icon: <BsInfoCircle size={22} color="white" />,
+    });
+};
     return (
         <>
             <form onSubmit={handleSubmit}>
@@ -219,7 +298,7 @@ const PhisicalAssessmentForm = ({
                                 }
                             }}
                             onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
-                            placeholder="Enter height "
+                            placeholder="Enter Height(in) "
                             required={true}
                             disabled={false}
                             readOnly={false}
@@ -267,7 +346,7 @@ const PhisicalAssessmentForm = ({
                         <InputSelect
                             label="Blood Group"
                             name="bloodGroup"
-                            value={formData.bloodGroup || modalFormPhisicalData?.[0]?.bloodGroup}
+                            value={formData.bloodGroup }
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                 handleChange(e);
                             }}
@@ -337,7 +416,7 @@ const PhisicalAssessmentForm = ({
                                 handleChange(e);
 
                             }}
-                        // error={formError.diastolic}
+                         error={formError.diastolic}
                         />
                     </Col>
 

@@ -449,27 +449,27 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .border-box-orange-font {
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
   font-style: medium;
-  color: var(--border-box);
+  color: var(--border-box) !important;
 }
 
 .border-box-blue-font {
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  font-style: medium;
-  color: var(--border-box-blue);
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-style: medium ;
+  color: var(--border-box-blue) !important;
 }
 
 .border-box-red-font {
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
+  font-weight: 500 !important;
+  font-size: 14px!important;
+  line-height: 20px !important;
   font-style: medium;
-  color: var(--border-box-red);
+  color: var(--border-box-red) !important;
 }
 
 .accordion-form-physical-assessment .input-custom-width {
@@ -572,5 +572,14 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .base-table-color {
   color: #2C313E !important;
+}
+
+/* .accordion-item:first-of-type>.accordion-header .accordion-button{
+  border-radius: 12px !important;
+} */
+
+
+.form-control:focus{
+  color: #2B4360 !important;
 }
 
