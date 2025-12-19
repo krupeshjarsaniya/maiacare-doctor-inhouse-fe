@@ -293,7 +293,7 @@ export function LoginForms() {
                 </Button>
 
 
-                <button
+                {/* <button
                     type="button"
                     // onClick={handleGoogleLogin}
                     className="btn mt-4 w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold shadow-lg"
@@ -305,7 +305,8 @@ export function LoginForms() {
                         height={18}
                     />
                     <span>Continue with Google</span>
-                </button>
+                </button> */}
+                
             </form>
         </div>
     );

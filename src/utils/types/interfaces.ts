@@ -63,6 +63,24 @@ export interface FertilityAssessmentFormType {
   ectopicpregnancy: string;
 }
 
+export interface FertilityAssessmentApiType {
+  menstrualCycle?: {
+    ageAtFirstMenstruation?: string;
+    cycleLength?: string;
+    periodLength?: string;
+    lastPeriodDate?: string;
+    isCycleRegular?: "Regular" | "Irregular";
+    menstrualIssues?: string; // "Yes" | "No"
+  };
+
+  pregnancy?: {
+    pregnantBefore?: string; // "Yes" | "No"
+    tryingToConceiveDuration?: string;
+    miscarriageOrEctopicHistory?: string; // "Yes" | "No"
+  };
+}
+
+
 
 
 export interface EditFertilityAssessment {
@@ -185,7 +203,7 @@ interface DocumentType {
 }
 
 export interface PartnerData {
-  patientId: string|number;
+  patientId: string | number;
   partnerImage: string | null;
   partnerName: string;
   partnerContactNumber: string;

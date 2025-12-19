@@ -9,47 +9,65 @@ import { InputFieldGroup } from "../ui/InputField";
 import Button from "../ui/Button";
 import toast from 'react-hot-toast';
 import { BsInfoCircle } from 'react-icons/bs';
-import { FertilityAssessmentFormType,  } from "@/utils/types/interfaces";
+import {FertilityAssessmentFormType } from "@/utils/types/interfaces";
 
 
 interface FertilityAssessmentFormProps {
     setShowFertilityAssessment?: React.Dispatch<React.SetStateAction<boolean>>;
     setModalFormFertilityData?: React.Dispatch<React.SetStateAction<FertilityAssessmentFormType>>;
-    editFertilityAssessment?: FertilityAssessmentFormType;
-     handleSaveFertilityAssessment?: (data: FertilityAssessmentFormType) => void; // ✅ Add this
+    editFertilityAssessment?: FertilityAssessmentFormType | any;
+    handleSaveFertilityAssessment?: (data: FertilityAssessmentFormType) => void; // ✅ Add this
 }
 
 export const FertilityAssessmentForm = ({
     setShowFertilityAssessment,
     setModalFormFertilityData,
     editFertilityAssessment,
-        handleSaveFertilityAssessment, // ✅ Add this,
+    handleSaveFertilityAssessment, // ✅ Add this,
 }: FertilityAssessmentFormProps) => {
+    function formatDate(isoDate: string): string {
+        const date = new Date(isoDate);
+
+        const day = String(date.getUTCDate()).padStart(2, "0");
+        const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+        const year = date.getUTCFullYear();
+
+        return `${day}-${month}-${year}`;
+    }
+
+    function formatForDateInput(isoDate: string): string {
+        if (!isoDate) return "";
+        return isoDate.split("T")[0]; // yyyy-mm-dd
+    }
+
+
 
     type FormError = Partial<Record<keyof FertilityAssessmentFormType, string>>;
     const initialFormError: FormError = {};
 
     const initialFormData: FertilityAssessmentFormType = {
-        ageAtFirstMenstruation: editFertilityAssessment?.ageAtFirstMenstruation || "",
-        cycleLength: editFertilityAssessment?.cycleLength || "",
-        periodLength: editFertilityAssessment?.periodLength || "",
-        date: editFertilityAssessment?.date || "",
-        isCycleRegular: editFertilityAssessment?.isCycleRegular || "Regular",
-        menstrualIssues: editFertilityAssessment?.menstrualIssues || "yes",
-        pregnancy: editFertilityAssessment?.pregnancy || "yes",
-        timeduration: editFertilityAssessment?.timeduration || "",
-        ectopicpregnancy: editFertilityAssessment?.ectopicpregnancy || "yes"
+        ageAtFirstMenstruation: editFertilityAssessment?.menstrualCycle?.ageAtFirstMenstruation || "",
+        cycleLength: editFertilityAssessment?.menstrualCycle?.cycleLength || "",
+        periodLength: editFertilityAssessment?.menstrualCycle?.periodLength || "",
+        date: editFertilityAssessment?.menstrualCycle?.lastPeriodDate || "",
+        isCycleRegular: editFertilityAssessment?.menstrualCycle?.isCycleRegular || "Regular",
+        menstrualIssues: editFertilityAssessment?.menstrualCycle?.menstrualIssues.toLowerCase() || "yes",
+        pregnancy: editFertilityAssessment?.pregnancy?.pregnantBefore.toLowerCase() || "yes",
+        timeduration: editFertilityAssessment?.pregnancy?.tryingToConceiveDuration || "",
+        ectopicpregnancy: editFertilityAssessment?.pregnancy?.miscarriageOrEctopicHistory.toLowerCase() || "yes"
 
     };
 
+    console.log("editFertilityAssessment", editFertilityAssessment);
     const [formData, setFormData] = useState<FertilityAssessmentFormType>(initialFormData);
     const [formError, setFormError] = useState<FormError>(initialFormError);
     const validateForm = (data: FertilityAssessmentFormType): FormError => {
         const errors: FormError = {};
-
-        if (!data.ageAtFirstMenstruation.trim()) errors.ageAtFirstMenstruation = "Age at first menstruation is required";
-        if (!data.cycleLength.trim()) errors.cycleLength = "Cycle length is required";
-        if (!data.periodLength.trim()) errors.periodLength = "Period length is required";
+        console.log("data", data);
+        
+        if (!data.ageAtFirstMenstruation) errors.ageAtFirstMenstruation = "Age at first menstruation is required";
+        if (!data.cycleLength) errors.cycleLength = "Cycle length is required";
+        if (!data.periodLength) errors.periodLength = "Period length is required";
         if (!data.date) errors.date = "Date is required";
         if (!data.isCycleRegular) errors.isCycleRegular = "Is cycle regular is required";
         if (!data.menstrualIssues) errors.menstrualIssues = "Menstrual issues is required";
@@ -91,7 +109,7 @@ export const FertilityAssessmentForm = ({
     //         }
     //     }
     // };
-   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const errors = validateForm(formData);
@@ -184,7 +202,7 @@ export const FertilityAssessmentForm = ({
                                     <DatePickerFieldGroup
                                         label="Last Period Date"
                                         name="date"
-                                        value={formData.date}
+                                        value={formatForDateInput(formData.date)}
                                         placeholder="Enter last period date"
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                             handleChange(e);

@@ -591,6 +591,7 @@ const ProfileBasicDetails = () => {
                                   <Col md={6} className="mt-3">
                                     <InputFieldGroup
                                       label="Degree"
+                                      spellCheck={false}
                                       className='edit-profile-field-placeholder edit-profile-field'
                                       name="degree"
                                       type="text"
@@ -617,6 +618,7 @@ const ProfileBasicDetails = () => {
                                   <Col md={6} className="mt-3">
                                     <InputFieldGroup
                                       label="Field of study"
+                                      spellCheck={false}
                                       className='edit-profile-field-placeholder edit-profile-field'
                                       name="field"
                                       type="text"
@@ -644,6 +646,7 @@ const ProfileBasicDetails = () => {
                                   <Col md={12} className="mt-3">
                                     <InputFieldGroup
                                       label="University"
+                                      spellCheck={false}
                                       name="university"
                                       className='edit-profile-field-placeholder edit-profile-field'
                                       type="text"
@@ -820,6 +823,7 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputFieldGroup
                     label="Degree"
+                    spellCheck={false}
                     className='edit-profile-field-placeholder edit-profile-field'
                     name="degree"
                     type="text"
@@ -844,6 +848,7 @@ const ProfileBasicDetails = () => {
                 <Col md={6} className="mt-3">
                   <InputFieldGroup
                     label="Field of study"
+                    spellCheck={false}
                     className='edit-profile-field-placeholder edit-profile-field'
                     name="field"
                     type="text"
@@ -867,6 +872,7 @@ const ProfileBasicDetails = () => {
                 <Col md={12} className="mt-3">
                   <InputFieldGroup
                     label="University"
+                    spellCheck={false}
                     className='edit-profile-field-placeholder edit-profile-field'
                     name="university"
                     type="text"

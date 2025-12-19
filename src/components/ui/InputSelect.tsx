@@ -234,7 +234,7 @@ export function InputSelectMultiSelect({
       )}
       {values.length > 0 && (
         <div className="mt-2 d-flex gap-2 flex-wrap">
-          {values.map((item) => (
+          {values?.map((item) => (
             <div key={item.value} className="input-select-item-box" style={{ color: selectedOptionColor, borderColor: selectedOptionBorderColor }}>
               {item.label}
               <span

@@ -1092,7 +1092,7 @@ export default function PersonalDetails({ onNext }: { onNext: () => void }) {
                   <Col md={6}>
                     <InputSelect
                       label="Start Year"
-                      placeholder="Slect Start Year"
+                      placeholder="Select Start Year"
                       disabled={true}
                       name="startYear"
                       value={q.startYear}

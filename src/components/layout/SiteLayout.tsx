@@ -49,7 +49,7 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
   console.log("authData", authData);
 
   const navItems = [
-      { label: "Dashboard", href: "/dashboard", icon: <FaBoxesStacked size={22} /> },
+    { label: "Dashboard", href: "/dashboard", icon: <FaBoxesStacked size={22} /> },
     { label: "Profile", href: "/profile", icon: <MdWindow size={22} /> },
     // { label: "EditProfile", href: "/EditProfile"},
     // { label: "Doctors", href: "/doctors", icon: <FaBoxesStacked size={22} /> },
@@ -82,9 +82,8 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
     <div className="layout">
       {/* ====== DESKTOP SIDEBAR ====== */}
       <aside
-        className={`sidebar desktop-sidebar ${
-          collapsed ? "sidebar--collapsed" : "sidebar--expanded"
-        }`}
+        className={`sidebar desktop-sidebar ${collapsed ? "sidebar--collapsed" : "sidebar--expanded"
+          }`}
       >
         <button
           type="button"
@@ -243,6 +242,16 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             >
               <HiOutlineChevronDoubleRight size={18} />
             </button>
+            {title == "EditProfile" 
+            ?
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" onClick={() => router.push('/profile')}>
+              <rect x="0.5" y="0.5" width="55" height="55" rx="7.5" fill="white" />
+              <rect x="0.5" y="0.5" width="55" height="55" rx="7.5" stroke="#DDE1E8" />
+              <path d="M37.0001 27.9999C37.0001 28.1988 36.9211 28.3896 36.7804 28.5303C36.6398 28.6709 36.449 28.7499 36.2501 28.7499H21.5604L27.0307 34.2193C27.1004 34.289 27.1557 34.3717 27.1934 34.4628C27.2311 34.5538 27.2505 34.6514 27.2505 34.7499C27.2505 34.8485 27.2311 34.9461 27.1934 35.0371C27.1557 35.1281 27.1004 35.2109 27.0307 35.2806C26.961 35.3502 26.8783 35.4055 26.7873 35.4432C26.6962 35.4809 26.5986 35.5003 26.5001 35.5003C26.4016 35.5003 26.304 35.4809 26.2129 35.4432C26.1219 35.4055 26.0392 35.3502 25.9695 35.2806L19.2195 28.5306C19.1497 28.4609 19.0944 28.3782 19.0567 28.2871C19.0189 28.1961 18.9995 28.0985 18.9995 27.9999C18.9995 27.9014 19.0189 27.8038 19.0567 27.7127C19.0944 27.6217 19.1497 27.539 19.2195 27.4693L25.9695 20.7193C26.1102 20.5786 26.3011 20.4995 26.5001 20.4995C26.6991 20.4995 26.89 20.5786 27.0307 20.7193C27.1715 20.86 27.2505 21.0509 27.2505 21.2499C27.2505 21.449 27.1715 21.6398 27.0307 21.7806L21.5604 27.2499H36.2501C36.449 27.2499 36.6398 27.3289 36.7804 27.4696C36.9211 27.6103 37.0001 27.801 37.0001 27.9999Z" fill="#2B4360" />
+            </svg>
+            :
+            ""
+            }
             <div>
               <h2 className="layout__title">{title}</h2>
               <h4 className="layout__subtitle mt-1">{subtitle}</h4>
