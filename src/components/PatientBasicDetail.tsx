@@ -49,77 +49,158 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
     const [modalFormPhisicalData, setModalFormPhisicalData] = useState<PhysicalAssessmentDataModel[]>([]);
     const [modalFormFertilityData, setModalFormFertilityData] = useState<FertilityAssessmentFormType | any>([]);
 
-    const handleSavePhysicalAssessment = async (data: PhysicalAssessmentDataModel) => {
+    // const handleSavePhysicalAssessment = async (data: PhysicalAssessmentDataModel) => {
 
-        if (!patientId) {
-            alert("❌ Patient ID missing!");
-            return;
-        }
+    //     if (!patientId) {
+    //         alert("❌ Patient ID missing!");
+    //         return;
+    //     }
 
-        const today = new Date().toISOString().split("T")[0];
+    //     const today = new Date().toISOString().split("T")[0];
 
-        const payload = {
-            ...data,
-            patientId,
-            height: convertHeightToCm(data.height),
-            bloodGroup: data.bloodGroup || "Unknown",     // ⭐ FIXED HERE
-            bloodPressureSystolic: data.systolic,
-            bloodPressureDiastolic: data.diastolic,
-            date: data.date || today
+    //     const payload = {
+    //         ...data,
+    //         patientId,
+    //         height: convertHeightToCm(data.height),
+    //         bloodGroup: data.bloodGroup || "Unknown",     // ⭐ FIXED HERE
+    //         bloodPressureSystolic: data.systolic,
+    //         bloodPressureDiastolic: data.diastolic,
+    //         date: data.date || today
+    //     };
+    //     try {
+    //         const res = await addphysicalassessment(payload);
+    //         console.log("Saved:", res.data);
+
+    //         // ⭐ USE API RESPONSE (it contains correct date)
+    //         setModalFormPhisicalData((prev) => [...prev, res.data]);
+
+    //         setShowPhisicalAssessment(false);
+    //     } catch (e) {
+    //         console.error("API error:", e);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     if (!patientId) return;
+
+    //     const fetchPhysicalAssessment = async () => {
+    //         try {
+    //             // const res = await getPhysicalAssessment(patient.physicalAssessment._id);
+    //             const assessmentId = patient?.physicalAssessment?._id;
+    //             if (!assessmentId) return;
+
+    //             const res = await getPhysicalAssessment(assessmentId);
+
+
+    //             // res.data should be an array of assessments → match existing mapping
+    //             if (Array.isArray(res.data)) {
+    //                 const mapped = res.data.map((item: any) => ({
+    //                     ...item,
+    //                     systolic: item?.bloodPressure?.systolic || "",
+    //                     diastolic: item?.bloodPressure?.diastolic || "",
+    //                     date: new Date(item.createdAt).toLocaleDateString("en-US", {
+    //                         weekday: "short",
+    //                         year: "numeric",
+    //                         month: "short",
+    //                         day: "numeric",
+    //                     }),
+    //                 }));
+
+    //                 setModalFormPhisicalData(mapped);
+    //             }
+
+    //         } catch (err) {
+    //             console.error("GET physical assessment error", err);
+    //         }
+    //     };
+
+    //     try {
+    //         fetchPhysicalAssessment();
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }, [patientId]);
+
+const handleSavePhysicalAssessment = async (
+    data: PhysicalAssessmentDataModel
+) => {
+    if (!patientId) {
+        alert("❌ Patient ID missing!");
+        return;
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const payload = {
+        patientId,
+        height: convertHeightToCm(data.height),
+        weight: data.weight,
+        bmi: data.bmi,
+        bloodGroup: data.bloodGroup || "Unknown",
+        bloodPressureSystolic: data.systolic,
+        bloodPressureDiastolic: data.diastolic,
+        heartRate: data.heartRate,
+        date: data.date || today,
+    };
+
+    try {
+        const res = await addphysicalassessment(payload);
+
+        const response = res?.data?.data ?? res?.data;
+
+        const normalizedData = {
+            ...response,
+            systolic: response?.bloodPressure?.systolic || "",
+            diastolic: response?.bloodPressure?.diastolic || "",
+
+             date: new Date(response.createdAt).toLocaleDateString("en-GB", {
+                weekday: "short",
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            }),
         };
+
+        // ✅ ADD ONLY ONCE (API is source of truth)
+        setModalFormPhisicalData(prev => [...prev, normalizedData]);
+
+    } catch (error) {
+        console.error("API error:", error);
+    }
+};
+
+ useEffect(() => {
+    if (!patientId) return;
+
+    const fetchPhysicalAssessment = async () => {
         try {
-            const res = await addphysicalassessment(payload);
-            console.log("Saved:", res.data);
+            const assessmentId = patient?.physicalAssessment?._id;
+            if (!assessmentId) return;
 
-            // ⭐ USE API RESPONSE (it contains correct date)
-            setModalFormPhisicalData((prev) => [...prev, res.data]);
+            const res = await getPhysicalAssessment(assessmentId);
 
-            setShowPhisicalAssessment(false);
-        } catch (e) {
-            console.error("API error:", e);
+            if (Array.isArray(res.data)) {
+                const mapped = res.data.map((item: any) => ({
+                    ...item,
+                    systolic: item?.bloodPressure?.systolic || "",
+                    diastolic: item?.bloodPressure?.diastolic || "",
+                    date: new Date(item.createdAt).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                    }),
+                }));
+
+                setModalFormPhisicalData(mapped);
+            }
+        } catch (err) {
+            console.error("GET physical assessment error", err);
         }
     };
 
-    useEffect(() => {
-        if (!patientId) return;
-
-        const fetchPhysicalAssessment = async () => {
-            try {
-                // const res = await getPhysicalAssessment(patient.physicalAssessment._id);
-                const assessmentId = patient?.physicalAssessment?._id;
-                if (!assessmentId) return;
-
-                const res = await getPhysicalAssessment(assessmentId);
-
-
-                // res.data should be an array of assessments → match existing mapping
-                if (Array.isArray(res.data)) {
-                    const mapped = res.data.map((item: any) => ({
-                        ...item,
-                        systolic: item?.bloodPressure?.systolic || "",
-                        diastolic: item?.bloodPressure?.diastolic || "",
-                        date: new Date(item.createdAt).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                        }),
-                    }));
-
-                    setModalFormPhisicalData(mapped);
-                }
-
-            } catch (err) {
-                console.error("GET physical assessment error", err);
-            }
-        };
-
-        try {
-            fetchPhysicalAssessment();
-        } catch (err) {
-            console.log(err);
-        }
-    }, [patientId]);
+    fetchPhysicalAssessment();
+}, [patientId]);
 
     const handleSaveFertilityAssessment = async (data: FertilityAssessmentFormType) => {
         if (!patientId) {

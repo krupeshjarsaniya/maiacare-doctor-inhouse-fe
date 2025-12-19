@@ -89,6 +89,7 @@
 .default-layout {
     background-color: var(--color-brand);
     color: var(--color-white);
+    border-color: #2B4360 ;
 }
 
 .default-layout:hover {
