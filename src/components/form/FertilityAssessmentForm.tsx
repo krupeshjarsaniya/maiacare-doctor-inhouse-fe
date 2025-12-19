@@ -9,7 +9,7 @@ import { InputFieldGroup } from "../ui/InputField";
 import Button from "../ui/Button";
 import toast from 'react-hot-toast';
 import { BsInfoCircle } from 'react-icons/bs';
-import {FertilityAssessmentFormType } from "@/utils/types/interfaces";
+import { FertilityAssessmentFormType } from "@/utils/types/interfaces";
 
 
 interface FertilityAssessmentFormProps {
@@ -51,11 +51,13 @@ export const FertilityAssessmentForm = ({
         periodLength: editFertilityAssessment?.menstrualCycle?.periodLength || "",
         date: editFertilityAssessment?.menstrualCycle?.lastPeriodDate || "",
         isCycleRegular: editFertilityAssessment?.menstrualCycle?.isCycleRegular || "Regular",
-        menstrualIssues: editFertilityAssessment?.menstrualCycle?.menstrualIssues.toLowerCase() || "yes",
-        pregnancy: editFertilityAssessment?.pregnancy?.pregnantBefore.toLowerCase() || "yes",
+        menstrualIssues: editFertilityAssessment?.menstrualCycle?.menstrualIssues?.toLowerCase() || "yes",
+        menstrualIssuesDetails: editFertilityAssessment?.menstrualCycle?.menstrualIssuesDetails || "",
+        pregnancy: editFertilityAssessment?.pregnancy?.pregnantBefore?.toLowerCase() || "yes",
+        pregnantBeforeDetails: editFertilityAssessment?.pregnancy?.pregnantBeforeDetails,
         timeduration: editFertilityAssessment?.pregnancy?.tryingToConceiveDuration || "",
-        ectopicpregnancy: editFertilityAssessment?.pregnancy?.miscarriageOrEctopicHistory.toLowerCase() || "yes"
-
+        ectopicpregnancy: editFertilityAssessment?.pregnancy?.miscarriageOrEctopicHistory?.toLowerCase() || "yes",
+        miscarriageOrEctopicDetails: editFertilityAssessment?.pregnancy?.miscarriageOrEctopicDetails
     };
 
     console.log("editFertilityAssessment", editFertilityAssessment);
@@ -64,8 +66,11 @@ export const FertilityAssessmentForm = ({
     const validateForm = (data: FertilityAssessmentFormType): FormError => {
         const errors: FormError = {};
         console.log("data", data);
-        
+
         if (!data.ageAtFirstMenstruation) errors.ageAtFirstMenstruation = "Age at first menstruation is required";
+        if (!data.menstrualIssuesDetails) errors.menstrualIssuesDetails = "Mesnstrual Issues Details is required";
+        if (!data.pregnantBeforeDetails) errors.pregnantBeforeDetails = "Pregnant Before Details is required";
+        if (!data.miscarriageOrEctopicDetails) errors.miscarriageOrEctopicDetails = "miscarriage or ectopic pregnancy Details is required";
         if (!data.cycleLength) errors.cycleLength = "Cycle length is required";
         if (!data.periodLength) errors.periodLength = "Period length is required";
         if (!data.date) errors.date = "Date is required";
@@ -203,6 +208,7 @@ export const FertilityAssessmentForm = ({
                                         label="Last Period Date"
                                         name="date"
                                         value={formatForDateInput(formData.date)}
+                                        className="edit-profile-field-placeholder edit-profile-field"
                                         placeholder="Enter last period date"
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                             handleChange(e);
@@ -230,6 +236,18 @@ export const FertilityAssessmentForm = ({
                                         ]}
                                     />
 
+                                    {/* {formData.medication === 'yes' && (
+                        <InputFieldGroup
+                            type="text"
+                            value={formData.medicationcontent}
+                            name='medicationcontent'
+                            onChange={handleChange}
+                            error={formError.medicationcontent}
+                            placeholder="Enter medication"
+                            className='mt-md-3 mt-2'
+                        />
+                    )} */}
+
                                     <RadioButtonGroup
                                         label="Do you experience menstrual issues?"
                                         name="menstrualIssues"
@@ -242,6 +260,18 @@ export const FertilityAssessmentForm = ({
                                             { label: "No", value: "no" }
                                         ]}
                                     />
+
+                                    {formData.menstrualIssues == "yes" && (
+                                        <InputFieldGroup
+                                            type="text"
+                                            value={formData.menstrualIssuesDetails}
+                                            name='menstrualIssuesDetails'
+                                            onChange={handleChange}
+                                            error={formError.menstrualIssuesDetails}
+                                            placeholder="Enter Menstrual Issues"
+                                            className='mt-md-3 mt-2'
+                                        />
+                                    )}
                                 </Col>
                             </Row>
                         </Accordion.Body>
@@ -268,6 +298,17 @@ export const FertilityAssessmentForm = ({
                                             { label: "No", value: "no" }
                                         ]}
                                     />
+                                    {formData.pregnancy == "yes" && (
+                                        <InputFieldGroup
+                                            type="text"
+                                            value={formData.pregnantBeforeDetails}
+                                            name='pregnantBeforeDetails'
+                                            onChange={handleChange}
+                                            error={formError.pregnantBeforeDetails}
+                                            placeholder="Enter Pregnant Details"
+                                            className='mt-md-3 mt-2'
+                                        />
+                                    )}
                                 </Col>
                                 <Col md={12}>
                                     <InputFieldGroup
@@ -299,6 +340,18 @@ export const FertilityAssessmentForm = ({
                                             { label: "No", value: "no" }
                                         ]}
                                     />
+
+                                    {formData.ectopicpregnancy == "yes" && (
+                                        <InputFieldGroup
+                                            type="text"
+                                            value={formData.miscarriageOrEctopicDetails}
+                                            name='miscarriageOrEctopicDetails'
+                                            onChange={handleChange}
+                                            error={formError.miscarriageOrEctopicDetails}
+                                            placeholder="Enter miscarriage or ectopic pregnancy Details"
+                                            className='mt-md-3 mt-2'
+                                        />
+                                    )}
                                 </Col>
                             </Row>
                         </Accordion.Body>

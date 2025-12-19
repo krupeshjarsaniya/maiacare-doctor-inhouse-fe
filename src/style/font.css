@@ -48,7 +48,7 @@
 }
 
 .maiacare-radio-label {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: var(--color-radio-lable);
 }
@@ -1302,4 +1302,8 @@
 
 .required-star {
   color: #E85966;
+}
+
+.fertilityAssesmentModalBaseSize {
+  font-size: 14px !important;
 }

@@ -58,9 +58,12 @@ export interface FertilityAssessmentFormType {
   date: string;
   isCycleRegular: string;
   menstrualIssues: string;
+  menstrualIssuesDetails: string;
   pregnancy: string;
+  pregnantBeforeDetails: string
   timeduration: string;
   ectopicpregnancy: string;
+  miscarriageOrEctopicDetails: string;
 }
 
 export interface FertilityAssessmentApiType {

@@ -460,13 +460,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   font-weight: 500 !important;
   font-size: 14px !important;
   line-height: 20px !important;
-  font-style: medium ;
+  font-style: medium;
   color: var(--border-box-blue) !important;
 }
 
 .border-box-red-font {
   font-weight: 500 !important;
-  font-size: 14px!important;
+  font-size: 14px !important;
   line-height: 20px !important;
   font-style: medium;
   color: var(--border-box-red) !important;
@@ -570,6 +570,8 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   color: #b0b4c1;
 }
 
+
+
 .base-table-color {
   color: #2C313E !important;
 }
@@ -579,7 +581,53 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 } */
 
 
-.form-control:focus{
+.form-control:focus {
   color: #2B4360 !important;
 }
 
+.fertilitiy-assement-accodion-item {
+  border: 1px solid var(--google-icon-border) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+
+}
+
+
+/* ===== DATE INPUT ===== */
+.edit-profile-field input[type="date"] {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+
+.edit-profile-field input[type="date"]:focus {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+
+.edit-profile-field input[type="date"]:-webkit-autofill,
+.edit-profile-field input[type="date"]:-webkit-autofill:hover,
+.edit-profile-field input[type="date"]:-webkit-autofill:focus,
+.edit-profile-field input[type="date"]:-webkit-autofill:active {
+  -webkit-text-fill-color: #3E4A57 !important;
+  caret-color: #3E4A57 !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 0s;
+}
+
+
+.edit-profile-field-placeholder input[type="date"] {
+  color: #b0b4c1 !important;
+}
+
+
+.edit-profile-field-placeholder input[type="date"]:not(:placeholder-shown) {
+  color: #3E4A57 !important;
+}
+
+
+.edit-profile-field input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(25%) sepia(10%) saturate(500%) hue-rotate(180deg);
+  cursor: pointer;
+}

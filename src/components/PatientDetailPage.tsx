@@ -302,7 +302,7 @@ const formatPhoneNumber = (number?: string) => {
           position: "fixed",
           bottom: 0,
           right: 0,
-          zIndex: 1050,
+          zIndex: 100,
         }}
       >
         <Button variant="light" className="cancel-profile-btn">Cancel</Button>

@@ -43,7 +43,7 @@ The IVF process, success rates, potential risks, and next steps were discussed.P
 
     const [showModal, setShowModal] = useState<boolean>(false);
     const [medicalHistoryFormData, setMedicalHistoryFormData] = useState<MedicalHistoryType | any>([]);
-
+    
     const [editingMedicalHistory, setEditingMedicalHistory] = useState<any>(null);
 
     const [modalFormPhisicalData, setModalFormPhisicalData] = useState<PhysicalAssessmentDataModel[]>([]);
@@ -238,21 +238,21 @@ const handleSavePhysicalAssessment = async (
         }
     };
 
-    const mapFertilityDataForEdit = (data: any): FertilityAssessmentFormType => {
-        return {
-            ageAtFirstMenstruation: data?.menstrualCycle?.ageAtFirstMenstruation || "",
-            cycleLength: data?.menstrualCycle?.cycleLength || "",
-            periodLength: data?.menstrualCycle?.periodLength || "",
-            date: data?.menstrualCycle?.lastPeriodDate || "",
-            isCycleRegular: data?.menstrualCycle?.isCycleRegular || "Regular",
-            menstrualIssues: data?.menstrualCycle?.menstrualIssues === "Yes" ? "yes" : "no",
+    // const mapFertilityDataForEdit = (data: any): FertilityAssessmentFormType => {
+    //     return {
+    //         ageAtFirstMenstruation: data?.menstrualCycle?.ageAtFirstMenstruation || "",
+    //         cycleLength: data?.menstrualCycle?.cycleLength || "",
+    //         periodLength: data?.menstrualCycle?.periodLength || "",
+    //         date: data?.menstrualCycle?.lastPeriodDate || "",
+    //         isCycleRegular: data?.menstrualCycle?.isCycleRegular || "Regular",
+    //         menstrualIssues: data?.menstrualCycle?.menstrualIssues === "Yes" ? "yes" : "no",
 
-            pregnancy: data?.pregnancy?.pregnantBefore === "Yes" ? "yes" : "no",
-            timeduration: data?.pregnancy?.tryingToConceiveDuration || "",
-            ectopicpregnancy:
-                data?.pregnancy?.miscarriageOrEctopicHistory === "Yes" ? "yes" : "no",
-        };
-    };
+    //         pregnancy: data?.pregnancy?.pregnantBefore === "Yes" ? "yes" : "no",
+    //         timeduration: data?.pregnancy?.tryingToConceiveDuration || "",
+    //         ectopicpregnancy:
+    //             data?.pregnancy?.miscarriageOrEctopicHistory === "Yes" ? "yes" : "no",
+    //     };
+    // };
     useEffect(() => {
         if (!patientId) return;
         const ID = patient?.fertilityassessment?._id;
@@ -404,7 +404,10 @@ const handleSavePhysicalAssessment = async (
         menstrualIssues: "yes",
         pregnancy: "yes",
         timeduration: "",
-        ectopicpregnancy: "yes"
+        ectopicpregnancy: "yes",
+        menstrualIssuesDetails: "",
+        pregnantBeforeDetails: "",
+        miscarriageOrEctopicDetails: ""
     });
 
     const initialFormData: PhysicalAssessmentDataModel = {
@@ -894,7 +897,14 @@ const handleSavePhysicalAssessment = async (
                                                         Do you experience menstrual issues?
                                                     </span>
                                                     <span className="accordion-subtitle-detail">
-                                                        {modalFormFertilityData?.menstrualCycle?.menstrualIssues}
+                                                        {modalFormFertilityData?.menstrualCycle?.menstrualIssues == "Yes"
+                                                        ?
+                                                        <>
+                                                            {`${modalFormFertilityData?.menstrualCycle?.menstrualIssues} | ${modalFormFertilityData?.menstrualCycle?.menstrualIssuesDetails}`}
+                                                        </>
+                                                        :
+                                                        modalFormFertilityData?.menstrualCycle?.menstrualIssues
+                                                        }
                                                     </span>
                                                 </div>
                                             </Col>
@@ -942,7 +952,14 @@ const handleSavePhysicalAssessment = async (
                                                 <div className="d-flex flex-column gap-1">
                                                     <span className="contact-details-emergency">Have you been pregnant before?</span>
                                                     <span className="accordion-subtitle-detail">
-                                                        {modalFormFertilityData?.pregnancy?.pregnantBefore}
+                                                        {modalFormFertilityData?.pregnancy?.pregnantBefore == "Yes"
+                                                        ?
+                                                        <>
+                                                            {`${modalFormFertilityData?.pregnancy?.pregnantBefore} | ${modalFormFertilityData?.pregnancy?.pregnantBeforeDetails}`}
+                                                        </>
+                                                        :
+                                                        modalFormFertilityData?.pregnancy?.pregnantBefore
+                                                        }
                                                     </span>
                                                 </div>
                                             </Col>
@@ -973,7 +990,14 @@ const handleSavePhysicalAssessment = async (
                                                         History of miscarriage or ectopic pregnancy?
                                                     </span>
                                                     <span className="accordion-subtitle-detail">
-                                                        {modalFormFertilityData?.pregnancy?.miscarriageOrEctopicHistory}
+                                                        {modalFormFertilityData?.pregnancy?.miscarriageOrEctopicHistory == "Yes"
+                                                        ?
+                                                        <>
+                                                            {`${modalFormFertilityData?.pregnancy?.miscarriageOrEctopicHistory} | ${modalFormFertilityData?.pregnancy?.miscarriageOrEctopicDetails}`}
+                                                        </>
+                                                        :
+                                                        modalFormFertilityData?.pregnancy?.miscarriageOrEctopicHistory
+                                                        }
                                                     </span>
                                                 </div>
                                             </Col>
@@ -1069,7 +1093,7 @@ const handleSavePhysicalAssessment = async (
                     )}
 
                     {/* 2. IF NOT LOADING AND NO DATA */}
-                    {!loading && !medicalHistoryFormData && (
+                    {!loading && medicalHistoryFormData?.length === 0 && (
                         <div className="text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="78" height="78" viewBox="0 0 78 78" fill="none">
                                 <path d="M60.6072 15.509V57.2116C60.6072 59.5787 58.6882 61.4977 56.3211 61.4977H22.0085C19.6414 61.4977 17.7224 59.5787 17.7224 57.2116V6.70801C17.7224 4.34086 19.6414 2.42188 22.0085 2.42188H47.5739C51.0628 5.92883 54.5519 9.43579 58.0453 12.9382C58.8964 13.7937 59.7518 14.6491 60.6072 15.509Z" fill="#F3F4F6" />
@@ -1100,7 +1124,7 @@ const handleSavePhysicalAssessment = async (
                     )}
 
                     {/* 3. SHOW DATA */}
-                    {!loading && medicalHistoryFormData && (
+                    {!loading && medicalHistoryFormData && Object.keys(medicalHistoryFormData).length > 0 && (
                         <>
                             <Button
                                 onClick={() => {
