@@ -177,11 +177,11 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         }
 
         // SURGERIES
-        const surgeriesDetails = data.surgeries?.surgeriesDetails?.trim() ?? "";
+        const surgeriesDetails = data.surgeries?.surgeriesDetails?.trim();
         const surgeriesStatus = data.surgeries?.status;
 
         if (!surgeriesDetails) {
-            errors.surgeries = "Surgeries is required";
+            errors.surgeriesContent = "Surgeries is required";
         }
 
         if ((surgeriesStatus === "yes" || surgeriesStatus === true) && !surgeriesDetails) {
@@ -325,6 +325,15 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     //     setShowData(prevItems => [...prevItems, newItem]);
     // };
 
+    const formatPhone = (num?: string) => {
+        if (!num) return "";
+
+        const cc = num.substring(0, 2);
+        const main = num.substring(2);
+        const formattedMain = main.replace(/(\d{5})(\d{5})/, "$1 $2");
+
+        return `+${cc} ${formattedMain}`;
+    };
 
 
     const params = useParams();
@@ -450,7 +459,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                 <span className='doctor-profile-subheading'>{showData?.basicDetails?.partnerGender || ""}</span>
                                             </div>
                                             <div className='d-flex justify-content-center align-items-center gap-1'>
-                                                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                {/* <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g clipPath="url(#clip0_2367_101200)">
                                                         <path d="M10.4141 19.7925C9.37242 19.7925 8.28909 19.6259 7.20576 19.2509C2.12242 17.5009 -0.585911 11.9175 1.16409 6.79255C2.91409 1.70921 8.49742 -0.999119 13.6224 0.750881C15.9974 1.58421 17.9558 3.25088 19.0808 5.45921C19.2474 5.75088 19.1224 6.12588 18.8308 6.25088C18.5391 6.41755 18.1641 6.29255 18.0391 6.00088C17.0391 4.04255 15.3308 2.58421 13.2474 1.87588C8.74742 0.334214 3.83076 2.70921 2.28909 7.20921C0.747422 11.7092 3.12242 16.5842 7.58076 18.1259C12.0391 19.6675 16.9558 17.2925 18.4974 12.8342C18.6224 12.5009 18.9558 12.3759 19.2474 12.4592C19.5808 12.5842 19.7058 12.9175 19.6224 13.2092C18.2891 17.2509 14.4558 19.7925 10.4141 19.7925Z" fill="#8A8D93" />
                                                         <path d="M18.7057 6.4987L15.2474 6.45703C14.9141 6.45703 14.6641 6.16536 14.6641 5.83203C14.6641 5.4987 14.9557 5.2487 15.2891 5.2487L18.1641 5.29036L18.2057 2.41536C18.2057 2.08203 18.4557 1.83203 18.8307 1.83203C19.1641 1.83203 19.4141 2.1237 19.4141 2.45703L19.3307 5.8737C19.3307 6.04036 19.2474 6.16536 19.1641 6.29036C19.0391 6.41536 18.8724 6.4987 18.7057 6.4987Z" fill="#8A8D93" />
@@ -461,7 +470,21 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                             <rect width="19" height="19" fill="white" transform="translate(0.164062)" />
                                                         </clipPath>
                                                     </defs>
+                                                </svg> */}
+
+                                                <svg width="21" height="21" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <g clipPath="url(#clip0_2249_198152)">
+                                                        <path d="M10.2499 19.7916C9.20824 19.7916 8.1249 19.6249 7.04157 19.2499C1.95824 17.4999 -0.750095 11.9166 0.999904 6.79157C2.7499 1.70824 8.33324 -1.0001 13.4582 0.749905C15.8332 1.58324 17.7916 3.2499 18.9166 5.45824C19.0832 5.7499 18.9582 6.1249 18.6666 6.2499C18.3749 6.41657 17.9999 6.29157 17.8749 5.9999C16.8749 4.04157 15.1666 2.58324 13.0832 1.8749C8.58324 0.333238 3.66657 2.70824 2.1249 7.20824C0.583238 11.7082 2.95824 16.5832 7.41657 18.1249C11.8749 19.6666 16.7916 17.2916 18.3332 12.8332C18.4582 12.4999 18.7916 12.3749 19.0832 12.4582C19.4166 12.5832 19.5416 12.9166 19.4582 13.2082C18.1249 17.2499 14.2916 19.7916 10.2499 19.7916Z" fill="#8A8D93" />
+                                                        <path d="M18.5417 6.49967L15.0833 6.45801C14.75 6.45801 14.5 6.16634 14.5 5.83301C14.5 5.49967 14.7917 5.24967 15.125 5.24967L18 5.29134L18.0417 2.41634C18.0417 2.08301 18.2917 1.83301 18.6667 1.83301C19 1.83301 19.25 2.12467 19.25 2.45801L19.1667 5.87467C19.1667 6.04134 19.0833 6.16634 19 6.29134C18.875 6.41634 18.7083 6.49967 18.5417 6.49967Z" fill="#8A8D93" />
+                                                        <path d="M7.6665 11.375L7.2915 10.5H5.62484L5.24984 11.375H4.2915L6.0415 7.375H6.9165L8.6665 11.375H7.6665ZM6.45817 8.58333L5.95817 9.75H6.95817L6.45817 8.58333ZM11.2498 10.875C10.9582 11.1667 10.6248 11.3333 10.2498 11.3333C9.83317 11.3333 9.49984 11.2083 9.24984 10.9167C8.95817 10.625 8.83317 10.2917 8.83317 9.83333C8.83317 9.375 8.95817 9 9.24984 8.70833C9.5415 8.41667 9.87484 8.25 10.2082 8.25C10.5832 8.25 10.8748 8.41667 11.1248 8.70833V8.29167H11.9998V10.9583C11.9998 11.25 11.9582 11.4583 11.8748 11.7083C11.7915 11.9167 11.6665 12.0833 11.4998 12.2083C11.1665 12.4583 10.7915 12.5833 10.3748 12.5833C10.1248 12.5833 9.9165 12.5417 9.6665 12.4583C9.4165 12.375 9.20817 12.2917 9.0415 12.125L9.37484 11.4583C9.6665 11.6667 9.95817 11.7917 10.2915 11.7917C10.6248 11.7917 10.8748 11.7083 11.0415 11.5417C11.1665 11.4583 11.2498 11.2083 11.2498 10.875ZM11.1248 9.79167C11.1248 9.54167 11.0415 9.33333 10.9165 9.20833C10.7915 9.08333 10.6248 9 10.4165 9C10.2082 9 10.0415 9.08333 9.87484 9.20833C9.70817 9.33333 9.6665 9.54167 9.6665 9.79167C9.6665 10.0417 9.74984 10.25 9.87484 10.375C9.99984 10.5417 10.2082 10.5833 10.4165 10.5833C10.6248 10.5833 10.7915 10.5 10.9165 10.375C11.0832 10.25 11.1248 10.0417 11.1248 9.79167ZM15.4582 10.9583C15.1248 11.2917 14.7082 11.4583 14.2498 11.4583C13.7915 11.4583 13.3748 11.3333 13.0832 11.0417C12.7915 10.75 12.6248 10.375 12.6248 9.875C12.6248 9.375 12.7915 9 13.0832 8.70833C13.3748 8.41667 13.7498 8.29167 14.1665 8.29167C14.5832 8.29167 14.9582 8.41667 15.2498 8.66667C15.5415 8.91667 15.7082 9.29167 15.7082 9.70833V10.1667H13.4582C13.4998 10.3333 13.5832 10.4583 13.7082 10.5833C13.8748 10.7083 14.0415 10.75 14.2082 10.75C14.4998 10.75 14.7498 10.6667 14.9582 10.4583L15.4582 10.9583ZM14.6665 9.125C14.5415 9.04167 14.4165 8.95833 14.2498 8.95833C14.0832 8.95833 13.9165 9 13.7915 9.125C13.6665 9.20833 13.5832 9.375 13.5415 9.54167H14.8748C14.8332 9.375 14.7498 9.20833 14.6665 9.125Z" fill="#8A8D93" />
+                                                    </g>
+                                                    <defs>
+                                                        <clipPath id="clip0_2249_198152">
+                                                            <rect width="20" height="20" fill="white" />
+                                                        </clipPath>
+                                                    </defs>
                                                 </svg>
+
 
                                                 <span className='doctor-profile-subheading'> {showData?.basicDetails?.partnerAge || ""} Years </span>
 
@@ -473,7 +496,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                     <path d="M17.482 12.7819L13.8016 11.1327L13.7914 11.128C13.6003 11.0462 13.3919 11.0134 13.185 11.0325C12.978 11.0516 12.7791 11.122 12.6063 11.2373C12.5859 11.2508 12.5663 11.2654 12.5477 11.2811L10.6461 12.9022C9.44141 12.317 8.19766 11.0827 7.61251 9.89359L9.23594 7.96312C9.25157 7.94359 9.26641 7.92406 9.28048 7.90297C9.39331 7.73055 9.46177 7.53291 9.47976 7.32763C9.49775 7.12236 9.46472 6.91582 9.3836 6.7264V6.71703L7.72969 3.03031C7.62246 2.78286 7.43807 2.57673 7.20406 2.44268C6.97005 2.30864 6.69895 2.25387 6.43126 2.28656C5.37264 2.42586 4.40093 2.94575 3.69761 3.74914C2.99429 4.55252 2.60747 5.58444 2.60938 6.65219C2.60938 12.8553 7.65626 17.9022 13.8594 17.9022C14.9271 17.9041 15.9591 17.5173 16.7624 16.814C17.5658 16.1106 18.0857 15.1389 18.225 14.0803C18.2578 13.8127 18.2031 13.5417 18.0692 13.3077C17.9353 13.0737 17.7293 12.8892 17.482 12.7819ZM13.8594 16.6522C11.2081 16.6493 8.66625 15.5948 6.79151 13.7201C4.91678 11.8453 3.86228 9.30346 3.85938 6.65219C3.85644 5.88929 4.1313 5.1514 4.63261 4.57633C5.13393 4.00126 5.82743 3.62833 6.5836 3.52719C6.58329 3.5303 6.58329 3.53344 6.5836 3.53656L8.22423 7.20844L6.60938 9.14125C6.59299 9.16011 6.5781 9.18022 6.56485 9.2014C6.44728 9.38181 6.37832 9.58953 6.36463 9.80442C6.35094 10.0193 6.393 10.2341 6.48673 10.428C7.19454 11.8756 8.65313 13.3233 10.1164 14.0303C10.3117 14.1232 10.5277 14.1638 10.7434 14.1482C10.9591 14.1325 11.167 14.0613 11.3469 13.9412C11.3669 13.9277 11.3862 13.9131 11.4047 13.8975L13.3039 12.2772L16.9758 13.9217C16.9758 13.9217 16.982 13.9217 16.9844 13.9217C16.8845 14.679 16.5121 15.3739 15.9369 15.8764C15.3617 16.379 14.6232 16.6548 13.8594 16.6522Z" fill="#8A8D93" />
                                                 </svg>
 
-                                                <span className='doctor-profile-subheading'>{showData?.basicDetails?.partnerContactNumber || ""}</span>
+                                                <span className='doctor-profile-subheading'>{formatPhone(showData?.basicDetails?.partnerContactNumber) || ""}</span>
                                             </div>
                                             <div className='d-flex justify-content-center align-items-center gap-1'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
@@ -515,7 +538,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 <Col sm={5}>
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Current Medications</h6>
-                                        <p className=" accordion-title-detail">
+                                        <p className=" accordion-title-detail fw-medium">
                                             {showData?.medicalHistory?.medications?.status == "Yes" ? showData?.medicalHistory?.medications?.medicationsDetails : showData?.medicalHistory?.medications?.status}
                                         </p>
                                     </div>
@@ -524,7 +547,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 <Col sm={7}>
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Surgeries</h6>
-                                        <p className=" accordion-title-detail">
+                                        <p className=" accordion-title-detail fw-medium">
                                             {showData?.medicalHistory?.surgeries?.status == "Yes" ? showData?.medicalHistory?.surgeries?.surgeriesDetails : showData?.medicalHistory?.surgeries?.status}
                                         </p>
                                     </div>
@@ -548,7 +571,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 <Col sm={5}>
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Family History</h6>
-                                        <div className=" accordion-title-detail">
+                                        <div className=" accordion-title-detail fw-medium">
                                             <ul>
 
                                                 <li className='medical-emergency-fimily-history'>{showData?.medicalHistory?.familyHistory || "No added family history"}</li>
@@ -738,7 +761,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                             <div className='d-flex justify-content-between align-items-center'>
                                 <p className="contact-details-heading">Physical Assessment </p>
 
-                                <span className="medical-history-add-btn medical-history-edit-btn-font mb-3" onClick={() => {
+                                <span className="medical-history-add-btn medical-history-edit-btn-font mb-3 inventory-detail-page-textarea p-2 rounded" onClick={() => {
                                     setAddPhysicalAssessment(true)
                                 }}>
                                     <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -889,7 +912,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <p className="contact-details-heading mb-3">Fertility Assessment</p>
 
-                                    <Button variant="outline" className="medical-history-edit-btn medical-history-edit-btn-font mb-3" onClick={() => { setEditFertilityAssessment(true); setFormDataEditFertilityAssessment(showData.fertilityAssessment); }}>
+                                    <Button variant="outline" className="maiacare-button maiacare-button-small outline-layout mb-3 add-new-button btn btn-primary" onClick={() => { setEditFertilityAssessment(true); setFormDataEditFertilityAssessment(showData.fertilityAssessment); }}>
                                         <svg width="14" height="14" viewBox="0 0 14 14" className='me-1' fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z" fill="#2B4360" />
                                         </svg> Edit
@@ -901,7 +924,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <Col md={6} sm={6}>
                                         <div className="mb-3">
                                             <h6 className="mb-1 contact-details-emergency">Semen Analysis</h6>
-                                            <p className="mb-2 accordion-title-detail">
+                                            <p className="mb-2 accordion-title-detail fw-medium">
                                                 {showData?.fertilityAssessment?.semenAnalysis?.status
                                                     === 'Yes'
                                                     ? showData?.fertilityAssessment.semenAnalysis.semenAnalysisDetails
@@ -915,7 +938,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <Col md={6} sm={6}>
                                         <div className="mb-3">
                                             <h6 className="mb-1 contact-details-emergency">Fertility Issues</h6>
-                                            <p className="mb-2 accordion-title-detail">
+                                            <p className="mb-2 accordion-title-detail fw-medium">
                                                 {showData?.fertilityAssessment?.fertilityIssues?.status
                                                     === 'Yes'
                                                     ? showData?.fertilityAssessment?.fertilityIssues?.fertilityIssuesDetails
@@ -929,7 +952,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <Col md={6} sm={6}>
                                         <div className="mb-3">
                                             <h6 className="mb-1 contact-details-emergency">Fertility Treatment</h6>
-                                            <p className="mb-2 accordion-title-detail">
+                                            <p className="mb-2 accordion-title-detail fw-medium">
 
                                                 {showData?.fertilityAssessment?.fertilityTreatments?.status
                                                     === 'Yes'
@@ -944,7 +967,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <Col md={6} sm={6}>
                                         <div className="mb-3">
                                             <h6 className="mb-1 contact-details-emergency">Surgeries</h6>
-                                            <p className="mb-2 accordion-title-detail">
+                                            <p className="mb-2 accordion-title-detail fw-medium">
 
                                                 {showData?.fertilityAssessment?.surgeries?.status
                                                     === 'Yes'

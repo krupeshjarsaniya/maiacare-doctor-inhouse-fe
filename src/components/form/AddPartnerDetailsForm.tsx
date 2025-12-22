@@ -175,7 +175,11 @@ export function BasicDetailsForm({
 
         if (!data.partnerName.trim()) errors.partnerName = "Name is required";
         if (!data.partnerGender.trim()) errors.partnerGender = "Age is required";
-        if (!data.partnerContactNumber.trim()) errors.partnerContactNumber = "Phone number is required";
+        if (!data.partnerContactNumber.trim()) {
+            errors.partnerContactNumber = "Phone number is required";
+        } else if(data.partnerContactNumber.trim().length < 12) {
+            errors.partnerContactNumber = "Phone number format is not valid";
+        }
 
         // Only check required here
         // if (!data.profileImage.trim()) {
@@ -206,30 +210,28 @@ export function BasicDetailsForm({
             setFormError(initialFormError);
             setActiveTab("medical history");
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
+            setShowData((prev: any) => ({
+                ...(prev || {}),
+                profile: {
+                    ...((prev && prev.profile) || {}),
+                    ...formData,
+                },
+            }));
+
+            const passData = {
+                patientId: String(patientId),
+                partnerImage: profileImage,
+                partnerName: formData.partnerName,
+                partnerContactNumber: formData.partnerContactNumber,
+                partnerEmail: formData.partnerEmail,
+                partnerGender: formData.partnerGender.charAt(0).toUpperCase() + formData.partnerGender.slice(1),
+                partnerAge: Number(formData.partnerAge)
+            };
+            setAllData({ ...allData, basicDetailsPassingData: passData })
         }
         // setShowData((prev: any) => ({ ...prev, profile: { ...prev.profile, ...formData } }));
-        setShowData((prev: any) => ({
-            ...(prev || {}),
-            profile: {
-                ...((prev && prev.profile) || {}),
-                ...formData,
-            },
-        }));
-        
-        const passData = {
-            patientId: String(patientId),
-            partnerImage: profileImage,
-            partnerName: formData.partnerName,
-            partnerContactNumber: formData.partnerContactNumber,
-            partnerEmail: formData.partnerEmail,
-            partnerGender: formData.partnerGender.charAt(0).toUpperCase() + formData.partnerGender.slice(1),
-            partnerAge: Number(formData.partnerAge)
-        };
-
-        const formDataToSend = new FormData();
-        formDataToSend.append("type", "doctor");
-        formDataToSend.append("files", formData.profileImage);
-
         // getProfileImageUrl(formDataImage)
         //     .then((response) => {
         //         console.log("getImageUrl: ", response.data);
@@ -252,7 +254,6 @@ export function BasicDetailsForm({
         //         console.log("Partner basic details adding error", err);
         //     });
 
-        setAllData({ ...allData, basicDetailsPassingData: passData })
     };
     return (
         <>
@@ -757,6 +758,7 @@ export function MedicalHistoryForm({
                         <InputFieldGroup
                             label="Family Medical History "
                             name="familyMedicalHistory"
+                            placeholder="Family medical history"
                             value={FormData.familyMedicalHistory}
                             onChange={handleChange}
                             required={false}
@@ -1054,6 +1056,7 @@ export function FertilityAssessment({
     setFormError: React.Dispatch<React.SetStateAction<any>>,
     formError?: any
 }) {
+    console.log("formData", formData);
 
     // type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 
@@ -1161,7 +1164,7 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Have you ever had a semen analysis?"
                             name="semenAnalysis"
-                            value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
+                            value={formData?.semenAnalysis?.status?.toString().toLowerCase()}
                             onChange={handleChange}
                             required={true}
                             error={formError.semenAnalysis}
@@ -1172,17 +1175,18 @@ export function FertilityAssessment({
                         />
 
 
-                        {formData?.semenAnalysis?.status?.toString().toLowerCase() === 'yes' && (
-                            <InputFieldGroup
-                                type="text"
-                                value={formData.semenAnalysis.semenAnalysisDetails}
-                                name='semenAnalysisContent'
-                                onChange={handleChange}
-                                error={formError.semenAnalysisDetails}
-                                placeholder="If yes, provide details"
-                                className="mt-2"
-                            />
-                        )}
+                        {(formData?.semenAnalysis?.status?.toString().toLowerCase() === "yes"
+                        ) && (
+                                <InputFieldGroup
+                                    type="text"
+                                    value={formData.semenAnalysis.semenAnalysisDetails}
+                                    name='semenAnalysisContent'
+                                    onChange={handleChange}
+                                    error={formError.semenAnalysisContent || formError.semenAnalysisDetails}
+                                    placeholder="If yes, provide details"
+                                    className="mt-2"
+                                />
+                            )}
 
 
                     </Col>
@@ -1191,7 +1195,7 @@ export function FertilityAssessment({
                             label="Have you experienced any fertility issues?"
                             name="fertilityIssues"
                             // value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
-                            value={String(formData?.fertilityIssues?.status?.toString().toLowerCase() || "yes")}
+                            value={String(formData?.fertilityIssues?.status?.toString().toLowerCase())}
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={formError.fertilityIssues}
@@ -1207,7 +1211,7 @@ export function FertilityAssessment({
                                 value={formData.fertilityIssues.fertilityIssuesDetails}
                                 name='fertilityIssuesContent'
                                 onChange={handleChange}
-                                error={formError.semenAnalysisContent}
+                                error={formError.fertilityIssuesContent}
 
                                 placeholder="If yes, provide details if available"
 
@@ -1225,11 +1229,11 @@ export function FertilityAssessment({
                             value={
                                 typeof formData?.fertilityTreatments?.status === "boolean"
                                     ? formData.fertilityTreatments.status ? "yes" : "no"
-                                    : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
+                                    : formData?.fertilityTreatments?.status?.toString().toLowerCase()
                             }
                             onChange={handleChange}
                             required={true}
-                            error={formError.fertilityTreatment}
+                            error={formError.fertilityTreatments}
                             options={[
                                 { label: "Yes", value: "yes" },
                                 { label: "No", value: "no" },
@@ -1258,15 +1262,10 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Any history of surgeries?"
                             name="surgeries"
-                            // value={
-                            //     typeof formData?.fertilityTreatments?.status === "boolean"
-                            //         ? formData.fertilityTreatments.status ? "yes" : "no"
-                            //         : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
-                            // }
                             value={
                                 typeof formData.surgeries.status === "boolean"
                                     ? formData.surgeries.status ? "yes" : "no"
-                                    : formData.surgeries.status?.toLowerCase() || ""
+                                    : formData.surgeries.status?.toLowerCase()
                             }
 
                             onChange={(e) => handleChange(e)}

@@ -169,26 +169,48 @@ export function LoginForms() {
                     const message = err?.response?.data?.details?.errors?.password || "failed";
 
 
-                    if (String(message).toLowerCase().includes("password") || String(message).toLowerCase().includes("failed")) {
-                        if (message.toLowerCase().includes("Login")) {
+                    // if (String(message).toLowerCase().includes("password") || String(message).toLowerCase().includes("failed")) {
+                    //     if (message.toLowerCase().includes("Login")) {
+                    //         setFormError((prev) => ({
+                    //             ...prev,
+                    //             password: message,
+                    //         }));
+                    //     } else {
+                    //         setFormError((prev) => ({
+                    //             ...prev,
+                    //             password: "Incorrect Password",
+                    //         }));
+                    //     }
+                    // } else if (message.toLowerCase().includes("email")) {
+                    //     setFormError((prev) => ({
+                    //         ...prev,
+                    //         email: message,
+                    //     }));
+                    // } else {
+                    //     toast.error(message);
+                    // }
+
+                    if (err?.response) {
+                        const { status, data } = err.response;
+                        const message = data?.message || "";
+
+                        if (status === 401) {
                             setFormError((prev) => ({
                                 ...prev,
-                                password: message,
+                                password: "Incorrect password",
+                            }));
+                        } else if (status === 404 || status === 400) {
+                            setFormError((prev) => ({
+                                ...prev,
+                                email: message,
                             }));
                         } else {
-                            setFormError((prev) => ({
-                                ...prev,
-                                password: "Incorrect Password",
-                            }));
+                            toast.error("Server error. Please try again later.");
                         }
-                    } else if (message.toLowerCase().includes("email")) {
-                        setFormError((prev) => ({
-                            ...prev,
-                            email: message,
-                        }));
                     } else {
-                        toast.error(message);
+                        toast.error("Network error. Please check your internet connection.");
                     }
+
                 });
 
             // router.push("/selectprofile");
@@ -306,7 +328,7 @@ export function LoginForms() {
                     />
                     <span>Continue with Google</span>
                 </button> */}
-                
+
             </form>
         </div>
     );

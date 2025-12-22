@@ -251,7 +251,7 @@ export const FertilityAssessmentForm = ({
                                     <RadioButtonGroup
                                         label="Do you experience menstrual issues?"
                                         name="menstrualIssues"
-                                        className="mt-2"
+                                        className="mt-2 edit-profile-field edit-profile-field-placeholder"
                                         value={formData.menstrualIssues || 'yes'}
                                         onChange={handleChange}
                                         required
@@ -289,7 +289,7 @@ export const FertilityAssessmentForm = ({
                                     <RadioButtonGroup
                                         label="Have you been pregnant before?"
                                         name="pregnancy"
-                                        className="mt-2"
+                                        className="mt-2 edit-profile-field edit-profile-field-placeholder"
                                         value={formData.pregnancy || 'yes'}
                                         onChange={handleChange}
                                         required
@@ -349,7 +349,7 @@ export const FertilityAssessmentForm = ({
                                             onChange={handleChange}
                                             error={formError.miscarriageOrEctopicDetails}
                                             placeholder="Enter miscarriage or ectopic pregnancy Details"
-                                            className='mt-md-3 mt-2'
+                                            className='mt-md-3 mt-2 edit-profile-field edit-profile-field-placeholder'
                                         />
                                     )}
                                 </Col>

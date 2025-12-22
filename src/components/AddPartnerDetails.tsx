@@ -151,25 +151,55 @@ export function PhysicalFertilityAssessmentAccordion({ setShowContent, setAddPar
         if (!safeTrim(data.weight)) errors.weight = "Weight is required";
         if (!safeTrim(data.bmi)) errors.bmi = "BMI is required";
         if (!safeTrim(data.bloodGroup)) errors.bloodGroup = "Blood group is required";
-        if (!safeTrim(data.systolic)) errors.systolic = "Blood pressure is required";
+        if (!safeTrim(data.systolic)) errors.systolic = "Systolic is required";
+        if (!safeTrim(data.diastolic)) errors.diastolic = "Diastolic is required";
         if (!safeTrim(data.heartRate)) errors.heartRate = "Heart rate is required";
 
-        if (!safeTrim(data.semenAnalysis)) errors.semenAnalysis = "Seminal Analysis is required";
-        if (data.semenAnalysis.status === "yes" && !safeTrim(data.semenAnalysisContent))
+        if (!data.semenAnalysis?.status) {
+            errors.semenAnalysis = "Seminal Analysis is required";
+        }
+
+        if (
+            data.semenAnalysis?.status === "Yes" &&
+            !safeTrim(data.semenAnalysis?.semenAnalysisDetails)
+        ) {
             errors.semenAnalysisContent = "Seminal Analysis Content is required";
+        }
 
-        if (!safeTrim(data.fertilityIssues)) errors.fertilityIssues = "Fertility Issues is required";
-        if (data.fertilityIssues.status === "yes" && !safeTrim(data.fertilityIssuesContent))
-            errors.fertilityIssuesContent = "Fertility Issues Content is required";
+        /* ---------------- Fertility Issues ---------------- */
+        if (!data.fertilityIssues?.status) {
+            errors.fertilityIssues = "Fertility Issues is required";
+        }
 
-        if (!safeTrim(data.fertilityTreatments)) errors.fertilityTreatments = "Fertility Treatment is required";
-        if (data.fertilityTreatments.status === "yes" && !safeTrim(data.fertilityTreatmentContent))
-            errors.fertilityTreatmentContent = "Fertility Treatment Content is required";
+        if (
+            data.fertilityIssues?.status === "Yes" &&
+            !safeTrim(data.fertilityIssues?.fertilityIssuesDetails)
+        ) {
+            errors.fertilityIssuesContent = "Fertility Issues details are required";
+        }
+        /* ---------------- Fertility Treatments ---------------- */
+        if (!data.fertilityTreatments?.status) {
+            errors.fertilityTreatments = "Fertility Treatment is required";
+        }
 
-        if (!safeTrim(data.surgeries)) errors.surgeries = "Surgeries is required";
-        if (data.surgeries.status === "yes" && !safeTrim(data.surgeriesContent))
-            errors.surgeriesContent = "Surgeries Content is required";
+        if (
+            data.fertilityTreatments?.status === "Yes" &&
+            !safeTrim(data.fertilityTreatments?.fertilityTreatmentsDetails)
+        ) {
+            errors.fertilityTreatmentContent = "Fertility Treatment details are required";
+        }
 
+        /* ---------------- Surgeries ---------------- */
+        if (!data.surgeries?.status) {
+            errors.surgeries = "Surgeries is required";
+        }
+
+        if (
+            data.surgeries?.status === "Yes" &&
+            !safeTrim(data.surgeries?.surgeriesDetails)
+        ) {
+            errors.surgeriesContent = "Surgeries details are required";
+        }
         return errors;
     };
 
@@ -208,13 +238,12 @@ export function PhysicalFertilityAssessmentAccordion({ setShowContent, setAddPar
         if (!allData) return;
         if (!allData?.medicalHistoryPassingData || !allData.basicDetailsPassingData) return;
 
-        addPartnerMedicalHistory(allData.medicalHistoryPassingData);
-        basicDetails(allData.basicDetailsPassingData);
+        // addPartnerMedicalHistory(allData.medicalHistoryPassingData);
+        // basicDetails(allData.basicDetailsPassingData);
 
-        console.log("allData", allData);
         addPartnerMedicalHistory(allData?.medicalHistoryPassingData)
         basicDetails(allData?.basicDetailsPassingData)
-        
+
         const passData = {
             patientId: id,
             height: formData.height,
@@ -266,26 +295,6 @@ export function PhysicalFertilityAssessmentAccordion({ setShowContent, setAddPar
                 surgeriesDetails: formData.surgeries.surgeriesDetails || ""
             }
         };
-
-        // const passFertilityAssessmentData = {
-        //     patientId: id,
-        //     semenAnalysis: {
-        //         status: formData.semenAnalysis.charAt(0).toUpperCase() + formData.semenAnalysis.slice(1),
-        //         semenAnalysisDetails: formData.semenAnalysisContent
-        //     },
-        //     fertilityIssues: {
-        //         status: formData.fertilityIssues.charAt(0).toUpperCase() + formData.fertilityIssues.slice(1),
-        //         fertilityIssuesDetails: formData.fertilityIssuesContent
-        //     },
-        //     fertilityTreatments: {
-        //         status: formData.fertilityTreatment.charAt(0).toUpperCase() + formData.fertilityTreatment.slice(1),
-        //         fertilityTreatmentsDetails: formData.fertilityTreatmentContent
-        //     },
-        //     surgeries: {
-        //         status: formData.surgeries.charAt(0).toUpperCase() + formData.surgeries.slice(1),
-        //         surgeriesDetails: formData.surgeriesContent
-        //     }
-        // }
 
         addPartnerfertilityAssessment(passFertilityAssessmentData)
             .then(() => {

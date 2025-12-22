@@ -830,7 +830,7 @@
 }
 
 .accordion-title-detail {
-    font-weight: 600 !important;
+    font-weight: 600;
     font-size: 16px !important;
     line-height: 20px !important;
     font-style: SemiBold !important;
