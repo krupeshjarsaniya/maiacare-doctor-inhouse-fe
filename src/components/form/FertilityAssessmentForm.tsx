@@ -68,17 +68,18 @@ export const FertilityAssessmentForm = ({
         console.log("data", data);
 
         if (!data.ageAtFirstMenstruation) errors.ageAtFirstMenstruation = "Age at first menstruation is required";
-        if (!data.menstrualIssuesDetails) errors.menstrualIssuesDetails = "Mesnstrual Issues Details is required";
-        if (!data.pregnantBeforeDetails) errors.pregnantBeforeDetails = "Pregnant Before Details is required";
-        if (!data.miscarriageOrEctopicDetails) errors.miscarriageOrEctopicDetails = "miscarriage or ectopic pregnancy Details is required";
+        if (data?.ageAtFirstMenstruation == "yes" && !data.menstrualIssuesDetails) errors.menstrualIssuesDetails = "Mesnstrual Issues Details is required";
+        
         if (!data.cycleLength) errors.cycleLength = "Cycle length is required";
         if (!data.periodLength) errors.periodLength = "Period length is required";
         if (!data.date) errors.date = "Date is required";
         if (!data.isCycleRegular) errors.isCycleRegular = "Is cycle regular is required";
         if (!data.menstrualIssues) errors.menstrualIssues = "Menstrual issues is required";
         if (!data.pregnancy) errors.pregnancy = "Pregnancy is required";
+        if (data?.pregnancy == "yes" && !data.pregnantBeforeDetails) errors.pregnantBeforeDetails = "Pregnant Before Details is required";
         if (!data.timeduration) errors.timeduration = "Duration is required";
         if (!data.ectopicpregnancy) errors.ectopicpregnancy = "Ectopic pregnancy is required";
+        if (data?.ectopicpregnancy == "yes" && !data.miscarriageOrEctopicDetails) errors.miscarriageOrEctopicDetails = "miscarriage or ectopic pregnancy Details is required";
 
         return errors;
     };

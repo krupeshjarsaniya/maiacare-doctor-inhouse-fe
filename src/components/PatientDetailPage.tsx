@@ -157,7 +157,7 @@ const formatPhoneNumber = (number?: string) => {
 
 
                   {/* EMAIL */}
-                  <div className="col-6">
+                  <div className="col-6" >
                     {loading ? (
                       <Skeleton width={60} height={16} />
                     ) : (

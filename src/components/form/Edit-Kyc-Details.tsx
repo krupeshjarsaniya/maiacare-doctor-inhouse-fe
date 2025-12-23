@@ -65,7 +65,6 @@ export default function KYCDetails({ onNext, onPrevious }: { onNext: () => void,
 
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
   const [aadharFile, setAadharFile] = useState<UploadedFile | null>(null);
-  console.log("aadharFile", aadharFile);
 
   const [panFile, setPanFile] = useState<UploadedFile | null>(null);
   const [licenceFile, setLicenceFile] = useState<UploadedFile | null>(null);
