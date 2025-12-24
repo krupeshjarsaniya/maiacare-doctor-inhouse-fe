@@ -1308,3 +1308,11 @@
 .fertilityAssesmentModalBaseSize {
   font-size: 14px !important;
 }
+
+.progressbar-step {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  font-style: Regular;
+  color: var(--color-profile-name);
+}

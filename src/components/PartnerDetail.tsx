@@ -33,7 +33,6 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     const [EditMedicalHistory, setEditMedicalHistory] = useState<boolean>(false);
 
     const [showData, setShowData] = useState<any>(partnerDetailData);
-    console.log("showData", showData);
 
     const initialFormDataAddPhysicalAssessment: PhysicalAssessmentDataModel = {
         id: "",
@@ -127,7 +126,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     ): FormErrorEditFertilityAssessment => {
 
         const errors: FormErrorEditFertilityAssessment = {};  // <-- IMPORTANT
-        
+
         // SEMEN ANALYSIS
         // const semenDetails = data.semenAnalysis?.semenAnalysisDetails?.trim() ?? "";
         // const semenStatus = data.semenAnalysis?.status;
@@ -153,11 +152,11 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
 
 
         // FERTILITY ISSUES
-        const issuesDetails = data.fertilityIssues?.status ?? "";
+        const issuesDetails = data.fertilityIssues?.fertilityIssuesDetails ?? "";
         const issuesStatus = data.fertilityIssues?.status;
 
         if (!issuesDetails) {
-            errors.fertilityIssues = "Fertility Issues is required";
+            errors.fertilityIssuesContent = "Fertility Issues is required";
         }
 
         if ((issuesStatus === "yes" || issuesStatus === true) && !issuesDetails) {
@@ -168,11 +167,11 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         const treatmentDetails = data.fertilityTreatments?.fertilityTreatmentsDetails?.trim() ?? "";
         const treatmentStatus = data.fertilityTreatments?.status;
 
-        if (!treatmentDetails) {
+        if (!treatmentStatus) {
             errors.fertilityTreatment = "Fertility Treatment is required";
         }
 
-        if ((treatmentStatus === "yes" || treatmentStatus === true) && !treatmentDetails) {
+        if ((treatmentStatus === "Yes" || treatmentStatus === true) && !treatmentDetails) {
             errors.fertilityTreatmentContent = "Fertility Treatment Content is required";
         }
 
@@ -180,14 +179,14 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         const surgeriesDetails = data.surgeries?.surgeriesDetails?.trim();
         const surgeriesStatus = data.surgeries?.status;
 
-        if (!surgeriesDetails) {
-            errors.surgeriesContent = "Surgeries is required";
+        if (!surgeriesStatus) {
+            errors.surgeries = "Surgeries is required";
         }
 
-        if ((surgeriesStatus === "yes" || surgeriesStatus === true) && !surgeriesDetails) {
+        if ((surgeriesStatus === "Yes" || surgeriesStatus === true) && !surgeriesDetails) {
             errors.surgeriesContent = "Surgeries Content is required";
         }
-
+        
         return errors;
     };
 
@@ -233,6 +232,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                 });
                 setAddPhysicalAssessment(false)
                 fetchPatient()
+                setFormDataAddPhysicalAssessment(initialFormDataAddPhysicalAssessment)
             })
             .catch((err) => {
                 console.log("PartnerPhysicalAssesment: ", err);
@@ -250,11 +250,10 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
             patientId: showData.patientId,
             ...formDataEditFertilityAssessment
         }
-        console.log("passData", passData);
+
 
         updatePartnerfertilityassessment(showData.patientId, passData)
             .then((res) => {
-                console.log("response from updatePartnerfertilityassessment: ", res);
                 fetchPatient()
                 toast.success('Changes saved successfully', {
                     icon: <BsInfoCircle size={22} color="white" />,
@@ -265,17 +264,6 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                 console.log("response from updatePartnerfertilityassessment: ", err);
             })
 
-        if (Object.keys(errors).length === 0) {
-            // setFormErrorEditFertilityAssessment(initialFormErrorEditFertilityAssessment);
-            // setEditFertilityAssessment(false);
-            // setShowContent(true);
-
-            // setShowData((prev: any) => ({ ...prev, fertilityAssessment: { ...prev.fertilityAssessment, ...formDataEditFertilityAssessment } }));
-            toast.success('Changes saved successfully', {
-                icon: <BsInfoCircle size={22} color="white" />,
-            });
-
-        }
     }
     const convertHeightToCm = (heightStr: string): string => {
         if (!heightStr) return '';

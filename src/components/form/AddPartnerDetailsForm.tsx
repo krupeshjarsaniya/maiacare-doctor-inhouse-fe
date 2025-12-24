@@ -174,17 +174,18 @@ export function BasicDetailsForm({
         const errors: FormError = {};
 
         if (!data.partnerName.trim()) errors.partnerName = "Name is required";
-        if (!data.partnerGender.trim()) errors.partnerGender = "Age is required";
+        if (!data.partnerGender.trim()) errors.partnerGender = "Gender is required";
+        if (!data.partnerAge.trim()) errors.partnerAge = "Age is required";
         if (!data.partnerContactNumber.trim()) {
             errors.partnerContactNumber = "Phone number is required";
-        } else if(data.partnerContactNumber.trim().length < 12) {
+        } else if (data.partnerContactNumber.trim().length < 12) {
             errors.partnerContactNumber = "Phone number format is not valid";
         }
 
         // Only check required here
-        // if (!data.profileImage.trim()) {
-        //     errors.profileImage = "Profile Image is required";
-        // }
+        if (!data.profileImage.trim()) {
+            errors.profileImage = "Profile Image is required";
+        }
 
         if (!data.partnerEmail.trim()) {
             errors.partnerEmail = "Email is required";
@@ -495,11 +496,12 @@ export function MedicalHistoryForm({
     const validateForm = (data: MedicalHistoryType): FormError => {
         const errors: FormError = {};
 
-        if (data.medication === 'yes' && !data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
-        if (data.surgeries === 'yes' && !data.surgeriescontent.trim()) errors.surgeriescontent = "Surgeries Content is required";
+        if (data.medication === 'Yes' && !data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
+        if (data.surgeries === 'Yes' && !data.surgeriescontent.trim()) errors.surgeriescontent = "Surgeries Content is required";
         if (!data.medicalCondition.length) errors.medicalCondition = "Medical Condition is required";
         if (!data.lifestyle.length) errors.lifestyle = "Lifestyle is required";
 
+        if (!data.familyMedicalHistory.trim()) errors.familyMedicalHistory = "Family Medical History is required";
         // if (!data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
 
         return errors;
@@ -728,6 +730,7 @@ export function MedicalHistoryForm({
                                 { id: "3", value: "Diabetes", label: "Diabetes" },
                                 { id: "4", value: "Hypertension", label: "Hypertension" },
                             ]}
+                            className="input-multiselect"
                             placeholder="Search Medical Condition or Allergies"
                             addPlaceholder="Add Medical Condition or Allergies"
                             required={true}
@@ -735,7 +738,6 @@ export function MedicalHistoryForm({
                             selectedOptionColor="var(--border-box)"
                             selectedOptionBorderColor="var(--border-box)"
                             error={medicalHistoryFormError.medicalCondition}
-                            className='h6'
                         />
 
 
@@ -779,6 +781,7 @@ export function MedicalHistoryForm({
                                 { id: "2", value: "Occasional drinker", label: "Occasional drinker" },
                                 { id: "3", value: "Vegetarian", label: "Vegetarian diet" },
                             ]}
+                            className="input-multiselect"
                             placeholder="Select Lifestyle"
                             addPlaceholder="Add Lifestyle"
                             required={true}
@@ -786,7 +789,6 @@ export function MedicalHistoryForm({
                             selectedOptionColor="var(--border-box-blue)"
                             selectedOptionBorderColor="var(--border-box-blue)"
                             error={medicalHistoryFormError.lifestyle}
-                            className='h6'
                         />
 
 
@@ -1206,7 +1208,7 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.fertilityIssues.status?.toString().toLowerCase() === 'yes' && (
+                        {formData?.fertilityIssues.status?.toString().toLowerCase() === 'yes' && (
                             <InputFieldGroup
                                 type="text"
                                 value={formData.fertilityIssues.fertilityIssuesDetails}
@@ -1264,9 +1266,9 @@ export function FertilityAssessment({
                             label="Any history of surgeries?"
                             name="surgeries"
                             value={
-                                typeof formData.surgeries.status === "boolean"
-                                    ? formData.surgeries.status ? "yes" : "no"
-                                    : formData.surgeries.status?.toLowerCase()
+                                typeof formData?.surgeries?.status === "boolean"
+                                    ? formData?.surgeries?.status ? "yes" : "no"
+                                    : formData?.surgeries?.status?.toLowerCase()
                             }
 
                             onChange={(e) => handleChange(e)}
@@ -1278,7 +1280,7 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.surgeries.status?.toString().toLowerCase() === "yes" && (
+                        {formData?.surgeries?.status?.toString().toLowerCase() === "yes" && (
                             <InputFieldGroup
                                 type="text"
                                 value={formData.surgeries.surgeriesDetails || ""}
