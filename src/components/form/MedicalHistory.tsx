@@ -88,6 +88,10 @@ export default function MedicalHistory({
         if (!data.medicalCondition?.length)
             errors.medicalCondition = "Medical Condition is required";
 
+
+        if (!data.familyMedicalHistory?.length)
+            errors.familyMedicalHistory = "family MedicalHistory is required";
+
         if (!data.lifestyle?.length)
             errors.lifestyle = "Lifestyle is required";
 

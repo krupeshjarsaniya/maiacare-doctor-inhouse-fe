@@ -178,7 +178,7 @@ export function BasicDetailsForm({
         if (!data.partnerContactNumber.trim()) {
             errors.partnerContactNumber = "Phone number is required";
         } else if(data.partnerContactNumber.trim().length < 12) {
-            errors.partnerContactNumber = "Phone number format is not valid";
+            errors.partnerContactNumber = "Phone number is not valid";
         }
 
         // Only check required here
@@ -495,9 +495,29 @@ export function MedicalHistoryForm({
     const validateForm = (data: MedicalHistoryType): FormError => {
         const errors: FormError = {};
 
-        if (data.medication === 'yes' && !data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
-        if (data.surgeries === 'yes' && !data.surgeriescontent.trim()) errors.surgeriescontent = "Surgeries Content is required";
+     
+  // Medication validation
+  if (!FormData.medication) {
+    errors.medication = "This field is required";
+  }
+
+  if (FormData.medication === "Yes" && !FormData.medicationcontent?.trim()) {
+    errors.medicationcontent = "Please enter medication details";
+  }
+
+  // Surgeries validation
+  if (!FormData.surgeries) {
+    errors.surgeries = "This field is required";
+  }
+
+  if (FormData.surgeries === "Yes" && !FormData.surgeriescontent?.trim()) {
+    errors.surgeriescontent = "Please enter surgery details";
+  }
         if (!data.medicalCondition.length) errors.medicalCondition = "Medical Condition is required";
+        
+        if (!data.familyMedicalHistory?.length)
+            errors.familyMedicalHistory = "family MedicalHistory is required";
+
         if (!data.lifestyle.length) errors.lifestyle = "Lifestyle is required";
 
         // if (!data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";

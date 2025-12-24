@@ -657,3 +657,6 @@ input:-webkit-autofill:active {
 .header-sub-title-color {
   color: #CBD5E1;
 }
+.accordion-button {
+  border-radius: 12px !important;
+}
