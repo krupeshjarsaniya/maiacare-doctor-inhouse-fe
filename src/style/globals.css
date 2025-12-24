@@ -660,3 +660,14 @@ input:-webkit-autofill:active {
 .accordion-button {
   border-radius: 12px !important;
 }
+
+
+@media (max-width: 1155px) and (min-width: 768px) {
+ .sub-heading-patient {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+}
+

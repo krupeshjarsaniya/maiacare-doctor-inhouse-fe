@@ -127,7 +127,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     ): FormErrorEditFertilityAssessment => {
 
         const errors: FormErrorEditFertilityAssessment = {};  // <-- IMPORTANT
-
+        
         // SEMEN ANALYSIS
         // const semenDetails = data.semenAnalysis?.semenAnalysisDetails?.trim() ?? "";
         // const semenStatus = data.semenAnalysis?.status;
@@ -153,7 +153,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
 
 
         // FERTILITY ISSUES
-        const issuesDetails = data.fertilityIssues?.fertilityIssuesDetails?.trim() ?? "";
+        const issuesDetails = data.fertilityIssues?.status ?? "";
         const issuesStatus = data.fertilityIssues?.status;
 
         if (!issuesDetails) {

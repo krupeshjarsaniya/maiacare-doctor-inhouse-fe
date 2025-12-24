@@ -755,7 +755,7 @@ export function MedicalHistoryForm({
                             selectedOptionColor="var(--border-box)"
                             selectedOptionBorderColor="var(--border-box)"
                             error={medicalHistoryFormError.medicalCondition}
-
+                            className='h6'
                         />
 
 
@@ -787,7 +787,7 @@ export function MedicalHistoryForm({
                         ></InputFieldGroup>
 
                     </Col>
-                    <Col md={12} className='mt-md-3 mt-2'>
+                    <Col md={12} className='mt-md-3 mt-2 h6'>
 
                         <InputSelectMultiSelect
                             label="Lifestyle"
@@ -806,6 +806,7 @@ export function MedicalHistoryForm({
                             selectedOptionColor="var(--border-box-blue)"
                             selectedOptionBorderColor="var(--border-box-blue)"
                             error={medicalHistoryFormError.lifestyle}
+                            className='h6'
                         />
 
 
