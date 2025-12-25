@@ -11,9 +11,9 @@ export function middleware(req: NextRequest) {
   const authPages = ["/login", "/register", "/forgotppassword", "/resetpassword", "/verification"];
 
   if (authPages.includes(pathname)) {
-    if (token) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    // if (token) {
+    //   return NextResponse.redirect(new URL("/", req.url));
+    // }
     return NextResponse.next();
   }
   

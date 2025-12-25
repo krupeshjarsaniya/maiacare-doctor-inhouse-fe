@@ -502,7 +502,8 @@ input[type=number] {
     color: var(--color-radio-lable);
     pointer-events: none;
     background-color: var(--color-white);
-
+    font-size: 16px;
+    font-weight: 500;
     width: 79%;
     white-space: nowrap;
     overflow: hidden;

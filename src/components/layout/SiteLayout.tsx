@@ -254,9 +254,9 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
             }
             <div>
               <h2 className="layout__title">{title}</h2>
-              <h4 className="layout__subtitle mt-1">{subtitle}</h4>
+              {/* <h4 className="layout__subtitle mt-1">{subtitle}</h4> */}
 
-              {/* <h4 className="layout__subtitle mt-1">{subtitle.includes(">")
+              <h4 className="layout__subtitle mt-1">{subtitle.includes(">")
                 ?
                 <>
                   <p><span className="header-sub-title-color">{subtitle.split(">")[0]}&nbsp;
@@ -267,7 +267,7 @@ const SiteLayout = ({ collapsed, setCollapsed, children }: Props) => {
                     &nbsp;</span>{subtitle.split(">")[1]}</p>
                 </>
                 :
-                subtitle}</h4> */}
+                subtitle}</h4>
             </div>
           </div>
           <div className="d-flex align-items-center gap-2">

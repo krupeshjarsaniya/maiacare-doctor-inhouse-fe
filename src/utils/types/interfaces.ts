@@ -242,3 +242,18 @@ export interface allDataType {
   basicDetailsPassingData?: PartnerData,
   medicalHistoryPassingData?: MedicalHistoryData
 }
+
+export interface RescheduleAppointmentForm {
+  reason: string;
+  type: string;
+  reasonForVisit: [];
+  newDate: string;
+  newTime: string;
+  forTime: string;
+  additionalNote: string;
+}
+
+export interface CancelAppointmentForm {
+  reason: string;
+  notes: string;
+}

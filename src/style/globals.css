@@ -22,6 +22,8 @@
   --border-box-blue: #3F83F8;
   --border-box-red: #F05252;
   --dashboard-card-green: #2ECF98;
+  --color-progressbar-success: #70AAA4;
+  --color-progressbar-secondary: #E6F3F2;
 }
 
 body {
@@ -576,7 +578,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   color: #2C313E !important;
 }
 
-.accordion-item:first-of-type>.accordion-header .accordion-button{
+.accordion-item:first-of-type>.accordion-header .accordion-button {
   border-radius: 12px !important;
 }
 
@@ -643,7 +645,7 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
   box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #3E4A57 !important; 
+  -webkit-text-fill-color: #3E4A57 !important;
   caret-color: #3E4A57;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -663,11 +665,92 @@ input:-webkit-autofill:active {
 
 
 @media (max-width: 1155px) and (min-width: 768px) {
- .sub-heading-patient {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .sub-heading-patient {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
+.progressbar-step-success {
+  height: 10px;
+  border-radius: 8px;
+  background-color: var(--color-progressbar-success) !important;
+}
+
+.progressbar-step-secondary {
+  height: 10px;
+  border-radius: 8px;
+  background-color: var(--color-progressbar-secondary) !important;
+}
+
+.appointment-reschedule-profile-icon-box {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #DDE1E8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appointment-reschedule-profile-name {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  font-style: Medium;
+  color: #131D2A;
+}
+
+.appointment-reschedule-profile-detail {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  font-style: Regular;
+  color: var(--color-sidebar-icon);
+}
+
+.appointment-reschedule-profile-schedule-detail {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  font-style: Medium;
+  color: var(--color-radio-lable);
+}
+
+.patient-profile-dot {
+  border: 1px solid var(--google-icon-border);
+  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-caret::after {
+  display: none !important;
+}
+
+.appointment-reschedule-profile-box {
+  background-color: var(--color-bg);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+
+.input-multiselect input::placeholder {
+  font-size: 16px;
+  color: #b0b4c1 !important;
+}
+
+.input-multiselect input::-moz-placeholder {
+  font-size: 16px;
+  color: #b0b4c1 !important;
+}
+
+.input-multiselect input::-ms-input-placeholder {
+  font-size: 16px;
+  color: #b0b4c1 !important;
+}
