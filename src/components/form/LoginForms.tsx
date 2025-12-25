@@ -139,60 +139,166 @@ export function LoginForms() {
     //     }
     // };
 
+    const validatePassword = (password: string): string => {
+        if (!password) return "Password is required";
+        if (password.length < 8) return "Password must be at least 8 characters";
+        if (!/[A-Z]/.test(password)) return "Must contain an uppercase letter";
+        if (!/[a-z]/.test(password)) return "Must contain a lowercase letter";
+        if (!/[0-9]/.test(password)) return "Must contain a number";
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password))
+            return "Must contain a special character";
+        return "";
+    };
+
+
+
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        // e.preventDefault();
+        // setIsSubmitted(true);
+
+        // const error = validatePassword(formData.password);
+        // setFormError((prev) => ({
+        //     ...prev,
+        //     password: error.password,
+        // }));
+        // console.log("Object.keys(formError).length", Object.keys(formError).length);
+
+        // if (Object.keys(formError).length == 0) {
+        //     if (validateForm()) {
+        //         login(formData)
+        //             .then((response) => {
+        //                 if (response.status) {
+        //                     toast.success(response?.data?.message || "Login successful!");
+        //                     console.log("response", response);
+
+        //                     // Save token
+        //                     const token = response?.data?.token;
+        //                     localStorage.setItem("token", token);
+        //                     setTokenInCookie(token);
+        //                     dispatch(setToken(token));
+        //                     dispatch(setAuthData(response?.data?.data.doctor));
+        //                     router.push("/dashboard");
+
+        //                     setFormError(defaultFormError);
+        //                     setIsSubmitted(false);
+        //                     setTouched({ email: false, password: false });
+        //                 }
+        //             })
+        //             .catch((err) => {
+        //                 console.log(err);
+
+        //                 const message = err?.response?.data?.details?.errors?.password || "failed";
+
+
+        //                 // if (String(message).toLowerCase().includes("password") || String(message).toLowerCase().includes("failed")) {
+        //                 //     if (message.toLowerCase().includes("Login")) {
+        //                 //         setFormError((prev) => ({
+        //                 //             ...prev,
+        //                 //             password: message,
+        //                 //         }));
+        //                 //     } else {
+        //                 //         setFormError((prev) => ({
+        //                 //             ...prev,
+        //                 //             password: "Incorrect Password",
+        //                 //         }));
+        //                 //     }
+        //                 // } else if (message.toLowerCase().includes("email")) {
+        //                 //     setFormError((prev) => ({
+        //                 //         ...prev,
+        //                 //         email: message,
+        //                 //     }));
+        //                 // } else {
+        //                 //     toast.error(message);
+        //                 // }
+
+        //                 if (err?.response) {
+        //                     const { status, data } = err.response;
+        //                     const message = data?.message || "";
+
+        //                     if (status === 401 || (status === 400 && message.includes('password'))) {
+        //                         setFormError((prev) => ({
+        //                             ...prev,
+        //                             password: message,
+        //                         }));
+        //                     } else if (status === 404 || (status === 400 && message.includes('email'))) {
+        //                         setFormError((prev) => ({
+        //                             ...prev,
+        //                             email: message,
+        //                         }));
+        //                     } else {
+        //                         toast.error("Server error. Please try again later.");
+        //                     }
+        //                 } else {
+        //                     toast.error("Network error. Please check your internet connection.");
+        //                 }
+
+        //             });
+
+        //         // router.push("/selectprofile");
+        //     }
+        // }
+
         e.preventDefault();
         setIsSubmitted(true);
 
-        if (validateForm()) {
-            login(formData)
-                .then((response) => {
-                    if (response.status) {
-                        toast.success(response?.data?.message || "Login successful!");
-                        console.log("response", response);
+        const passwordError = validatePassword(formData.password);
 
-                        // Save token
-                        const token = response?.data?.token;
-                        localStorage.setItem("token", token);
-                        setTokenInCookie(token);
-                        dispatch(setToken(token));
-                        dispatch(setAuthData(response?.data?.data.doctor));
-                        router.push("/dashboard");
+        const newErrors = {
+            ...defaultFormError,
+            password: passwordError,
+        };
 
-                        setFormError(defaultFormError);
-                        setIsSubmitted(false);
-                        setTouched({ email: false, password: false });
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
+        setFormError(newErrors);
 
-                    const message = err?.response?.data?.details?.errors?.password || "failed";
+        if (Object.values(newErrors).some((err) => err)) {
+            return; 
+        }
 
+        if (!validateForm()) return;
 
-                    if (String(message).toLowerCase().includes("password") || String(message).toLowerCase().includes("failed")) {
-                        if (message.toLowerCase().includes("Login")) {
-                            setFormError((prev) => ({
-                                ...prev,
-                                password: message,
-                            }));
-                        } else {
-                            setFormError((prev) => ({
-                                ...prev,
-                                password: "Incorrect Password",
-                            }));
-                        }
-                    } else if (message.toLowerCase().includes("email")) {
+        login(formData)
+            .then((response) => {
+                if (response.status) {
+                    toast.success(response?.data?.message || "Login successful!");
+
+                    const token = response?.data?.token;
+                    localStorage.setItem("token", token);
+                    setTokenInCookie(token);
+                    dispatch(setToken(token));
+                    dispatch(setAuthData(response?.data?.data.doctor));
+
+                    router.push("/dashboard");
+
+                    setFormError(defaultFormError);
+                    setIsSubmitted(false);
+                    setTouched({ email: false, password: false });
+                }
+            })
+            .catch((err) => {
+                const message = err?.response?.data?.details?.errors?.password || "failed";
+                if (err?.response) {
+                    const { status, data } = err.response;
+                    const message = data?.message || "";
+
+                    if (status === 401 || (status === 400 && message.includes('password'))) {
+                        setFormError((prev) => ({
+                            ...prev,
+                            password: message,
+                        }));
+                    } else if (status === 404 || (status === 400 && message.includes('email'))) {
                         setFormError((prev) => ({
                             ...prev,
                             email: message,
                         }));
                     } else {
-                        toast.error(message);
+                        toast.error("Server error. Please try again later.");
                     }
-                });
+                } else {
+                    toast.error("Network error. Please check your internet connection.");
+                }
+            });
 
-            // router.push("/selectprofile");
-        }
+
     };
 
     return (
@@ -293,7 +399,7 @@ export function LoginForms() {
                 </Button>
 
 
-                <button
+                {/* <button
                     type="button"
                     // onClick={handleGoogleLogin}
                     className="btn mt-4 w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold shadow-lg"
@@ -305,7 +411,8 @@ export function LoginForms() {
                         height={18}
                     />
                     <span>Continue with Google</span>
-                </button>
+                </button> */}
+
             </form>
         </div>
     );

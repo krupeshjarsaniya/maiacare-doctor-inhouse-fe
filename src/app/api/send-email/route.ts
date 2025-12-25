@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
     .otp-code {
       font-size: 42px;
       font-weight: bold;
-      letter-spacing: 6px;
+      letter-spacing: 0px;
       text-align: center;
       margin: 25px 0;
       font-family: 'Courier New', monospace;
@@ -228,35 +228,35 @@ export async function POST(request: NextRequest) {
   </tr>
 </table>
 
-      <table width="600" align="center" bgcolor="#ffffff" style="max-width:600px;">
+      <table width="600" align="center" bgcolor="#ffffff" style="max-width:600px;border-radius: 4px;">
         
         <!-- MAIN CONTENT -->
         <tr>
           <td style="padding:40px;">
 
-            <p>Hi ${capitalizedName},</p>
+            <p style="font-size: 16px;">Hi ${capitalizedName},</p>
 
-            <p>
+            <p style="font-size: 16px;">
               You recently requested to reset your password for the account associated with
-              <strong>${to}</strong>
+              <span style="text-decoration: none; color: black;">${to}</span>
             </p>
 
-            <p style="font-weight:600;">
+            <p style="font-weight:600;font-size: 16px;">
               To complete the password reset process, enter the following verification code:
             </p>
 
-            <div style="font-size:42px;font-weight:bold;letter-spacing:6px;text-align:center;margin:25px 0;font-family:Courier New, monospace;">
+            <div style="font-size:42px;font-weight:bold;letter-spacing:0px;text-align:center;margin:25px 0;font-family:Poppins New, monospace;">
               ${otp}
             </div>
 
-            <p style="font-size:14px;">
+            <p style="font-size:16px;">
               This code is valid for 30 minutes. For your security, please do not share this code with anyone.
             </p>
 
-            <p style="margin-top:30px;">
+            <p style="margin-top:30px;font-size:16px;line-height: 37px;">
               Thank you for choosing Maia Care!<br/>
               Sincerely,<br/>
-              <strong>The Maia Care Team</strong>
+              The Maia Care Team
             </p>
 
           </td>
@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
               <td style="padding-left:10px;">
                 <a href="https://twitter.com">
                   <img
-                    src="https://download.logo.wine/logo/Twitter/Twitter-Logo.wine.png"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvFRj3ChqzDQ7VdqRlLeYTH6rcUYslFe9xHg&s"
                     width="30"
                     alt="Twitter"
                     style="display:block;border:0;opacity:0.25;"
@@ -307,7 +307,7 @@ export async function POST(request: NextRequest) {
               <td style="padding-left:10px;">
                 <a href="https://facebook.com">
                   <img
-                    src="https://cdn.prod.website-files.com/63c5640295a3b83ae7861a3c/645800e19178cb167e405da0_Facebook-logo.png"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRODwDi4H1v8-7IDmp46fj5mxMU3h0VcL3m3A&s"
                     width="30"
                     alt="Facebook"
                     style="display:block;border:0;opacity:0.25;"
@@ -317,7 +317,7 @@ export async function POST(request: NextRequest) {
               <td style="padding-left:10px;">
                 <a href="https://linkedin.com">
                   <img
-                    src="https://play-lh.googleusercontent.com/kMofEFLjobZy_bCuaiDogzBcUT-dz3BBbOrIEjJ-hqOabjK8ieuevGe6wlTD15QzOqw=s256-rw"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6MHHjib9rQDYLaC2oHDEOBbTJlOjR7CALDA&s"
                     width="18"
                     alt="LinkedIn"
                     style="display:block;border:0;opacity:0.25;"

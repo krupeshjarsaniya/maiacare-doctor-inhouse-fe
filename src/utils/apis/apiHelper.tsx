@@ -2,7 +2,7 @@ import { FertilityAssessmentType } from "../types/interfaces";
 import { LoginRequest } from "../types/requestInterface";
 import apiClient from "./axiosInstance";
 import api from "./axiosInstance";
-
+// import axios from 'axios';
 export const login = (data: LoginRequest) => {
   return apiClient.post("/auth/login", data);
 }
@@ -161,7 +161,7 @@ export const getPhysicalAssessment = (
 };
 
 
-export const updatephysicalassessment = (data: any, id:string|undefined) => {
+export const updatephysicalassessment = (data: any, id: string | undefined) => {
   const token = localStorage.getItem("token");
 
   return apiClient.put(`/patient/physical-assessment/${id}`, data, {
@@ -395,3 +395,4 @@ export const consultation = (data: any) => {
     }
   });
 };
+

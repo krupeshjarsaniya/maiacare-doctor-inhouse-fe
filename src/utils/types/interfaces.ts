@@ -58,10 +58,31 @@ export interface FertilityAssessmentFormType {
   date: string;
   isCycleRegular: string;
   menstrualIssues: string;
+  menstrualIssuesDetails: string;
   pregnancy: string;
+  pregnantBeforeDetails: string
   timeduration: string;
   ectopicpregnancy: string;
+  miscarriageOrEctopicDetails: string;
 }
+
+export interface FertilityAssessmentApiType {
+  menstrualCycle?: {
+    ageAtFirstMenstruation?: string;
+    cycleLength?: string;
+    periodLength?: string;
+    lastPeriodDate?: string;
+    isCycleRegular?: "Regular" | "Irregular";
+    menstrualIssues?: string; // "Yes" | "No"
+  };
+
+  pregnancy?: {
+    pregnantBefore?: string; // "Yes" | "No"
+    tryingToConceiveDuration?: string;
+    miscarriageOrEctopicHistory?: string; // "Yes" | "No"
+  };
+}
+
 
 
 
@@ -185,7 +206,7 @@ interface DocumentType {
 }
 
 export interface PartnerData {
-  patientId: string|number;
+  patientId: string | number;
   partnerImage: string | null;
   partnerName: string;
   partnerContactNumber: string;
@@ -220,4 +241,19 @@ export interface MedicalHistoryData {
 export interface allDataType {
   basicDetailsPassingData?: PartnerData,
   medicalHistoryPassingData?: MedicalHistoryData
+}
+
+export interface RescheduleAppointmentForm {
+  reason: string;
+  type: string;
+  reasonForVisit: [];
+  newDate: string;
+  newTime: string;
+  forTime: string;
+  additionalNote: string;
+}
+
+export interface CancelAppointmentForm {
+  reason: string;
+  notes: string;
 }

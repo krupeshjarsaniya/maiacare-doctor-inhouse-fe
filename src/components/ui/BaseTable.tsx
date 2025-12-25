@@ -205,8 +205,8 @@ type CommonTableProps<TData> = {
   totalPages?: number;
   activePage?: number;
   setActivePage?: React.Dispatch<React.SetStateAction<number>>;
-
   loading?: boolean;
+  onRowClick?: (row: number | string | any) => void;
 };
 
 export default function CommonTable<TData>({
@@ -217,6 +217,7 @@ export default function CommonTable<TData>({
   activePage = 1,
   setActivePage,
   loading = false,
+  onRowClick,
 }: CommonTableProps<TData>) {
 
   const table = useReactTable({
@@ -351,7 +352,7 @@ export default function CommonTable<TData>({
             :
             /* -------------- REAL DATA ---------------- */
             table.getRowModel().rows.map(row => (
-              <tr key={row.id}>
+              <tr key={row.id} onClick={() => onRowClick?.(row.original)} className='cursor-pointer'>
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id} className='base-table-color'>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

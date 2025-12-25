@@ -174,13 +174,18 @@ export function BasicDetailsForm({
         const errors: FormError = {};
 
         if (!data.partnerName.trim()) errors.partnerName = "Name is required";
-        if (!data.partnerGender.trim()) errors.partnerGender = "Age is required";
-        if (!data.partnerContactNumber.trim()) errors.partnerContactNumber = "Phone number is required";
+        if (!data.partnerGender.trim()) errors.partnerGender = "Gender is required";
+        if (!data.partnerAge.trim()) errors.partnerAge = "Age is required";
+        if (!data.partnerContactNumber.trim()) {
+            errors.partnerContactNumber = "Phone number is required";
+        } else if (data.partnerContactNumber.trim().length < 12) {
+            errors.partnerContactNumber = "Phone number format is not valid";
+        }
 
         // Only check required here
-        // if (!data.profileImage.trim()) {
-        //     errors.profileImage = "Profile Image is required";
-        // }
+        if (!data.profileImage.trim()) {
+            errors.profileImage = "Profile Image is required";
+        }
 
         if (!data.partnerEmail.trim()) {
             errors.partnerEmail = "Email is required";
@@ -206,30 +211,28 @@ export function BasicDetailsForm({
             setFormError(initialFormError);
             setActiveTab("medical history");
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
+            setShowData((prev: any) => ({
+                ...(prev || {}),
+                profile: {
+                    ...((prev && prev.profile) || {}),
+                    ...formData,
+                },
+            }));
+
+            const passData = {
+                patientId: String(patientId),
+                partnerImage: profileImage,
+                partnerName: formData.partnerName,
+                partnerContactNumber: formData.partnerContactNumber,
+                partnerEmail: formData.partnerEmail,
+                partnerGender: formData.partnerGender.charAt(0).toUpperCase() + formData.partnerGender.slice(1),
+                partnerAge: Number(formData.partnerAge)
+            };
+            setAllData({ ...allData, basicDetailsPassingData: passData })
         }
         // setShowData((prev: any) => ({ ...prev, profile: { ...prev.profile, ...formData } }));
-        setShowData((prev: any) => ({
-            ...(prev || {}),
-            profile: {
-                ...((prev && prev.profile) || {}),
-                ...formData,
-            },
-        }));
-        
-        const passData = {
-            patientId: String(patientId),
-            partnerImage: profileImage,
-            partnerName: formData.partnerName,
-            partnerContactNumber: formData.partnerContactNumber,
-            partnerEmail: formData.partnerEmail,
-            partnerGender: formData.partnerGender.charAt(0).toUpperCase() + formData.partnerGender.slice(1),
-            partnerAge: Number(formData.partnerAge)
-        };
-
-        const formDataToSend = new FormData();
-        formDataToSend.append("type", "doctor");
-        formDataToSend.append("files", formData.profileImage);
-
         // getProfileImageUrl(formDataImage)
         //     .then((response) => {
         //         console.log("getImageUrl: ", response.data);
@@ -252,7 +255,6 @@ export function BasicDetailsForm({
         //         console.log("Partner basic details adding error", err);
         //     });
 
-        setAllData({ ...allData, basicDetailsPassingData: passData })
     };
     return (
         <>
@@ -494,11 +496,12 @@ export function MedicalHistoryForm({
     const validateForm = (data: MedicalHistoryType): FormError => {
         const errors: FormError = {};
 
-        if (data.medication === 'yes' && !data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
-        if (data.surgeries === 'yes' && !data.surgeriescontent.trim()) errors.surgeriescontent = "Surgeries Content is required";
+        if (data.medication === 'Yes' && !data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
+        if (data.surgeries === 'Yes' && !data.surgeriescontent.trim()) errors.surgeriescontent = "Surgeries Content is required";
         if (!data.medicalCondition.length) errors.medicalCondition = "Medical Condition is required";
         if (!data.lifestyle.length) errors.lifestyle = "Lifestyle is required";
 
+        if (!data.familyMedicalHistory.trim()) errors.familyMedicalHistory = "Family Medical History is required";
         // if (!data.medicationcontent.trim()) errors.medicationcontent = "Medication Content is required";
 
         return errors;
@@ -727,6 +730,7 @@ export function MedicalHistoryForm({
                                 { id: "3", value: "Diabetes", label: "Diabetes" },
                                 { id: "4", value: "Hypertension", label: "Hypertension" },
                             ]}
+                            className="input-multiselect"
                             placeholder="Search Medical Condition or Allergies"
                             addPlaceholder="Add Medical Condition or Allergies"
                             required={true}
@@ -734,7 +738,6 @@ export function MedicalHistoryForm({
                             selectedOptionColor="var(--border-box)"
                             selectedOptionBorderColor="var(--border-box)"
                             error={medicalHistoryFormError.medicalCondition}
-
                         />
 
 
@@ -757,6 +760,7 @@ export function MedicalHistoryForm({
                         <InputFieldGroup
                             label="Family Medical History "
                             name="familyMedicalHistory"
+                            placeholder="Family medical history"
                             value={FormData.familyMedicalHistory}
                             onChange={handleChange}
                             required={false}
@@ -765,7 +769,7 @@ export function MedicalHistoryForm({
                         ></InputFieldGroup>
 
                     </Col>
-                    <Col md={12} className='mt-md-3 mt-2'>
+                    <Col md={12} className='mt-md-3 mt-2 h6'>
 
                         <InputSelectMultiSelect
                             label="Lifestyle"
@@ -777,6 +781,7 @@ export function MedicalHistoryForm({
                                 { id: "2", value: "Occasional drinker", label: "Occasional drinker" },
                                 { id: "3", value: "Vegetarian", label: "Vegetarian diet" },
                             ]}
+                            className="input-multiselect"
                             placeholder="Select Lifestyle"
                             addPlaceholder="Add Lifestyle"
                             required={true}
@@ -1054,6 +1059,7 @@ export function FertilityAssessment({
     setFormError: React.Dispatch<React.SetStateAction<any>>,
     formError?: any
 }) {
+    console.log("formData", formData);
 
     // type FormError = Partial<Record<keyof FertilityAssessmentType, string>>;
 
@@ -1161,7 +1167,7 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Have you ever had a semen analysis?"
                             name="semenAnalysis"
-                            value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
+                            value={formData?.semenAnalysis?.status?.toString().toLowerCase()}
                             onChange={handleChange}
                             required={true}
                             error={formError.semenAnalysis}
@@ -1172,17 +1178,18 @@ export function FertilityAssessment({
                         />
 
 
-                        {formData?.semenAnalysis?.status?.toString().toLowerCase() === 'yes' && (
-                            <InputFieldGroup
-                                type="text"
-                                value={formData.semenAnalysis.semenAnalysisDetails}
-                                name='semenAnalysisContent'
-                                onChange={handleChange}
-                                error={formError.semenAnalysisDetails}
-                                placeholder="If yes, provide details"
-                                className="mt-2"
-                            />
-                        )}
+                        {(formData?.semenAnalysis?.status?.toString().toLowerCase() === "yes"
+                        ) && (
+                                <InputFieldGroup
+                                    type="text"
+                                    value={formData.semenAnalysis.semenAnalysisDetails}
+                                    name='semenAnalysisContent'
+                                    onChange={handleChange}
+                                    error={formError.semenAnalysisContent || formError.semenAnalysisDetails}
+                                    placeholder="If yes, provide details"
+                                    className="mt-2"
+                                />
+                            )}
 
 
                     </Col>
@@ -1191,7 +1198,7 @@ export function FertilityAssessment({
                             label="Have you experienced any fertility issues?"
                             name="fertilityIssues"
                             // value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
-                            value={String(formData?.fertilityIssues?.status?.toString().toLowerCase() || "yes")}
+                            value={String(formData?.fertilityIssues?.status?.toString().toLowerCase())}
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={formError.fertilityIssues}
@@ -1201,13 +1208,13 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.fertilityIssues.status?.toString().toLowerCase() === 'yes' && (
+                        {formData?.fertilityIssues.status?.toString().toLowerCase() === 'yes' && (
                             <InputFieldGroup
                                 type="text"
                                 value={formData.fertilityIssues.fertilityIssuesDetails}
                                 name='fertilityIssuesContent'
                                 onChange={handleChange}
-                                error={formError.semenAnalysisContent}
+                                error={formError.fertilityIssuesContent}
 
                                 placeholder="If yes, provide details if available"
 
@@ -1225,11 +1232,11 @@ export function FertilityAssessment({
                             value={
                                 typeof formData?.fertilityTreatments?.status === "boolean"
                                     ? formData.fertilityTreatments.status ? "yes" : "no"
-                                    : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
+                                    : formData?.fertilityTreatments?.status?.toString().toLowerCase()
                             }
                             onChange={handleChange}
                             required={true}
-                            error={formError.fertilityTreatment}
+                            error={formError.fertilityTreatments}
                             options={[
                                 { label: "Yes", value: "yes" },
                                 { label: "No", value: "no" },
@@ -1258,15 +1265,10 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Any history of surgeries?"
                             name="surgeries"
-                            // value={
-                            //     typeof formData?.fertilityTreatments?.status === "boolean"
-                            //         ? formData.fertilityTreatments.status ? "yes" : "no"
-                            //         : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
-                            // }
                             value={
-                                typeof formData.surgeries.status === "boolean"
-                                    ? formData.surgeries.status ? "yes" : "no"
-                                    : formData.surgeries.status?.toLowerCase() || ""
+                                typeof formData?.surgeries?.status === "boolean"
+                                    ? formData?.surgeries?.status ? "yes" : "no"
+                                    : formData?.surgeries?.status?.toLowerCase()
                             }
 
                             onChange={(e) => handleChange(e)}
@@ -1278,7 +1280,7 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.surgeries.status?.toString().toLowerCase() === "yes" && (
+                        {formData?.surgeries?.status?.toString().toLowerCase() === "yes" && (
                             <InputFieldGroup
                                 type="text"
                                 value={formData.surgeries.surgeriesDetails || ""}

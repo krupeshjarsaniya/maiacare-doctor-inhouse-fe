@@ -26,21 +26,50 @@ export default function MedicalHistory({
 }: MedicalHistoryProps) {
 
     type FormError = Partial<Record<keyof MedicalHistoryType, string>>;
+    console.log("initialData",initialData);
+    
+    const lifestyleOptions = [
+        { id: "1", value: "Non-smoker", label: "Non-smoker" },
+        { id: "2", value: "Occasional alcohol", label: "Occasional alcohol" },
+        { id: "3", value: "Vegetarian diet", label: "Vegetarian diet" },
+    ];
+
+    const medicalConditionOptions = [
+        { id: "1", value: "PCOS", label: "PCOS" },
+        { id: "2", value: "Thyroid Disorder", label: "Thyroid Disorder" },
+        { id: "3", value: "Diabetes", label: "Diabetes" },
+        { id: "4", value: "Hypertension", label: "Hypertension" },
+    ];
 
     const initialFormData: MedicalHistoryType = {
-        medication: initialData?.medication || "no",
-        surgeries: initialData?.surgeries || "yes",
-        surgeriesContent: initialData?.surgeriescontent || "",
-        medicalCondition: initialData?.medicalCondition || [],
-        familyMedicalHistory: initialData?.familyMedicalHistory || "",
-        lifestyle: initialData?.lifestyle || [],
+        medication: initialData?.medications?.status.toLowerCase() || "no",
+        surgeries: initialData?.surgeries?.status.toLowerCase() || "yes",
+        surgeriesContent: initialData?.surgeries?.surgeriesDetails || "",
+        medicalCondition:
+            Array.isArray(initialData?.conditions)
+                ? initialData.conditions.map((item: any) => ({
+                    id: medicalConditionOptions.find(opt => opt.value === item)?.id || item,
+                    value: item,
+                    label: item
+                }))
+                : [],
+        // medicalCondition: initialData?.medications?.medicationsDetails || [],
+        familyMedicalHistory: initialData?.familyHistory || "",
+        lifestyle:
+            Array.isArray(initialData?.lifestyle)
+                ? initialData.lifestyle.map((item: any) => ({
+                    id: lifestyleOptions.find(opt => opt.value === item)?.id || item,
+                    value: item,
+                    label: item
+                }))
+                : [],
 
         // FIXED ENUM VALUES (backend requires capitalized)
-        stress: initialData?.stress || "High",
-        exercise: initialData?.exercise || "Rarely",
+        stress: initialData?.stressLevel || "High",
+        exercise: initialData?.exerciseFrequency || "Rarely",
 
-        medicationcontent: initialData?.medicationcontent || "",
-        surgeriescontent: initialData?.surgeriescontent || "",
+        medicationcontent: initialData?.medications?.medicationsDetails || "",
+        surgeriescontent: initialData?.surgeries?.surgeriesDetails || "",
     };
 
     const initialFormError: FormError = {};
@@ -84,7 +113,7 @@ export default function MedicalHistory({
 
         if (Object.keys(errors).length === 0) {
             console.log("formData", formData);
-            
+
             try {
                 if (handleSaveMedicalHistory) {
                     await handleSaveMedicalHistory(formData);
@@ -103,6 +132,8 @@ export default function MedicalHistory({
             }
         }
     };
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -174,18 +205,14 @@ export default function MedicalHistory({
                             setFormData(prev => ({ ...prev, medicalCondition: values }));
                             setFormError(prev => ({ ...prev, medicalCondition: "" }));
                         }}
-                        options={[
-                            { id: "1", value: "PCOS", label: "PCOS" },
-                            { id: "2", value: "Thyroid Disorder", label: "Thyroid Disorder" },
-                            { id: "3", value: "Diabetes", label: "Diabetes" },
-                            { id: "4", value: "Hypertension", label: "Hypertension" },
-                        ]}
+                        options={medicalConditionOptions}
                         placeholder="Search Medical Condition or Allergies"
                         addPlaceholder="Add Medical Condition or Allergies"
                         required={true}
                         selectedOptionColor="var(--border-box)"
                         selectedOptionBorderColor="var(--border-box)"
                         error={formError.medicalCondition}
+                        className='fs-6'
                     />
                 </Col>
 
@@ -211,17 +238,14 @@ export default function MedicalHistory({
                             setFormData(prev => ({ ...prev, lifestyle: values }));
                             setFormError(prev => ({ ...prev, lifestyle: "" }));
                         }}
-                        options={[
-                            { id: "1", value: "Non-smoker", label: "Non-smoker" },
-                            { id: "2", value: "Occasional alcohol", label: "Occasional alcohol" },
-                            { id: "3", value: "Vegetarian diet", label: "Vegetarian diet" },
-                        ]}
+                        options={lifestyleOptions}
                         placeholder="Select Lifestyle"
                         addPlaceholder="Add Lifestyle"
                         required={true}
                         selectedOptionColor="var(--border-box-blue)"
                         selectedOptionBorderColor="var(--border-box-blue)"
                         error={formError.lifestyle}
+                        className='fs-6'
                     />
                 </Col>
 

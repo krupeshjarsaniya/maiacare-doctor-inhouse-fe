@@ -30,7 +30,7 @@ export default Master;
 
 function MasterHelper({ children }: MasterProps) {
   const [collapsed, setCollapsed] = useState(true);
-  const authPages = ["/login", "/register", "/forgotppassword", "/resetpassword", "/verification"];
+  const authPages = ["/login", "/register"];
   const pathName = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -64,7 +64,7 @@ function MasterHelper({ children }: MasterProps) {
 
   return (
     <main>
-      {authPages.includes(pathName) ? (
+      {authPages.includes(pathName) || pathName == "/forgotppassword" || pathName == "/resetpassword" || pathName ==  "/verification" ? (
         children //Implement auth layout here 
       ) : (
         <div className="d-flex">

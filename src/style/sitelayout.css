@@ -17,6 +17,7 @@
   transition: width 0.3s ease;
   position: relative;
   padding: 1rem 0.5rem;
+   z-index: 120;
 }
 
 .sidebar--expanded {

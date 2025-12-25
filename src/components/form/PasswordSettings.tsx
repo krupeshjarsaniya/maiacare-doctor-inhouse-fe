@@ -111,36 +111,33 @@ function PasswordSettings() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // const errors = validateForm(formData);
-        // setFormError(errors);
-        // console.log("errors", errors);
-        // if (Object.keys(errors).length === 0) {
+        const errors = validateForm(formData);
+        setFormError(errors);
+        if (Object.keys(errors).length === 0) {
 
-        //     setFormError(initialFormError);
-        // }
-        const passData = { oldPassword: formData.currentpassword, newPassword: formData.confirmpassword }
+            setFormError(initialFormError);
 
-        changePassword(passData)
-            .then((response) => {
+            const passData = { oldPassword: formData.currentpassword, newPassword: formData.confirmpassword }
 
-                console.log("response", response.data);
-                if (response.status == 200) {
-                    router.push("/dashboard");
-                    console.log("Password changed successfully");
-                } else {
-                    const errors = validateForm(formData);
-                    setFormError(errors);
-                    if (Object.keys(errors).length === 0) {
+            changePassword(passData)
+                .then((response) => {
+                    if (response.status == 200) {
+                        router.push("/dashboard");
+                    } else {
+                        const errors = validateForm(formData);
+                        setFormError(errors);
+                        if (Object.keys(errors).length === 0) {
 
-                        setFormError(initialFormError);
+                            setFormError(initialFormError);
+                        }
                     }
-                    console.log("Error");
-                }
 
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+
     };
 
     return (
