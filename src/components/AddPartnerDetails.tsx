@@ -9,7 +9,7 @@ import Button from "./ui/Button";
 import { allDataType, FertilityAssessmentType, MedicalHistoryData, PartnerData } from "@/utils/types/interfaces";
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
-import { addPartnerfertilityAssessment, addPartnerMedicalHistory, addPartnerPhysicalAssesment, basicDetails } from "@/utils/apis/apiHelper";
+import { addPartnerfertilityAssessment, addPartnerMedicalHistory, addPartnerPhysicalAssesment, basicDetails, getOne } from "@/utils/apis/apiHelper";
 import { useParams } from "next/navigation";
 
 interface AddPartnerDetailsProps {
@@ -225,9 +225,26 @@ export function PhysicalFertilityAssessmentAccordion({ setShowContent, setAddPar
 
     //     return errors;
     // };
-
     const params = useParams();
     const id = params?.id?.toString();
+    const fetchPatient = async () => {
+        try {
+            if (!id) return;
+
+            const res = await getOne(id);
+            const pData = res?.data?.data || res?.data;
+
+            setShowData(pData?.partnerDetails)
+
+            if (pData?.partnerDetails?.basicDetails?.partnerEmail) {
+                setShowContent(true);
+                setShowPartnerDetail(false);
+            }
+
+        } catch (error) {
+            console.error("Error fetching partner:", error);
+        }
+    };
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 
@@ -302,7 +319,7 @@ export function PhysicalFertilityAssessmentAccordion({ setShowContent, setAddPar
                 setAddPartner(false);
                 setShowPartnerDetail(false);
                 setShowContent(true);
-
+                fetchPatient()
                 toast.success('Partner added successfully', {
                     icon: <BsInfoCircle size={22} color="white" />,
                 });

@@ -227,9 +227,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
 
         addPartnerPhysicalAssesment(passData)
             .then(() => {
-                toast.success('Physical Assessment Added Successfully', {
-                    icon: <BsInfoCircle size={22} color="white" />,
-                });
+                toast.success('Physical Assessment Added Successfully');
                 setAddPhysicalAssessment(false)
                 fetchPatient()
                 setFormDataAddPhysicalAssessment(initialFormDataAddPhysicalAssessment)
