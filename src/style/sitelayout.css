@@ -77,7 +77,7 @@
   flex-wrap: nowrap;
   overflow-x: hidden;
   overflow-y: scroll;
-  height: 78dvh;
+  height: 70dvh;
 }
 
 .sidebar__nav::-webkit-scrollbar {
@@ -94,6 +94,7 @@
   border-radius: 8px;
   text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
 }
 
 .sidebar__nav-item:hover,

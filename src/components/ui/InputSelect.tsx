@@ -69,7 +69,7 @@ import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
 import { InputFieldLabel, InputFieldError, InputFieldHelperText } from './InputField';
 import Select from 'react-dropdown-select';
-import { MultiSelect } from 'react-multi-select-component';
+import  { MultiSelect }  from 'react-multi-select-component';
 
 type OptionType = { value: string; label: string };
 
@@ -154,12 +154,12 @@ export function InputSelect({
         onBlur={onBlur}
         onClick={onClick}
         // required={required}
-        disabled={disabled}
+        // disabled={disabled}
         className={`maiacare-input-field ${className}`}
         {...rest}
 
       >
-        <option value={""}>{placeholder}</option>
+        <option value={""} disabled={disabled}>{placeholder}</option>
         {options.map(option => (
           <option key={option.id} value={option.value}>{option.label}</option>
 
@@ -280,7 +280,7 @@ export function MultiSelectWithCheckbox({
       <div className={`maiacare-input-field-container custom-react-dropdown ${className}`}>
         {label && <InputFieldLabel label={label} required={required} />}
 
-        <MultiSelect
+        {/* <MultiSelect
           // className="maiacare-input-field"
           options={options}
           value={values}
@@ -301,7 +301,7 @@ export function MultiSelectWithCheckbox({
             }
             return values.map((s) => s.label).join(", "); // show selected when closed
           }}
-        />
+        /> */}
       </div>
 
       {error && <InputFieldError error={error} />}

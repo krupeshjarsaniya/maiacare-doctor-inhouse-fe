@@ -88,7 +88,7 @@ export const InputField = ({
 }) => {
     return (
         <>
-        <Form.Control className={`maiacare-input-field ${className}`} name={name} type={type} value={value} onChange={onChange} onBlur={onBlur} onClick={onClick} placeholder={placeholder} disabled={disabled} readOnly={readOnly} {...rest} />
+        <Form.Control className={`maiacare-input-field ${className}`} name={name} type={type} value={value || ""} onChange={onChange} onBlur={onBlur} onClick={onClick} placeholder={placeholder} disabled={disabled} readOnly={readOnly} {...rest} />
         {children}
         </>
     )

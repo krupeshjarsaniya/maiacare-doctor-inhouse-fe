@@ -115,25 +115,25 @@
 }
 
 .outline-layout {
-    background-color: transparent;
+    background-color: #fff;
     color: var(--color-brand);
     border: 1px solid var(--color-brand);
 }
 
 .outline-layout:hover {
-    background-color: transparent;
+    background-color: #fff;
     color: var(--color-brand);
     border: 1px solid var(--color-brand);
 }
 
 .outline-layout:focus-visible {
-    background-color: transparent;
+    background-color: #fff;
     color: var(--color-brand);
     border: 1px solid var(--color-brand);
 }
 
 .outline-layout:active {
-    background-color: transparent !important;
+    background-color: #fff !important;
     color: var(--color-brand) !important;
     border: 1px solid var(--color-brand) !important;
     transform: scale(0.98);
@@ -141,7 +141,7 @@
 }
 
 .outline-layout:disabled {
-    background-color: var(--color-brand) !important;
+    background-color: #fff !important;
     color: var(--color-white) !important;
     cursor: not-allowed;
 }
@@ -171,7 +171,13 @@
 
 .profile-sub-title {
     color: var(--color-sidebar-icon);
+    font-size: 16px !important;
     line-height: 0;
+    font-weight: 400;
+}
+
+.profile-title {
+    color: var(--color-sidebar-icon);
     font-size: 16px !important;
     font-weight: 400;
 }
@@ -239,8 +245,10 @@
 
 .card-feild {
     color: var(--color-radio-lable) !important;
-    font-weight: 6 00;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 18px;
+    word-break: break-all !important;
+    /* Add this line */
 }
 
 .card-university-text {
@@ -248,12 +256,14 @@
     /* color: red !important; */
     font-weight: 400;
     font-size: 15px;
+    word-break: break-all !important;
 }
 
 .card-year {
     color: var(--color-sidebar-icon);
     font-weight: 400;
     font-size: 14px;
+    word-break: break-all !important;
 }
 
 .about-text {
@@ -827,6 +837,12 @@
     color: var(--color-brand) !important;
 }
 
+.dashboard-sub-title {
+    color: var(--color-sidebar-icon) !important;
+    line-height: 0;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+}
 
 @media screen and (max-width: 1391px) {
     .contact-detail {
@@ -842,7 +858,8 @@
     .login-title {
         font-size: 32px;
     }
-     .accordion-title-detail {
+
+    .accordion-title-detail {
         font-size: 15px;
     }
 }
@@ -865,6 +882,12 @@
 }
 
 @media screen and (max-width: 1199px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 12px !important;
+
+    }
+
     .login-title {
         font-size: 32px;
     }
@@ -889,6 +912,12 @@
 }
 
 @media screen and (max-width: 1032px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 12px !important;
+
+    }
+
     .your-device-box-title {
         font-size: 16px;
     }
@@ -899,6 +928,12 @@
 }
 
 @media screen and (max-width: 1024px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 11px !important;
+
+    }
+
     .login-title {
         font-size: 30px;
         line-height: 40px;
@@ -939,6 +974,12 @@
 }
 
 @media (max-width: 991px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 14px !important;
+
+    }
+
     .login-title {
         font-size: 30px;
         line-height: 35px;
@@ -978,6 +1019,11 @@
 }
 
 @media (max-width: 575px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 12px !important;
+
+    }
 
     .login-title {
         font-size: 27px;
@@ -1018,12 +1064,19 @@
     .phisical-assessment-accordion-title-showData {
         font-size: 18px;
     }
+
     .patient-report-box-title {
         font-size: 17px;
     }
 }
 
 @media screen and (max-width: 426px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 12px !important;
+
+    }
+
     .login-title {
         font-size: 25px;
         line-height: 25px;
@@ -1033,13 +1086,20 @@
         font-size: 13px;
         line-height: 20px;
     }
-  .patient-report-box-title {
+
+    .patient-report-box-title {
         font-size: 16px;
     }
 
 }
 
 @media screen and (max-width: 425px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 11px !important;
+
+    }
+
     .accordion-title {
         font-size: 16px;
     }
@@ -1059,11 +1119,28 @@
 }
 
 @media screen and (max-width: 375px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 11px !important;
+
+    }
+
     .accordion-title {
         font-size: 15px;
     }
 }
 
+@media screen and (max-width: 320px) {
+    .dashboard-sub-title {
+        line-height: 0;
+        font-size: 11px !important;
+
+    }
+
+    .accordion-title {
+        font-size: 15px;
+    }
+}
 
 /* code from doctor end */
 
@@ -1091,11 +1168,11 @@
     .contact-details-emergency {
         font-size: 13px;
     }
-    
+
     .phisical-assessment-accordion-showData-box-subtitle {
         font-size: 15px;
     }
-    
+
     .accordion-title-detail {
         font-size: 15px;
     }
@@ -1131,6 +1208,7 @@
     font-style: SemiBold;
     color: var(--color-radio-lable);
 }
+
 .phisical-assessment-accordion-item-edit {
     font-size: 14px;
     font-weight: 500;
@@ -1138,5 +1216,71 @@
     font-style: medium;
     color: var(--color-brand);
 }
+
 /************************************************** code from doctor end *****************************************
 **************************************************************************************************************/
+.dashboard-subheader {
+    font-size: 31px;
+    font-weight: 600;
+    line-height: 33px;
+    font-style: SemiBold;
+    color: var(--color-heading);
+}
+
+.dashboard-card-green {
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 20px;
+    font-style: SemiBold;
+    color: var(--dashboard-card-green);
+}
+
+
+.dashboard-card-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    font-style: SemiBold;
+    color: var(--color-radio-lable);
+}
+
+.dashboard-card-orange {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    font-style: SemiBold;
+    color: var(--login-font);
+}
+
+.Upcoming-Consultations-title {
+    color: var(--color-heading) !important;
+    font-weight: 600;
+}
+
+.Upcoming-Consultations {
+    color: var(--color-heading) !important;
+    font-size: 22px !important;
+    font-weight: 500;
+}
+
+.consultation-icon-image {
+    justify-content: space-between;
+}
+
+.btn-outline-success {
+    color: #2CB79A !important;
+    border-color: #2CB79A !important;
+}
+
+.btn-outline-success:hover {
+    color: white !important;
+}
+
+.btn-outline-danger {
+    color: #E85966 !important;
+    border-color: #E85966 !important;
+}
+
+.btn-outline-danger:hover {
+    color: white !important;
+}

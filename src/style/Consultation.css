@@ -7,7 +7,8 @@
     color: #8A8D93;
     box-shadow: none !important;
     border-color: #DDE1E8 !important;
-    padding: 12px;
+    /* padding: 12px; */
+    height: 56px;
 }
 
 .custom-search-input::placeholder {
@@ -21,19 +22,20 @@
 }
 
 .search-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 }
 
 .custom-sort-select {
     width: 130px;
     color: #475569;
     font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 16px;
     box-shadow: none !important;
     border-color: #DDE1E8 !important;
-    padding: 12px;
+    /* padding: 12px; */
+    height: 56px;
     text-align: center;
     border-radius: 8px;
     cursor: pointer;
@@ -43,15 +45,15 @@
     color: #2B4360;
     background-color: white;
     border-radius: 8px;
-    padding:12px;
-
+  height: 56px;
+  
 }
 
 .short-by {
     font-family: "Urbanist", sans-serif;
     color: #3E4A57;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .status-pill {

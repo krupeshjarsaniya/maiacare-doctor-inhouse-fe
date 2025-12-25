@@ -19,8 +19,9 @@
   --font-subtitle: #8A8D93;
   --login-font: #E29578;
   --border-box: #FF8A4C;
-    --border-box-blue: #3F83F8;
+  --border-box-blue: #3F83F8;
   --border-box-red: #F05252;
+  --dashboard-card-green: #2ECF98;
 }
 
 body {
@@ -120,8 +121,8 @@ body::-webkit-scrollbar {
 }
 
 .women-image {
-  height: 35px;
-  width: 35px;
+  height: 40px;
+  width: 40px;
 }
 
 
@@ -152,12 +153,13 @@ body::-webkit-scrollbar {
 }
 
 .qualification-certificates-data {
-  height: 160px;
-  width: 160px;
+  height: 204px;
+  width: 204px;
+  /* gap: 24px; */
 }
 
 .qualification-certificates {
-  border: 2px dotted #DDE1E8 !important;
+  border: 2px solid #DDE1E8 !important;
 }
 
 .qualification-certificates-btn {
@@ -171,8 +173,8 @@ body::-webkit-scrollbar {
 }
 
 .qualification-certificates-add-new-file {
-  width: 160px;
-  height: 160px;
+  width: 204px !important;
+  height: 204px !important;
   cursor: pointer;
 }
 
@@ -186,16 +188,23 @@ body::-webkit-scrollbar {
   margin-top: 30px;
 }
 
+.qualification-certificates-file-size-date {
+  font-size: 12px;
+  margin-top: 2px;
+  width: 100%;
+}
+
 /* Edit-Kyc-Details-End */
 /* Edit-Basic-Details-Start */
 .edit-basic-details-modal {
   width: 160px;
   height: 160px;
-  border-radius: 16px;  
+  border-radius: 16px;
 }
 
 .edit-basic-details-image {
   object-fit: cover !important;
+  border-radius: 15.87px;
 }
 
 .edit-basic-details-error-font {
@@ -336,7 +345,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .form-select {
-  --bs-form-select-bg-img: url(../assets/images/Arrow.png);
+  --bs-form-select-bg-img: url(../assets/images/ArrowNew.png);
   width: 100%;
   color: var(--bs-body-color);
   -webkit-appearance: none;
@@ -369,6 +378,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .pation-profile-dataa .content-layout {
   padding: 30px !important;
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+
+  .pation-profile-dataa .content-layout {
+    padding: 16px !important;
+  }
 }
 
 /* code form doctor start*/
@@ -433,37 +449,128 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .border-box-orange-font {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
-    font-style: medium;
-    color: var(--border-box);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  font-style: medium;
+  color: var(--border-box);
 }
 
 .border-box-blue-font {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
-    font-style: medium;
-    color: var(--border-box-blue);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  font-style: medium;
+  color: var(--border-box-blue);
 }
 
 .border-box-red-font {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
-    font-style: medium;
-    color: var(--border-box-red);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  font-style: medium;
+  color: var(--border-box-red);
 }
 
 .accordion-form-physical-assessment .input-custom-width {
-    width: 47.83% !important;
+  width: 47.83% !important;
 }
 
-.input-custom-data{
-    margin-top: 30px !important;
+.input-custom-data {
+  margin-top: 30px !important;
 }
+
 .accordion-form-physical-assessment .or-custom-width {
-    width: 4.3% !important;
-    padding: 0 !important;
+  width: 4.3% !important;
+  padding: 0 !important;
 }
+
+.btn-outline-danger {
+  padding: 9px 18px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.upload-documents-clickHere {
+  color: #2B4360;
+  font-weight: 500;
+}
+
+.upload-documents-uploadFile {
+  color: #475569;
+  font-weight: 500;
+}
+
+.upload-documents-BTN {
+  border: 1px solid #3E4A57;
+}
+
+.upload-documents-completed {
+  color: #3E4A57;
+}
+
+.personal-details-sub-text {
+  color: #8A8D93;
+}
+
+
+.edit-profile-field input {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+.edit-profile-field input:focus {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+.edit-profile-field input:-webkit-autofill,
+.edit-profile-field input:-webkit-autofill:hover,
+.edit-profile-field input:-webkit-autofill:focus,
+.edit-profile-field input:-webkit-autofill:active {
+  -webkit-text-fill-color: #3E4A57 !important;
+  caret-color: #3E4A57 !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 0s;
+}
+
+
+.edit-profile-field input,
+.edit-profile-field select {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+
+.edit-profile-field input:focus,
+.edit-profile-field select:focus {
+  color: #3E4A57 !important;
+  caret-color: #3E4A57;
+}
+
+.edit-profile-field-placeholder select {
+  color: #b0b4c1;
+}
+
+
+.edit-profile-field-placeholder select:has(option:not([disabled]):checked) {
+  color: #3E4A57;
+}
+
+
+.edit-profile-field-placeholder select option {
+  color: #3E4A57;
+}
+
+.edit-profile-field-placeholder select option[disabled] {
+  color: #b0b4c1;
+}
+
+.base-table-color {
+  color: #2C313E !important;
+}
+

@@ -9,7 +9,7 @@
 
   .table-responsive {
     border: 1px solid #DDE1E8 !important;
-    border-radius: 12px !important;
+    border-radius: 24px !important;
   }
   
   
@@ -47,7 +47,7 @@
   
 .table tbody td{
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     color: #292929;
 }
 
@@ -110,4 +110,55 @@
 .badge {
     font-size: 13px;
     font-weight: 600;
+}
+
+
+
+
+/* pagination  */
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  font-size: 14px;
+  background-color: #fff;
+  border-radius: 0 0 8px 8px;
+}
+
+.results-text {
+  color: #8A8D93;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #8A8D93;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.page-btn:hover {
+  background-color: #f1f3f5;
+}
+
+.page-btn.active {
+  background-color: #e8f0fe;
+  color: #2B4360;
+  font-weight: 600;
+}
+
+.dots {
+  color: #adb5bd;
+  padding: 0 4px;
 }

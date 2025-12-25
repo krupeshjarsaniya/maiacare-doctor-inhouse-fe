@@ -5,8 +5,8 @@ import '../style/font.css'
 import "../style/ui.css";
 import "../style/sitelayout.css";
 import "../style/globals.css";
-import MasterHelper from "@/utils/MasterHelper";
 import { Toaster } from "react-hot-toast";
+import Master from "@/utils/MasterHelper";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const geistSans = Geist({
@@ -39,9 +39,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${popins.variable}`}>
         
-        <MasterHelper>
+        <Master>
           {children}
-        </MasterHelper>
+        </Master>
          <Toaster
         position="top-right"
         toastOptions={{

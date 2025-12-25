@@ -1,22 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// This file is deprecated. Please use @/Hook/Redux/Slice/authSlice instead.
+// Re-exporting for backward compatibility.
 
-type UserAuthState = {
-  value: Record<string, unknown>;
-};
-
-const initialState: UserAuthState = {
-  value: {},
-};
-
-const userAuthSlice = createSlice({
-  name: "userAuth",
-  initialState,
-  reducers: {
-    setUserAuthData: (state, action: PayloadAction<Record<string, unknown>>) => {
-      state.value = action.payload;
-    },
-  },
-});
-
-export const { setUserAuthData } = userAuthSlice.actions;
-export default userAuthSlice.reducer;
+export { setAuthData as setUserAuthData, clearAuthData } from "@/Hook/Redux/Slice/authSlice";
+export { default } from "@/Hook/Redux/Slice/authSlice";

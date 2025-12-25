@@ -33,7 +33,7 @@ export default function ForgotPasswordScreen() {
                                 Forgot Password
 
                             </h2>
-                            <p className="login-subtitle text-start ">Enter the email address associated with your <br /> account and we'll send you instructions to reset <br /> your password.</p>
+                            <p className="login-subtitle text-start ">Enter the email address associated with your account and we'll send you instructions to reset  your password.</p>
 
                             <ForgotPassword />
 

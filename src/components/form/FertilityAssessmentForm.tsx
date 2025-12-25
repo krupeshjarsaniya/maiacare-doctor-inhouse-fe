@@ -16,13 +16,14 @@ interface FertilityAssessmentFormProps {
     setShowFertilityAssessment?: React.Dispatch<React.SetStateAction<boolean>>;
     setModalFormFertilityData?: React.Dispatch<React.SetStateAction<FertilityAssessmentFormType>>;
     editFertilityAssessment?: FertilityAssessmentFormType;
-    
+     handleSaveFertilityAssessment?: (data: FertilityAssessmentFormType) => void; // ✅ Add this
 }
 
 export const FertilityAssessmentForm = ({
     setShowFertilityAssessment,
     setModalFormFertilityData,
     editFertilityAssessment,
+        handleSaveFertilityAssessment, // ✅ Add this,
 }: FertilityAssessmentFormProps) => {
 
     type FormError = Partial<Record<keyof FertilityAssessmentFormType, string>>;
@@ -67,26 +68,51 @@ export const FertilityAssessmentForm = ({
         setFormError((prev: any) => ({ ...prev, [name]: "" }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+
+    //     const errors = validateForm(formData);
+    //     setFormError(errors);
+    //     console.log("errors", errors);
+    //     if (Object.keys(errors).length === 0) {
+    //         //   setShowModal(true);
+    //         setModalFormFertilityData?.(formData);
+    //         setShowFertilityAssessment?.(false);
+    //         setFormError(initialFormError);
+
+    //         if (editFertilityAssessment && editFertilityAssessment.ageAtFirstMenstruation) {
+    //             toast.success('Changes saved successfully', {
+    //                 icon: <BsInfoCircle size={22} color="white" />,
+    //             });
+    //         } else {
+    //             toast.success('Fertility assessment added successfully', {
+    //                 icon: <BsInfoCircle size={22} color="white" />,
+    //             });
+    //         }
+    //     }
+    // };
+   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const errors = validateForm(formData);
         setFormError(errors);
-        console.log("errors", errors);
+
         if (Object.keys(errors).length === 0) {
-            //   setShowModal(true);
-            setModalFormFertilityData?.(formData);
-            setShowFertilityAssessment?.(false);
+            if (handleSaveFertilityAssessment) {
+                // ✅ Call API handler from parent
+                handleSaveFertilityAssessment(formData);
+            } else {
+                // fallback: update local state
+                setModalFormFertilityData?.(formData);
+                setShowFertilityAssessment?.(false);
+            }
+
             setFormError(initialFormError);
 
             if (editFertilityAssessment && editFertilityAssessment.ageAtFirstMenstruation) {
-                toast.success('Changes saved successfully', {
-                    icon: <BsInfoCircle size={22} color="white" />,
-                });
+                toast.success('Changes saved successfully');
             } else {
-                toast.success('Fertility assessment added successfully', {
-                    icon: <BsInfoCircle size={22} color="white" />,
-                });
+                toast.success('Fertility assessment added successfully');
             }
         }
     };

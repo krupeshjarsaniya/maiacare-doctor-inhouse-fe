@@ -1,8 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
-import ContentContainer from '../ui/ContentContainer';
-import CustomTabs from '../ui/CustomTabs';
 import Image from 'next/image';
-import Modal from '../ui/Modal';
+import "../../style/Edit-Profile.css";
 import { InputFieldGroup } from '../ui/InputField';
 import { Accordion, Col, Row } from 'react-bootstrap';
 import { RadioButtonGroup } from '../ui/RadioField';
@@ -11,74 +9,52 @@ import { PhoneNumberInput } from '../ui/PhoneNumberInput';
 import Button from '../ui/Button';
 import Simpleeditpro from '../../assets/images/Simpleeditpro.png';
 import cameraicon from '../../assets/images/Cameraicon.png';
-import { log, profile } from 'console';
-import { EditFertilityAssessment, FertilityAssessmentType, MedicalHistoryType, PhysicalAssessmentDataModel } from '@/utils/types/interfaces';
-import { partnerDetailData } from '@/utils/StaticData';
+import { allDataType, EditFertilityAssessment, FertilityAssessmentType, MedicalHistoryType, PhysicalAssessmentDataModel } from '@/utils/types/interfaces';
 import toast from 'react-hot-toast';
 import { BsInfoCircle } from 'react-icons/bs';
+import { addPartnerMedicalHistory, basicDetails, getProfileImageUrl, updatePartnermedicalhistory } from '@/utils/apis/apiHelper';
+import { useParams } from 'next/navigation';
 // import '../../style/PartnerDetails.css'
-
-
 export function BasicDetailsForm({
     setAddPartner,
     setActiveTab,
-    setShowData
+    setShowData,
+    setTabManagement,
+    setAllData,
+    allData
 }: {
     setAddPartner: (value: boolean) => void,
     setActiveTab: (tab: string) => void,
-    setShowData: (value: any) => void
+    setShowData: (value: any) => void,
+    setTabManagement: (value: number) => void | number,
+    allData: allDataType | undefined;
+    setAllData: React.Dispatch<React.SetStateAction<allDataType | undefined>>;
 }) {
 
     const initialFormError: FormError = {};
     type FormData = {
-        basic_detail_name: string;
-        basic_detail_gender: string;
-        basic_detail_age: string;
-        basic_detail_phone: string;
-        basic_detail_email: string;
+        partnerName: string;
+        partnerGender: string;
+        partnerAge: string;
+        partnerContactNumber: string;
+        partnerEmail: string;
         profileImage: string;
     };
 
     type FormError = Partial<Record<keyof FormData, string>>;
 
     const initialFormData: FormData = {
-        basic_detail_name: "",
-        basic_detail_gender: "male",
-        basic_detail_age: "",
-        basic_detail_phone: "",
-        basic_detail_email: "",
+        partnerName: "",
+        partnerGender: "Male",   // Capitalized
+        partnerAge: "",
+        partnerContactNumber: "",
+        partnerEmail: "",
         profileImage: ""
-
     };
 
     const [formData, setFormData] = useState<FormData>(initialFormData);
     // console.log("formData", formData);
     const [formError, setFormError] = useState<FormError>(initialFormError);
-
-    // const handleChange = (
-    //     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    // ) => {
-    //     const { name, value } = e.target;
-    //     const isValidNumber = /^[0-9]*$/.test(value);
-
-    //     setFormData((prev) => ({ ...prev, [name]: value }));
-    //     // setFormError((prev) => ({ ...prev, [name]: "" }));
-
-    //     console.log("value", value);
-
-    //     if (name === "basic_detail_phone") {
-    //         if (isValidNumber) {
-    //           // clear error only if numbers are entered
-    //           setFormError((prev) => ({ ...prev, [name]: "" }));
-
-    //         }
-    //         // else keep the error until user fixes
-    //       } else {
-    //         // for other fields, clear error on any input
-    //         setFormError((prev) => ({ ...prev, [name]: "" }));
-
-    //       }
-    // };
 
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -106,9 +82,8 @@ export function BasicDetailsForm({
             setFormError((prev) => ({ ...prev, [name]: "" }));
         }
 
-        console.log("value", value);
+        // console.log("value", value);
     };
-
 
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,23 +91,24 @@ export function BasicDetailsForm({
     const handleImageClick = () => {
         fileInputRef.current?.click();
     };
-
     const handleFileChange = (
         event: React.ChangeEvent<HTMLInputElement> | undefined
     ) => {
         if (event) {
             const file = event.target.files?.[0];
+            console.log("file", file);
+
             if (file) {
                 const allowedTypes = ["image/jpeg", "image/png"];
 
                 if (!allowedTypes.includes(file.type)) {
                     setFormData((prev) => ({
                         ...prev,
-                        profileImage: "",
+                        partnerImage: "",
                     }));
                     setFormError((prev) => ({
                         ...prev,
-                        profileImage: "Only JPG and PNG files are allowed",
+                        partnerImage: "Only JPG and PNG files are allowed",
                     }));
                     return;
                 }
@@ -140,11 +116,11 @@ export function BasicDetailsForm({
                 if (file.size > 5 * 1024 * 1024) {
                     setFormData((prev) => ({
                         ...prev,
-                        profileImage: "",
+                        partnerImage: "",
                     }));
                     setFormError((prev) => ({
                         ...prev,
-                        profileImage: "File size must be less than 5MB",
+                        partnerImage: "File size must be less than 5MB",
                     }));
                     return;
                 }
@@ -163,40 +139,120 @@ export function BasicDetailsForm({
                 };
                 reader.readAsDataURL(file);
             }
+            const data = {
+                type: "doctor",
+                files: file
+            }
+            getProfileImageUrl(data)
+                .then((response) => {
+                    if (response.data.status) {
+                        console.log("response : ", response);
+                        const uploadedImage = response.data.files[0];
+
+                        setProfileImage(uploadedImage);
+                        setFormData((prev) => ({
+                            ...prev,
+                            partnerImage: uploadedImage,
+                        }));
+                        setFormError((prev) => ({
+                            ...prev,
+                            partnerImage: "",
+                        }));
+
+                    } else {
+                        console.log("error");
+                    }
+
+                }).catch((error) => {
+                    console.log("error", error);
+                });
         }
     };
+
 
     const validateForm = (data: FormData): FormError => {
         const errors: FormError = {};
 
-        if (!data.basic_detail_name.trim()) errors.basic_detail_name = "Name is required";
-        if (!data.basic_detail_age.trim()) errors.basic_detail_age = "Age is required";
-        if (!data.basic_detail_phone.trim()) errors.basic_detail_phone = "Phone number is required";
+        if (!data.partnerName.trim()) errors.partnerName = "Name is required";
+        if (!data.partnerGender.trim()) errors.partnerGender = "Age is required";
+        if (!data.partnerContactNumber.trim()) errors.partnerContactNumber = "Phone number is required";
 
         // Only check required here
         // if (!data.profileImage.trim()) {
         //     errors.profileImage = "Profile Image is required";
         // }
 
-        if (!data.basic_detail_email.trim()) errors.basic_detail_email = "Email is required";
+        if (!data.partnerEmail.trim()) {
+            errors.partnerEmail = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.partnerEmail)) {
+            errors.partnerEmail = "Enter a valid email address";
+        }
+
 
         return errors;
     };
+    const params = useParams();
+    const patientId = params?.id?.toString();
 
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         const errors = validateForm(formData);
         setFormError(errors);
         // console.log("errors", errors);
         if (Object.keys(errors).length === 0) {
+            setTabManagement(1)
             // console.log("FormData111111 ", formData);
             setFormError(initialFormError);
             setActiveTab("medical history");
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        setShowData((prev: any) => ({ ...prev, profile: { ...prev.profile, ...formData } }));
+        // setShowData((prev: any) => ({ ...prev, profile: { ...prev.profile, ...formData } }));
+        setShowData((prev: any) => ({
+            ...(prev || {}),
+            profile: {
+                ...((prev && prev.profile) || {}),
+                ...formData,
+            },
+        }));
+        
+        const passData = {
+            patientId: String(patientId),
+            partnerImage: profileImage,
+            partnerName: formData.partnerName,
+            partnerContactNumber: formData.partnerContactNumber,
+            partnerEmail: formData.partnerEmail,
+            partnerGender: formData.partnerGender.charAt(0).toUpperCase() + formData.partnerGender.slice(1),
+            partnerAge: Number(formData.partnerAge)
+        };
+
+        const formDataToSend = new FormData();
+        formDataToSend.append("type", "doctor");
+        formDataToSend.append("files", formData.profileImage);
+
+        // getProfileImageUrl(formDataImage)
+        //     .then((response) => {
+        //         console.log("getImageUrl: ", response.data);
+        //     })
+        //     .catch((err) => {
+        //         console.log("getImageUrl", err);
+        //     });
+
+        // basicDetails(passData)
+        //     .then((response) => {
+
+        //         if (response.status == 200) {
+        //             console.log("Partner basic details added: ", response.data);
+        //         } else {
+        //             console.log("Error");
+        //         }
+
+        //     })
+        //     .catch((err) => {
+        //         console.log("Partner basic details adding error", err);
+        //     });
+
+        setAllData({ ...allData, basicDetailsPassingData: passData })
     };
     return (
         <>
@@ -206,16 +262,16 @@ export function BasicDetailsForm({
                     <Col md={12}>
                         <div className="d-flex align-items-center gap-4  flex-wrap justify-content-center justify-content-sm-start text-center text-md-start">
                             <div className="profile-wrapper position-relative" >
-                                <Image
-                                    src={profileImage || Simpleeditpro}
+                                <img
+                                    src={profileImage || Simpleeditpro.src}
                                     alt="Profile"
                                     className="object-fit-cover rounded-2"
                                     width={100}
                                     height={100}
-
                                 />
+
                                 <div
-                                    className="camera-icon position-absolute bottom-0 end-0 cursor-pointer"
+                                    className="camera-icon"
                                     onClick={handleImageClick}
                                 >
                                     <Image src={cameraicon} alt="Upload" width={48} height={48} />
@@ -224,10 +280,9 @@ export function BasicDetailsForm({
                                     type="file"
                                     accept="image/png, image/jpeg"
                                     ref={fileInputRef}
-                                    className="image-formate"
+                                    className="image-formate d-none"
                                     onChange={(event) => handleFileChange(event)}
                                     name="profileImage"
-
                                 />
                             </div>
 
@@ -245,46 +300,48 @@ export function BasicDetailsForm({
 
                         <InputFieldGroup
                             label="Name"
-                            name="basic_detail_name"
+                            name="partnerName"
                             type="text"
-                            value={formData.basic_detail_name}
+                            value={formData.partnerName}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 handleChange(e);
                             }}
                             onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
                             placeholder="Enter name"
                             required={true}
-                            error={formError.basic_detail_name}
+                            error={formError.partnerName}
                             className="position-relative "
                         ></InputFieldGroup>
                     </Col>
                     <Col md={6}>
                         <RadioButtonGroup
                             label="Gender"
-                            name="basic_detail_gender"
-                            value={formData.basic_detail_gender || ''}
-                            // defaultValue="male"
+                            name="partnerGender"
+                            value={formData.partnerGender || ''}
+
                             onChange={(e) => handleChange(e)}
                             required
                             options={[
-                                { label: "Male", value: "male" },
-                                { label: "Female", value: "female" },
+                                { label: "Male", value: "Male" },
+                                { label: "Female", value: "Female" },
+                                { label: "Other", value: "Other" },
                             ]}
                         />
+
                     </Col>
 
                     <Col md={6}>
                         <InputSelect
                             label="age"
-                            name="basic_detail_age"
-                            value={formData.basic_detail_age}
+                            name="partnerAge"
+                            value={formData.partnerAge}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                 handleChange(e);
                             }}
                             onBlur={(e: React.FocusEvent<HTMLSelectElement>) => { }}
                             required={true}
                             disabled={false}
-                            error={formError.basic_detail_age}
+                            error={formError.partnerAge}
                             options={[
                                 { id: "1", value: "1", label: "1" },
                                 { id: "2", value: "2", label: "2" },
@@ -319,37 +376,38 @@ export function BasicDetailsForm({
                     <Col md={6}>
                         <PhoneNumberInput
                             label="Contact Number"
-                            value={formData.basic_detail_phone}
+                            value={formData.partnerContactNumber}
                             onChange={(phone: any) => {
                                 // setFormData((prev) => ({ ...prev, phone }));
                                 // setFormError((prev) => ({ ...prev, phone: "" }));
                                 handleChange({
-                                    target: { name: "basic_detail_phone", value: phone },
+                                    target: { name: "partnerContactNumber", value: phone },
                                 } as React.ChangeEvent<HTMLInputElement>);
                             }}
                             placeholder='(000) 000-0000'
                             required
-                            error={formError.basic_detail_phone}
+                            error={formError.partnerContactNumber}
                         />
                     </Col>
 
 
                     <Col md={6}>
+
                         <InputFieldGroup
                             label="Email ID"
-                            name="basic_detail_email"
-                            type="email"
-                            value={formData.basic_detail_email}
+                            name="partnerEmail"
+                            type="text"
+                            value={formData.partnerEmail}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 handleChange(e);
                             }}
                             onBlur={(e: React.FocusEvent<HTMLInputElement>) => { }}
                             placeholder="Enter Email ID"
-                            required={true}
-
-                            error={formError.basic_detail_email}
+                            required={false}
+                            error={formError.partnerEmail}
                             className="position-relative "
                         ></InputFieldGroup>
+
                     </Col>
                     <div className='d-flex gap-3'>
                         <Button className="w-100" variant="outline" disabled={false} onClick={() => setAddPartner(false)}>
@@ -374,7 +432,10 @@ export function MedicalHistoryForm({
     showData,
     initialData,
     setEditMedicalHistory,
-    formDataMedicalHistory
+    formDataMedicalHistory,
+    setTabManagement,
+    setAllData,
+    allData
 }: {
     setAddPartner: (value: boolean) => void,
     setActiveTab: (tab: string) => void,
@@ -382,27 +443,52 @@ export function MedicalHistoryForm({
     initialData?: any,
     showData?: any,
     setEditMedicalHistory?: React.Dispatch<React.SetStateAction<boolean>> | any;
-    formDataMedicalHistory?: MedicalHistoryType
+    formDataMedicalHistory?: MedicalHistoryType | any,
+    setTabManagement?: (value: number) => void | number,
+    setAllData?: (value: any) => unknown,
+    allData?: any
 }) {
     type FormError = Partial<Record<keyof MedicalHistoryType, string>>;
 
-    const initialFormData: MedicalHistoryType = {
-        medication: formDataMedicalHistory?.medication || "yes",
-        surgeries: formDataMedicalHistory?.surgeries || "yes",
-        surgeriesContent: formDataMedicalHistory?.surgeriescontent || "",
-        medicalCondition: formDataMedicalHistory?.medicalCondition || [],
-        familyMedicalHistory: formDataMedicalHistory?.familyMedicalHistory || "",
+    // console.log("formDataMedicalHistory : ", formDataMedicalHistory);
 
-        lifestyle: formDataMedicalHistory?.lifestyle || [],
-        stress: formDataMedicalHistory?.stress || "low",
-        exercise: formDataMedicalHistory?.exercise || "never",
-        medicationcontent: formDataMedicalHistory?.medicationcontent || "",
-        surgeriescontent: formDataMedicalHistory?.surgeriescontent || "",
-    };
+    const normalizeMulti = (arr: any[]) =>
+        arr.map((item) =>
+            typeof item === "string"
+                ? { value: item, label: item }
+                : {
+                    value: item.value ?? item.label,
+                    label: item.label ?? item.value,
+                }
+        );
+
+    const initialFormData: MedicalHistoryType = {
+        medication: formDataMedicalHistory?.medications?.status || "Yes",
+        surgeries: formDataMedicalHistory?.surgeries?.status || "Yes",
+        surgeriesContent: formDataMedicalHistory?.surgeries?.surgeriesDetails || "",
+
+        medicalCondition: formDataMedicalHistory?.conditions
+            ? normalizeMulti(formDataMedicalHistory?.conditions)
+            : [],
+
+        lifestyle: formDataMedicalHistory?.lifestyle
+            ? normalizeMulti(formDataMedicalHistory?.lifestyle)
+            : [],
+
+
+        familyMedicalHistory: formDataMedicalHistory?.familyHistory || "",
+
+        stress: formDataMedicalHistory?.stressLevel || "Moderate",
+        exercise: formDataMedicalHistory?.exerciseFrequency || "Regularly",
+        medicationcontent: formDataMedicalHistory?.medications?.medicationsDetails || "",
+        surgeriescontent: formDataMedicalHistory?.surgeries?.surgeriesDetails || "",
+    }
+
 
     const MedicalHistoryFormError: FormError = {};
 
     const [FormData, setFormData] = useState<MedicalHistoryType>(initialFormData);
+
     const [medicalHistoryFormError, setMedicalHistoryFormError] = useState<FormError>(MedicalHistoryFormError);
 
     const validateForm = (data: MedicalHistoryType): FormError => {
@@ -417,50 +503,155 @@ export function MedicalHistoryForm({
 
         return errors;
     };
+
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         setMedicalHistoryFormError((prev) => ({ ...prev, [name]: "" }));
+    }
 
-    };
+    const params = useParams();
+    const id = params?.id?.toString();
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
+
         const errors = validateForm(FormData);
         setMedicalHistoryFormError(errors);
 
-        if (Object.keys(errors).length === 0) {
 
+
+
+        if (Object.keys(errors).length === 0) {
             if (formDataMedicalHistory) {
 
-                // console.log("updated medicalHistory", {
-                //     ...showData,
-                //     medicalHistory: FormData
-                // });
+                const values = FormData.lifestyle.map((e: { label: string, value: string }) => e.value);
+                const passData = {
+                    patientId: id,
+
+                    medications: {
+                        status: FormData.medication,
+                        medicationsDetails: FormData.medicationcontent,
+                    },
+
+                    surgeries: {
+                        status: FormData.surgeries,
+                        surgeriesDetails: FormData.surgeriescontent,
+                    },
+
+                    conditions: FormData.medicalCondition.map((e: any) => e.value),
+
+                    familyHistory: FormData.familyMedicalHistory,
+
+                    // lifestyle: FormData.lifestyle.map((e: { label: string, value: string }) => e.value),
+                    lifestyle: values,
+                    exerciseFrequency: FormData.exercise,
+                    stressLevel: FormData.stress
+                };
+
+                updatePartnermedicalhistory(showData._id, passData)
+                    .then((response) => {
+                        console.log("partner medical history: ", response);
+                        const res = response.data.data.medicalHistory;
+                        const updatedMedicalHistory = {
+                            medications: {
+                                status: res.medications.status,
+                                medicationsDetails: res.medications.medicationsDetails
+                            },
+                            surgeries: {
+                                status: res.surgeries.status,
+                                surgeriesDetails: res.surgeries.surgeriesDetails
+                            },
+                            conditions: res.conditions,
+                            lifestyle: res.lifestyle,
+                            familyHistory: res.familyHistory,
+                            exerciseFrequency: res.exerciseFrequency,
+                            stressLevel: res.stressLevel
+                        };
+                        console.log("updatedMedicalHistory", updatedMedicalHistory);
+
+                        setShowData((prev: any) => ({
+                            ...prev,
+                            medicalHistory: updatedMedicalHistory
+                        }));
+                        setEditMedicalHistory(false);
+
+                    })
+                    .catch((err) => {
+                        console.log("partner medical history", err);
+                    });
+
+
                 toast.success('Changes saved successfully', {
                     icon: <BsInfoCircle size={22} color="white" />,
                 });
 
-                const updatedData = {
-                    ...showData,
-                    medicalHistory: FormData,
-                };
+                // const updatedData = {
+                //     ...showData,
+                //     medicalHistory: FormData,
+                // };
 
-                setShowData(updatedData);
+                // setShowData(updatedData);
                 setEditMedicalHistory(false);
 
+
             } else {
+                if (setTabManagement) {
+                    setTabManagement(2);
+                }
+
                 setActiveTab("physical & fertility assessment");
                 // console.log("FormData55", FormData);
-                setShowData((prev: any) => ({ ...prev, medicalHistory: FormData }));
+                // setShowData((prev: any) => ({ ...prev, medicalHistory: FormData }));
+                const medicalHistoryPassingData = {
+                    patientId: id,
+                    medications: {
+                        status: FormData.medication.charAt(0).toUpperCase() + FormData.medication.slice(1),
+                        medicationsDetails: FormData.medicationcontent
+                    },
+                    surgeries: {
+                        status: String(FormData?.surgeries?.charAt(0)?.toUpperCase() + FormData?.surgeries?.slice(1)),
+                        surgeriesDetails: FormData.surgeriescontent
+                    },
+                    conditions: FormData.medicalCondition.map((e) => e.value),
+                    familyHistory: FormData.familyMedicalHistory,
+                    lifestyle: FormData.lifestyle.map((e) => e.value),
+                    exerciseFrequency: FormData.exercise.charAt(0).toUpperCase() + FormData.exercise.slice(1),
+                    stressLevel: FormData.stress.charAt(0).toUpperCase() + FormData.stress.slice(1)
 
+                }
+                if (setAllData) {
+                    setAllData({ ...allData, medicalHistoryPassingData: medicalHistoryPassingData });
+                }
+                // addPartnerMedicalHistory(medicalHistoryPassingData)
+                //     .then((response) => {
+                //         console.log("partner medical history: ", response.data);
+                //     })
+                //     .catch((err) => {
+                //         console.log("partner medical history", err);
+                //     });
             }
 
         }
     };
+
+    // const getData = ()=>{
+    //     getPartnermedicalhistory(id)
+    //     .then((res)=>{
+    //         console.log("Response from getting data : ", res);
+    //     })
+    //     .catch((err)=>{
+    //         console.log("Response from getting data : ", err);
+    //     })
+    // }
+
+    // useEffect(() => {
+    //     console.log("formDataMedicalHistory",showData)
+    // }, [])
+
 
     return (
         <>
@@ -475,12 +666,12 @@ export function MedicalHistoryForm({
                             required={true}
                             error={medicalHistoryFormError.medication}
                             options={[
-                                { label: "Yes", value: "yes" },
-                                { label: "No", value: "no" },
+                                { label: "Yes", value: "Yes" },
+                                { label: "No", value: "No" },
                             ]}
                         />
 
-                        {FormData.medication === 'yes' && (
+                        {FormData.medication === 'Yes' && (
                             <InputFieldGroup
                                 type="text"
                                 value={FormData.medicationcontent}
@@ -488,28 +679,29 @@ export function MedicalHistoryForm({
                                 onChange={handleChange}
                                 error={medicalHistoryFormError.medicationcontent}
                                 placeholder="Enter medication"
-                                className={`mt-md-3 mt-2`}
-                            >
-
-                            </InputFieldGroup>
+                                className="mt-md-3 mt-2"
+                            />
                         )}
+
+
+
 
                     </Col>
                     <Col md={12} className='mt-md-3 mt-2 '>
                         <RadioButtonGroup
                             label="Have you had any surgeries?"
                             name="surgeries"
-                            value={FormData.surgeries || 'yes'}
+                            value={FormData.surgeries || 'Yes'}
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={medicalHistoryFormError.surgeries}
                             options={[
-                                { label: "Yes", value: "yes" },
-                                { label: "No", value: "no" },
+                                { label: "Yes", value: "Yes" },
+                                { label: "No", value: "No" },
                             ]}
                         />
 
-                        {FormData.surgeries === 'yes' && (
+                        {FormData.surgeries === 'Yes' && (
                             <InputFieldGroup
                                 type="text"
                                 value={FormData.surgeriescontent}
@@ -518,9 +710,9 @@ export function MedicalHistoryForm({
                                 error={medicalHistoryFormError.surgeriescontent}
                                 placeholder="Enter surgeries"
                                 className={`mt-md-3 mt-2`}
-                            >
-                            </InputFieldGroup>
+                            />
                         )}
+
 
                     </Col>
                     <Col md={12} className='mt-md-3 mt-2'>
@@ -534,7 +726,6 @@ export function MedicalHistoryForm({
                                 { id: "2", value: "Thyroid Disorder", label: "Thyroid Disorder" },
                                 { id: "3", value: "Diabetes", label: "Diabetes" },
                                 { id: "4", value: "Hypertension", label: "Hypertension" },
-
                             ]}
                             placeholder="Search Medical Condition or Allergies"
                             addPlaceholder="Add Medical Condition or Allergies"
@@ -546,9 +737,11 @@ export function MedicalHistoryForm({
 
                         />
 
+
+
                     </Col>
                     <Col md={12} className='mt-md-3 mt-2'>
-                        <InputFieldGroup
+                        {/* <InputFieldGroup
                             label="Family Medical History "
                             name="familyMedicalHistory"
                             value={FormData.familyMedicalHistory}
@@ -560,7 +753,17 @@ export function MedicalHistoryForm({
                             required={false}
                             error={medicalHistoryFormError.familyMedicalHistory}
                             className="position-relative "
+                        ></InputFieldGroup> */}
+                        <InputFieldGroup
+                            label="Family Medical History "
+                            name="familyMedicalHistory"
+                            value={FormData.familyMedicalHistory}
+                            onChange={handleChange}
+                            required={false}
+                            error={medicalHistoryFormError.familyMedicalHistory}
+                            className="position-relative "
                         ></InputFieldGroup>
+
                     </Col>
                     <Col md={12} className='mt-md-3 mt-2'>
 
@@ -571,9 +774,8 @@ export function MedicalHistoryForm({
                             onChange={(values) => { setFormData((prev) => ({ ...prev, lifestyle: values })); setMedicalHistoryFormError((prev) => ({ ...prev, lifestyle: "" })); }}
                             options={[
                                 { id: "1", value: "Non-smoker", label: "Non-smoker" },
-                                { id: "2", value: "Occasional alcohol", label: "Occasional alcohol" },
-                                { id: "3", value: "Vegetarian diet", label: "Vegetarian diet" },
-
+                                { id: "2", value: "Occasional drinker", label: "Occasional drinker" },
+                                { id: "3", value: "Vegetarian", label: "Vegetarian diet" },
                             ]}
                             placeholder="Select Lifestyle"
                             addPlaceholder="Add Lifestyle"
@@ -583,6 +785,7 @@ export function MedicalHistoryForm({
                             selectedOptionBorderColor="var(--border-box-blue)"
                             error={medicalHistoryFormError.lifestyle}
                         />
+
 
                     </Col>
 
@@ -595,26 +798,28 @@ export function MedicalHistoryForm({
                             required={true}
                             error={medicalHistoryFormError.exercise}
                             options={[
-                                { label: "Never", value: "never" },
-                                { label: "Rarely", value: "rarely" },
-                                { label: "Regularly", value: "regularly" },
+                                { label: "Never", value: "Never" },
+                                { label: "Rarely", value: "Rarely" },
+                                { label: "Regularly", value: "Regularly" },
                             ]}
                         />
+
                     </Col>
                     <Col md={6} className='mt-md-3 mt-2'>
                         <RadioButtonGroup
                             label="How would you rate your stress levels?"
                             name="stress"
-                            value={FormData.stress || 'low'}
+                            value={FormData.stress || 'Low'}
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={medicalHistoryFormError.stress}
                             options={[
-                                { label: "Low", value: "low" },
-                                { label: "Moderate", value: "moderate" },
-                                { label: "High", value: "high" },
+                                { label: "Low", value: "Low" },
+                                { label: "Moderate", value: "Moderate" },
+                                { label: "High", value: "High" },
                             ]}
                         />
+
                     </Col>
                     <div className='d-flex gap-3 mt-3'>
 
@@ -628,7 +833,7 @@ export function MedicalHistoryForm({
                     </div>
 
                 </Row>
-            </form>
+            </form >
 
         </>
     )
@@ -844,7 +1049,7 @@ export function FertilityAssessment({
     setShowData?: (value: any) => void,
     showData?: any,
     initialData?: any,
-    formData: FertilityAssessmentType | EditFertilityAssessment,
+    formData: EditFertilityAssessment,
     setFormData: React.Dispatch<React.SetStateAction<FertilityAssessmentType | EditFertilityAssessment | any>>,
     setFormError: React.Dispatch<React.SetStateAction<any>>,
     formError?: any
@@ -856,17 +1061,97 @@ export function FertilityAssessment({
 
     // const [formError, setFormError] = useState<FormError>(initialFormError);
 
-    const handleChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    ) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
-        setFormError((prev: any) => ({ ...prev, [name]: "" }));
 
+        setFormData((prev: any) => {
+            switch (name) {
+
+                case "semenAnalysis":
+                    return {
+                        ...prev,
+                        semenAnalysis: {
+                            ...prev.semenAnalysis,
+                            status: value.charAt(0).toUpperCase() + value.slice(1)
+                        }
+                    };
+
+                case "fertilityIssues":
+                    return {
+                        ...prev,
+                        fertilityIssues: {
+                            ...prev.fertilityIssues,
+                            status: value.charAt(0).toUpperCase() + value.slice(1)
+                        }
+                    };
+
+                case "fertilityTreatment":
+                    return {
+                        ...prev,
+                        fertilityTreatments: {
+                            ...prev.fertilityTreatments,
+                            status: value.charAt(0).toUpperCase() + value.slice(1)
+                        }
+                    };
+
+                case "surgeries":
+                    return {
+                        ...prev,
+                        surgeries: {
+                            ...prev.surgeries,
+                            status: value.charAt(0).toUpperCase() + value.slice(1)
+                        }
+                    };
+
+                case "semenAnalysisContent":
+                    return {
+                        ...prev,
+                        semenAnalysis: {
+                            ...prev.semenAnalysis,
+                            semenAnalysisDetails: value
+                        }
+                    };
+
+                case "fertilityIssuesContent":
+                    return {
+                        ...prev,
+                        fertilityIssues: {
+                            ...prev.fertilityIssues,
+                            fertilityIssuesDetails: value
+                        }
+                    };
+
+                case "fertilityTreatmentContent":
+                    return {
+                        ...prev,
+                        fertilityTreatments: {
+                            ...prev.fertilityTreatments,
+                            fertilityTreatmentsDetails: value
+                        }
+                    };
+
+                case "surgeriesContent":
+                    return {
+                        ...prev,
+                        surgeries: {
+                            ...prev.surgeries,
+                            surgeriesDetails: value
+                        }
+                    };
+
+                default:
+                    return prev;
+            }
+        });
+
+        setFormError((prev: any) => ({ ...prev, [name]: "" }));
     };
+
+
     const handleSubmitData = (e: React.FormEvent) => {
         console.log(formData);
     };
+    console.log("showData", showData)
 
     return (
         <>
@@ -876,8 +1161,8 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Have you ever had a semen analysis?"
                             name="semenAnalysis"
-                            value={formData.semenAnalysis || 'yes'}
-                            onChange={(e) => handleChange(e)}
+                            value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
+                            onChange={handleChange}
                             required={true}
                             error={formError.semenAnalysis}
                             options={[
@@ -886,28 +1171,27 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.semenAnalysis === 'yes' && (
+
+                        {formData?.semenAnalysis?.status?.toString().toLowerCase() === 'yes' && (
                             <InputFieldGroup
                                 type="text"
-                                value={formData.semenAnalysisContent}
+                                value={formData.semenAnalysis.semenAnalysisDetails}
                                 name='semenAnalysisContent'
                                 onChange={handleChange}
-                                error={formError.semenAnalysisContent}
-
-                                placeholder="If yes, provide details if available"
-
-                                className={`mt-2`}
-                            >
-
-                            </InputFieldGroup>
+                                error={formError.semenAnalysisDetails}
+                                placeholder="If yes, provide details"
+                                className="mt-2"
+                            />
                         )}
+
 
                     </Col>
                     <Col md={12} >
                         <RadioButtonGroup
                             label="Have you experienced any fertility issues?"
                             name="fertilityIssues"
-                            value={formData.fertilityIssues || 'yes'}
+                            // value={formData.semenAnalysis.status?.toString().toLowerCase() || "yes"}
+                            value={String(formData?.fertilityIssues?.status?.toString().toLowerCase() || "yes")}
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={formError.fertilityIssues}
@@ -917,10 +1201,10 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.fertilityIssues === 'yes' && (
+                        {formData.fertilityIssues.status?.toString().toLowerCase() === 'yes' && (
                             <InputFieldGroup
                                 type="text"
-                                value={formData.fertilityIssuesContent}
+                                value={formData.fertilityIssues.fertilityIssuesDetails}
                                 name='fertilityIssuesContent'
                                 onChange={handleChange}
                                 error={formError.semenAnalysisContent}
@@ -938,8 +1222,12 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Have you previously undergone fertility treatments?"
                             name="fertilityTreatment"
-                            value={formData.fertilityTreatment || 'yes'}
-                            onChange={(e) => handleChange(e)}
+                            value={
+                                typeof formData?.fertilityTreatments?.status === "boolean"
+                                    ? formData.fertilityTreatments.status ? "yes" : "no"
+                                    : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
+                            }
+                            onChange={handleChange}
                             required={true}
                             error={formError.fertilityTreatment}
                             options={[
@@ -948,10 +1236,11 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.fertilityTreatment === 'yes' && (
+
+                        {formData?.fertilityTreatments?.status?.toString().toLowerCase() === "yes" && (
                             <InputFieldGroup
                                 type="text"
-                                value={formData.fertilityTreatmentContent}
+                                value={formData.fertilityTreatments.fertilityTreatmentsDetails}
                                 name='fertilityTreatmentContent'
                                 onChange={handleChange}
                                 error={formError.fertilityTreatmentContent}
@@ -969,7 +1258,17 @@ export function FertilityAssessment({
                         <RadioButtonGroup
                             label="Any history of surgeries?"
                             name="surgeries"
-                            value={formData.surgeries || 'yes'}
+                            // value={
+                            //     typeof formData?.fertilityTreatments?.status === "boolean"
+                            //         ? formData.fertilityTreatments.status ? "yes" : "no"
+                            //         : formData?.fertilityTreatments?.status?.toString().toLowerCase() || "no"
+                            // }
+                            value={
+                                typeof formData.surgeries.status === "boolean"
+                                    ? formData.surgeries.status ? "yes" : "no"
+                                    : formData.surgeries.status?.toLowerCase() || ""
+                            }
+
                             onChange={(e) => handleChange(e)}
                             required={true}
                             error={formError.surgeries}
@@ -979,10 +1278,10 @@ export function FertilityAssessment({
                             ]}
                         />
 
-                        {formData.surgeries === 'yes' && (
+                        {formData.surgeries.status?.toString().toLowerCase() === "yes" && (
                             <InputFieldGroup
                                 type="text"
-                                value={formData.surgeriesContent}
+                                value={formData.surgeries.surgeriesDetails || ""}
                                 name='surgeriesContent'
                                 onChange={handleChange}
                                 error={formError.surgeriesContent}

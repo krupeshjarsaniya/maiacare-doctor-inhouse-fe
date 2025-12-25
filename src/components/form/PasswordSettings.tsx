@@ -6,6 +6,7 @@ import { setHeaderData } from '@/utils/redux/slices/headerSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/utils/redux/store';
 import { useRouter } from 'next/navigation';
+import { changePassword } from '@/utils/apis/apiHelper';
 
 type FormError = Partial<Record<keyof FormData, string>>;
 type FormData = {
@@ -110,13 +111,36 @@ function PasswordSettings() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const errors = validateForm(formData);
-        setFormError(errors);
-        console.log("errors", errors);
-        if (Object.keys(errors).length === 0) {
-           
-            setFormError(initialFormError);
-        }
+        // const errors = validateForm(formData);
+        // setFormError(errors);
+        // console.log("errors", errors);
+        // if (Object.keys(errors).length === 0) {
+
+        //     setFormError(initialFormError);
+        // }
+        const passData = { oldPassword: formData.currentpassword, newPassword: formData.confirmpassword }
+
+        changePassword(passData)
+            .then((response) => {
+
+                console.log("response", response.data);
+                if (response.status == 200) {
+                    router.push("/dashboard");
+                    console.log("Password changed successfully");
+                } else {
+                    const errors = validateForm(formData);
+                    setFormError(errors);
+                    if (Object.keys(errors).length === 0) {
+
+                        setFormError(initialFormError);
+                    }
+                    console.log("Error");
+                }
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     return (
@@ -127,7 +151,7 @@ function PasswordSettings() {
                     label="Current Password"
                     name="currentpassword"
                     type="password"
-                    
+
                     value={formData.currentpassword}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         handleChange(e);
@@ -239,7 +263,7 @@ function PasswordSettings() {
                     label="Confirm Password"
                     name="confirmpassword"
                     type="password"
-                   
+
                     value={formData.confirmpassword}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         handleChange(e);
@@ -253,7 +277,7 @@ function PasswordSettings() {
                 />
                 <div className="d-flex justify-content-end align-items-center gap-3 mt-3">
 
-                    <a className="forgate-password" onClick={() => router.push("/forgotppassword") }>Forgot Password?</a>
+                    <a className="forgate-password" onClick={() => router.push("/forgotppassword")}>Forgot Password?</a>
 
                     <Button variant="default" disabled={false} type="submit" contentSize="medium">
                         Save Password

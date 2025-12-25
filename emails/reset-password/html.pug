@@ -1,0 +1,64 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Password Reset - Maia Care
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f5f5f5; padding: 20px; }
+      .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+      .header { text-align: center; padding: 30px 20px; background-color: #ffffff; border-bottom: 1px solid #eeeeee; }
+      .logo { color: #2B4360; font-size: 28px; font-weight: bold; text-decoration: none; }
+      .content { padding: 40px 30px; }
+      .greeting { font-size: 18px; color: #333333; margin-bottom: 20px; }
+      .message { font-size: 16px; color: #555555; margin-bottom: 30px; line-height: 1.6; }
+      .otp-container { text-align: center; margin: 40px 0; }
+      .otp-label { font-size: 16px; color: #666666; margin-bottom: 15px; }
+      .otp-code { font-size: 42px; font-weight: bold; color: #2B4360; letter-spacing: 10px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; display: inline-block; min-width: 250px; border: 2px dashed #e0e0e0; }
+      .validity-note { font-size: 14px; color: #666666; margin-top: 15px; font-style: italic; }
+      .security-note { font-size: 14px; color: #ff6b6b; background-color: #fff5f5; padding: 15px; border-radius: 6px; border-left: 4px solid #ff6b6b; margin: 30px 0; }
+      .signature { margin-top: 40px; padding-top: 30px; border-top: 1px solid #eeeeee; }
+      .signature-line { font-size: 16px; color: #333333; margin-bottom: 10px; }
+      .support-section { margin-top: 40px; padding: 25px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #2B4360; }
+      .support-title { font-size: 16px; color: #2B4360; font-weight: bold; margin-bottom: 15px; }
+      .support-info { font-size: 14px; color: #555555; margin-bottom: 8px; }
+      .support-email { color: #2B4360; text-decoration: none; font-weight: bold; }
+      .support-phone { color: #2B4360; text-decoration: none; font-weight: bold; }
+      .footer { text-align: center; padding: 20px; background-color: #f8f9fa; color: #666666; font-size: 12px; border-top: 1px solid #eeeeee; }
+      @media (max-width: 600px) {
+        .content { padding: 20px 15px; }
+        .otp-code { font-size: 32px; letter-spacing: 5px; min-width: 200px; padding: 15px; }
+      }
+
+  body
+    .email-container
+      .header
+        a.logo(href="#") meia
+      .content
+        .greeting Hi #{name || 'User'},
+        .message
+          | You recently requested to reset your password for the account associated with 
+          strong #{email}
+        .otp-container
+          .otp-label To complete the password reset process, enter the following verification code:
+          .otp-code #{otp}
+          .validity-note This code is valid for 30 minutes.
+        .security-note
+          | For your security, please do not share this code with anyone.
+        .signature
+          .signature-line Thank you for choosing Maia Care!
+          .signature-line(style="margin-top: 20px;") Sincerely,
+          .signature-line(style="font-weight: bold;") The Maia Care Team
+        .support-section
+          .support-title Need help?
+          .support-info If you have any questions or require assistance, please don't hesitate to contact our support team:
+          .support-info
+            | Email: 
+            a.support-email(href="mailto:milkmitracare@gmail.com") milkmitracare@gmail.com
+          .support-info
+            | Phone: 
+            a.support-phone(href="tel:8878987987") 8878987987
+      .footer
+        p © #{new Date().getFullYear()} Maia Care. All rights reserved.
+        p(style="margin-top: 5px;") This is an automated message, please do not reply to this email.

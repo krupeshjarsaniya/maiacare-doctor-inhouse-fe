@@ -1,0 +1,109 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Password Reset - Maia Care
+
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background: #F7F7F7;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        background: #ffffff;
+        margin: 40px auto;
+        border-radius: 6px;
+        padding: 0;
+        border: 1px solid #ececec;
+      }
+      .header {
+        padding: 35px 30px 20px;
+        text-align: left;
+      }
+      .logo img {
+        width: 120px;
+      }
+      .body-section {
+        padding: 10px 30px 35px;
+        color: #333;
+        font-size: 15px;
+      }
+      .body-section p {
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+      .otp-box {
+        text-align: center;
+        margin: 30px 0;
+      }
+      .otp-title {
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 15px;
+      }
+      .otp-code {
+        font-size: 32px;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 20px;
+      }
+      .footer-note {
+        font-size: 13px;
+        color: #666;
+        margin-top: 15px;
+      }
+      .support-box {
+        background: #F8F8F8;
+        padding: 25px 30px;
+        border-top: 1px solid #ececec;
+      }
+      .footer {
+        text-align: center;
+        padding: 25px;
+        font-size: 13px;
+        color: #666;
+        margin-top: 10px;
+      }
+      .footer-logo {
+        font-size: 20px;
+        font-weight: bold;
+        color: #999;
+        margin-bottom: 12px;
+      }
+      .social-icons img {
+        width: 18px;
+        margin: 0 6px;
+      }
+
+  body
+    .container
+      .header
+        .logo
+          img(src="https://i.imgur.com/Ht6cz1s.png") 
+
+      .body-section
+        p Helllooooooooooooooooooooooooooo #{name},
+        p You recently requested to reset your password for the account associated with #{email}.
+        p.otp-title To complete the password reset process, enter the following verification code:
+
+        .otp-box
+          .otp-code #{otp}
+
+        p This code is valid for 30 minutes. For your security, please do not share this code with anyone.
+
+        p Thank you for choosing Maia Care!
+        p Sincerely,
+        p The Maia Care Team
+
+      .support-box
+        p If you have any questions or require assistance, please don't hesitate to contact our support team:
+        p Email: milkmitracare@gmail.com
+        p Phone: 9878987987
+
+    .footer
+      .footer-logo meia
+      p © #{new Date().getFullYear()} Maia Care. All rights reserved.

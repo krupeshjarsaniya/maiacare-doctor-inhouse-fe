@@ -43,7 +43,7 @@ export const DatePickerFieldGroup = ({
       inputRef.current.focus(); // Fallback for older support
     }
   };
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];  
   return (
     <div className={`maiacare-input-field-container  ${className}`}>
       <InputFieldLabel label={label} required={required} />

@@ -1,16 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
-import userAuthSlice from "./slices/userAuthSlice";
-import headerSlice from "./slices/headerSlice";
+// This file is deprecated. Please use @/Hook/Redux/Store/store instead.
+// Re-exporting for backward compatibility.
 
-export const store = configureStore({
-  reducer: {
-    userAuth: userAuthSlice,
-    header: headerSlice,
-   },
-});
-
-// Define RootState type
-export type RootState = ReturnType<typeof store.getState>;
-
-// Define AppDispatch type
-export type AppDispatch = typeof store.dispatch;
+export { store } from "@/Hook/Redux/Store/store";
+export type { RootState, AppDispatch } from "@/Hook/Redux/Store/store";

@@ -15,7 +15,7 @@ function Page() {
     return (
         <div>
             <Suspense fallback={<div>Loading inventory...</div>}>
-                <Inventory />
+                {/* <Inventory /> */}
             </Suspense>
         </div>
     );

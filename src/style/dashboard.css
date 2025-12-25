@@ -1,0 +1,55 @@
+.dashboard-chart-dropdown1 .maiacare-input-field{
+    width: 69px !important;
+    padding: 5px !important;
+    padding-left: 8px !important;
+}
+.dashboard-chart-canvas{
+    width: 100% !important;
+    height: 400px !important;
+}
+.patient-journey-charts{
+    width: 5px !important;
+}
+.treatment-success-rate-charts{
+   padding: 25px !important;
+}
+.treatment-success-rate-charts-patients{
+    margin-left: 20px !important;
+    background-color: #DEF7EC !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+}
+.dashboard-progress-bar{
+    height: 36px !important;
+    display: flex !important;
+    gap: 1px !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+}
+.dashboard-progress-bars{
+    display: flex !important;
+    gap: 1px !important;
+    marginRight: 2px !important;
+}
+.dashboard-treatment-success-icon{
+    marginRight: 4px !important;
+}
+.appointment-overview-charts{
+    height: 100% !important;
+}
+.consultations-card{
+    border: none;
+}
+
+.consultations-layout{
+    border-radius: 12px;
+}
+
+
+@media (max-width: 1199px) {
+.consultation-button{
+    font-size: 13px ;
+    font-weight: 500;
+}
+
+}

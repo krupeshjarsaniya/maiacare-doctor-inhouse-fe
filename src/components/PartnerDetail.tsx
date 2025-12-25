@@ -5,31 +5,20 @@ import Modal from './ui/Modal';
 import { FertilityAssessment, MedicalHistoryForm, PhysicalAssessment } from './form/AddPartnerDetailsForm';
 import { Accordion, Col, Dropdown, Row } from 'react-bootstrap';
 import Image from 'next/image';
-import PartnerImage from "../assets/images/Profile_Images.png";
 import ContentContainer from './ui/ContentContainer';
-import ProfileGender from '../assets/images/Profile_Gender.png'
-import ProfileId from '../assets/images/Profile_Id.png'
-import ProfileAge from '../assets/images/Profile_Age.png'
-import ProfileDob from '../assets/images/Profile_Calendar.png'
-import Phone from '../assets/images/Phone.png'
-import Email from '../assets/images/Email.png'
-import EditIcon from '../assets/images/EditIcon.png'
 // import { PartnerData, partnerData } from '@/data/partnerData';
-import hiegthImg from '../assets/images/Physical-assement-hiegth-icons.png'
-import weightImg from '../assets/images/Physical-assement-weight-icons.png'
-import BMIIMG from '../assets/images/Physical-assement-bmi.png'
-import BloodGroup from '../assets/images/Physical-assement-blod-group-icons.png'
-import BloodPressure from '../assets/images/Physical-assement-presure-icons.png'
-import HeartRate from '../assets/images/Physical-assement-heart-rate-icons.png'
 // import MedicalHistory from './form/MedicalHistory';
 // import PhysicalAssessment from '../assets/images/Pluse Sine.png';
 import Simpleeditpro from '@/assets/images/Simpleeditpro.png';
 import { partnerDetailData } from '@/utils/StaticData';
 import Button from './ui/Button';
 import { AddPartnerDetails } from './AddPartnerDetails';
-import { EditFertilityAssessment, FertilityAssessmentType, MedicalHistoryType, PhysicalAssessmentData, PhysicalAssessmentDataModel } from '@/utils/types/interfaces';
+import { EditFertilityAssessment, FertilityAssessmentType, FormErrorEditFertilityAssessment, MedicalHistoryType, PhysicalAssessmentData, PhysicalAssessmentDataModel } from '@/utils/types/interfaces';
 import toast from 'react-hot-toast';
 import { BsInfoCircle } from 'react-icons/bs';
+import { useParams } from 'next/navigation';
+import { addPartnerPhysicalAssesment, getAll, getOne, updatePartnerfertilityassessment } from '@/utils/apis/apiHelper';
+import { log } from 'console';
 
 export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
 
@@ -44,6 +33,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     const [EditMedicalHistory, setEditMedicalHistory] = useState<boolean>(false);
 
     const [showData, setShowData] = useState<any>(partnerDetailData);
+    console.log("showData", showData);
 
     const initialFormDataAddPhysicalAssessment: PhysicalAssessmentDataModel = {
         id: "",
@@ -54,19 +44,32 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         systolic: "",
         diastolic: "",
         heartRate: "",
+        date: ""
 
     };
+
     const initialFormDataEditFertilityAssessment: EditFertilityAssessment = {
-        semenAnalysis: "",
-        semenAnalysisContent: "",
-        fertilityIssues: "",
-        fertilityIssuesContent: "",
-        fertilityTreatment: "",
-        fertilityTreatmentContent: "",
-        surgeries: "",
-        surgeriesContent: "",
+        semenAnalysis: {
+            semenAnalysisDetails: "",
+            status: ""
+        },
 
+        fertilityIssues: {
+            fertilityIssuesDetails: "",
+            status: ""
+        },
+
+        fertilityTreatments: {
+            fertilityTreatmentsDetails: "",
+            status: ""
+        },
+
+        surgeries: {
+            surgeriesDetails: "",
+            status: ""
+        }
     };
+
 
     const [formDataAddPhysicalAssessment, setFormDataAddPhysicalAssessment] = useState<PhysicalAssessmentDataModel>(initialFormDataAddPhysicalAssessment);
     type FormErrorAddPhysicalAssessment = Partial<Record<keyof PhysicalAssessmentDataModel, string>>;
@@ -74,11 +77,20 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
     const [formErrorAddPhysicalAssessment, setFormErrorAddPhysicalAssessment] = useState<FormErrorAddPhysicalAssessment>(initialFormErrorAddPhysicalAssessment);
 
     const [formDataEditFertilityAssessment, setFormDataEditFertilityAssessment] = useState<EditFertilityAssessment>(initialFormDataEditFertilityAssessment);
-    type FormErrorEditFertilityAssessment = Partial<Record<keyof EditFertilityAssessment, string>>;
-    const initialFormErrorEditFertilityAssessment: FormErrorEditFertilityAssessment = {};
-    const [formErrorEditFertilityAssessment, setFormErrorEditFertilityAssessment] = useState<FormErrorEditFertilityAssessment>(initialFormErrorEditFertilityAssessment);
+    // type FormErrorEditFertilityAssessment = Partial<Record<keyof EditFertilityAssessment, string>>;
+    // type FormErrorEditFertilityAssessment = EditFertilityAssessment | {};
+    // const initialFormErrorEditFertilityAssessment: FormErrorEditFertilityAssessment = {};
+    // const initialFormErrorEditFertilityAssessment: FormErrorEditFertilityAssessment = {};
+
+    // const [formErrorEditFertilityAssessment, setFormErrorEditFertilityAssessment] = useState<FormErrorEditFertilityAssessment>(initialFormErrorEditFertilityAssessment);
+    // const [formErrorEditFertilityAssessment, setFormErrorEditFertilityAssessment] =
+    // useState<FormErrorEditFertilityAssessment>(initialFormErrorEditFertilityAssessment);
 
     const [formDataMedicalHistory, setFormDataMedicalHistory] = useState<MedicalHistoryType>();
+    const initialFormErrorEditFertilityAssessment: FormErrorEditFertilityAssessment = {};
+
+    const [formErrorEditFertilityAssessment, setFormErrorEditFertilityAssessment] =
+        useState<FormErrorEditFertilityAssessment>(initialFormErrorEditFertilityAssessment);
 
     // useEffect(() => {
     //     setLoading(true)
@@ -110,21 +122,77 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         return errors;
     };
 
-    const validateForm2 = (data: EditFertilityAssessment): FormErrorEditFertilityAssessment => {
-        const errors: FormErrorEditFertilityAssessment = {};
+    const validateForm2 = (
+        data: EditFertilityAssessment
+    ): FormErrorEditFertilityAssessment => {
 
-        if (!data.semenAnalysis.trim()) errors.semenAnalysis = "Seminal Analysis is required";
-        if (data.semenAnalysis === 'yes' && !data.semenAnalysisContent.trim()) errors.semenAnalysisContent = "Seminal Analysis Content is required";
-        if (!data.fertilityIssues.trim()) errors.fertilityIssues = "Fertility Issues is required";
-        if (data.fertilityIssues === 'yes' && !data.fertilityIssuesContent.trim()) errors.fertilityIssuesContent = "Fertility Issues Content is required";
-        if (!data.fertilityTreatment.trim()) errors.fertilityTreatment = "Fertility Treatment is required";
-        if (data.fertilityTreatment === 'yes' && !data.fertilityTreatmentContent.trim()) errors.fertilityTreatmentContent = "Fertility Treatment Content is required";
-        if (!data.surgeries.trim()) errors.surgeries = "Surgeries is required";
-        if (data.surgeries === 'yes' && !data.surgeriesContent.trim()) errors.surgeriesContent = "Surgeries Content is required";
+        const errors: FormErrorEditFertilityAssessment = {};  // <-- IMPORTANT
+
+        // SEMEN ANALYSIS
+        // const semenDetails = data.semenAnalysis?.semenAnalysisDetails?.trim() ?? "";
+        // const semenStatus = data.semenAnalysis?.status;
+
+        // if (!semenDetails) {
+        //     errors.semenAnalysis = "Seminal Analysis is required";
+        // }
+
+        // if ((semenStatus === "yes" || semenStatus === true) && !semenDetails) {
+        //     errors.semenAnalysisDetails = "Seminal Analysis Content is required";
+        // }
+
+        const semenDetails = data.semenAnalysis?.semenAnalysisDetails?.trim() ?? "";
+        const semenStatus = (data.semenAnalysis?.status || "").toString().toLowerCase();
+
+        if (!semenStatus) {
+            errors.semenAnalysis = "Seminal analysis is required";
+        }
+
+        if (semenStatus === "yes" && !semenDetails) {
+            errors.semenAnalysisDetails = "Seminal Analysis Content is required";
+        }
+
+
+        // FERTILITY ISSUES
+        const issuesDetails = data.fertilityIssues?.fertilityIssuesDetails?.trim() ?? "";
+        const issuesStatus = data.fertilityIssues?.status;
+
+        if (!issuesDetails) {
+            errors.fertilityIssues = "Fertility Issues is required";
+        }
+
+        if ((issuesStatus === "yes" || issuesStatus === true) && !issuesDetails) {
+            errors.fertilityIssuesContent = "Fertility Issues Content is required";
+        }
+
+        // FERTILITY TREATMENT
+        const treatmentDetails = data.fertilityTreatments?.fertilityTreatmentsDetails?.trim() ?? "";
+        const treatmentStatus = data.fertilityTreatments?.status;
+
+        if (!treatmentDetails) {
+            errors.fertilityTreatment = "Fertility Treatment is required";
+        }
+
+        if ((treatmentStatus === "yes" || treatmentStatus === true) && !treatmentDetails) {
+            errors.fertilityTreatmentContent = "Fertility Treatment Content is required";
+        }
+
+        // SURGERIES
+        const surgeriesDetails = data.surgeries?.surgeriesDetails?.trim() ?? "";
+        const surgeriesStatus = data.surgeries?.status;
+
+        if (!surgeriesDetails) {
+            errors.surgeries = "Surgeries is required";
+        }
+
+        if ((surgeriesStatus === "yes" || surgeriesStatus === true) && !surgeriesDetails) {
+            errors.surgeriesContent = "Surgeries Content is required";
+        }
 
         return errors;
     };
 
+
+    const [selectedId, setSelectedId] = useState<string>("")
     const handleAddPhysicalAssessment = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("click ", formDataAddPhysicalAssessment);
@@ -133,20 +201,42 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         console.log("Form submitted", formDataAddPhysicalAssessment);
         setFormErrorAddPhysicalAssessment(errors);
 
-        if (Object.keys(errors).length === 0) {
-            // Handle form submission
-            setFormErrorAddPhysicalAssessment(initialFormErrorAddPhysicalAssessment);
-            setAddPhysicalAssessment(false);
-            setShowContent(true);
+        // if (Object.keys(errors).length === 0) {
+        //     // Handle form submission
+        //     setFormErrorAddPhysicalAssessment(initialFormErrorAddPhysicalAssessment);
+        //     setAddPhysicalAssessment(false);
+        //     setShowContent(true);
 
-            setShowData((prev: any) => ({ ...prev, PhysicalAssessmentData: [...prev.PhysicalAssessmentData, formDataAddPhysicalAssessment] }));
-            setFormDataAddPhysicalAssessment(initialFormDataAddPhysicalAssessment);
-            console.log("test click");
+        //     setShowData((prev: any) => ({ ...prev, PhysicalAssessmentData: [...prev.PhysicalAssessmentData, formDataAddPhysicalAssessment] }));
+        //     setFormDataAddPhysicalAssessment(initialFormDataAddPhysicalAssessment);
+        //     console.log("test click");
 
-            toast.success('Physical Assessment Added Successfully', {
-                icon: <BsInfoCircle size={22} color="white" />,
-            });
+        //     toast.success('Physical Assessment Added Successfully', {
+        //         icon: <BsInfoCircle size={22} color="white" />,
+        //     });
+        // }
+        const passData = {
+            patientId: id,
+            height: formDataAddPhysicalAssessment.height,
+            weight: formDataAddPhysicalAssessment.weight,
+            bmi: formDataAddPhysicalAssessment.bmi,
+            bloodGroup: formDataAddPhysicalAssessment.bloodGroup,
+            bloodPressureSystolic: formDataAddPhysicalAssessment.systolic,
+            bloodPressureDiastolic: formDataAddPhysicalAssessment.diastolic,
+            heartRate: formDataAddPhysicalAssessment.heartRate
         }
+
+        addPartnerPhysicalAssesment(passData)
+            .then(() => {
+                toast.success('Physical Assessment Added Successfully', {
+                    icon: <BsInfoCircle size={22} color="white" />,
+                });
+                setAddPhysicalAssessment(false)
+                fetchPatient()
+            })
+            .catch((err) => {
+                console.log("PartnerPhysicalAssesment: ", err);
+            });
     }
 
     const handleEditFertilityAssessment = (e: FormEvent<HTMLFormElement>) => {
@@ -156,22 +246,42 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         const errors = validateForm2(formDataEditFertilityAssessment);
         setFormErrorEditFertilityAssessment(errors);
 
-        if (Object.keys(errors).length === 0) {
-            setFormErrorEditFertilityAssessment(initialFormErrorEditFertilityAssessment);
-            setEditFertilityAssessment(false);
-            setShowContent(true);
+        const passData = {
+            patientId: showData.patientId,
+            ...formDataEditFertilityAssessment
+        }
+        console.log("passData", passData);
 
-            setShowData((prev: any) => ({ ...prev, fertilityAssessment: { ...prev.fertilityAssessment, ...formDataEditFertilityAssessment } }));
+        updatePartnerfertilityassessment(showData.patientId, passData)
+            .then((res) => {
+                console.log("response from updatePartnerfertilityassessment: ", res);
+                fetchPatient()
+                toast.success('Changes saved successfully', {
+                    icon: <BsInfoCircle size={22} color="white" />,
+                });
+                setEditFertilityAssessment(false)
+            })
+            .catch((err) => {
+                console.log("response from updatePartnerfertilityassessment: ", err);
+            })
+
+        if (Object.keys(errors).length === 0) {
+            // setFormErrorEditFertilityAssessment(initialFormErrorEditFertilityAssessment);
+            // setEditFertilityAssessment(false);
+            // setShowContent(true);
+
+            // setShowData((prev: any) => ({ ...prev, fertilityAssessment: { ...prev.fertilityAssessment, ...formDataEditFertilityAssessment } }));
             toast.success('Changes saved successfully', {
                 icon: <BsInfoCircle size={22} color="white" />,
             });
+
         }
     }
     const convertHeightToCm = (heightStr: string): string => {
         if (!heightStr) return '';
 
         // Remove any whitespace
-        const cleanHeight = heightStr.trim();
+        const cleanHeight = String(heightStr || "").trim();
 
         // Check if it's already in cm
         if (cleanHeight.toLowerCase().includes('cm')) {
@@ -211,7 +321,52 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
         return '';
     };
     // console.log("showData.medicalHistory", showData.medicalHistory);
+    // const addItem = (newItem) => {
+    //     setShowData(prevItems => [...prevItems, newItem]);
+    // };
 
+
+
+    const params = useParams();
+    const id = params?.id?.toString();
+    const fetchPatient = async () => {
+        try {
+            if (!id) return;
+
+            const res = await getOne(id);
+            const pData = res?.data?.data || res?.data;
+
+            setShowData(pData?.partnerDetails)
+
+            if (pData?.partnerDetails?.basicDetails?.partnerEmail) {
+                setShowContent(true);
+                setShowPartnerDetail(false);
+            }
+
+        } catch (error) {
+            console.error("Error fetching partner:", error);
+        }
+    };
+    function convertDate(isoString: string) {
+        const dateObj = new Date(isoString);
+
+        const options: Intl.DateTimeFormatOptions = {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        };
+
+        let formattedDate = dateObj.toLocaleDateString("en-GB", options);
+
+
+        return formattedDate;
+    }
+
+
+    useEffect(() => {
+        fetchPatient();
+    }, []);
     return (
         <>
             {showPartnerDetail && (
@@ -268,14 +423,14 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
             </Modal>
             {showContent && (
 
-                <Row className="mt-2 g-3">
+                <Row className="mt-2 g-3 mb-5">
                     <Col md={7}>
                         <ContentContainer>
                             <div className='d-flex justify-content-between align-items-start '>
                                 <div className='d-flex align-items-start align-items-sm-center gap-3 flex-column flex-sm-row'>
                                     <div>
-                                        <Image
-                                            src={showData?.profile?.profileImage || Simpleeditpro}
+                                        <img
+                                            src={showData?.basicDetails?.partnerImage || Simpleeditpro}
                                             alt="PartnerImage"
                                             width={90}
                                             height={90}
@@ -284,7 +439,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     </div>
                                     <div>
                                         <div className="d-flex align-items-center mb-1">
-                                            <h6 className="mb-0 doctor-profile-heading me-2">{showData.profile.basic_detail_name}</h6>
+                                            <h6 className="mb-0 doctor-profile-heading me-2">{showData?.basicDetails?.partnerName || "No Name"}</h6>
                                         </div>
 
                                         <div className='pt-sm-1 p-0 d-flex gap-2 '>
@@ -292,7 +447,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                 <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M15.5 7.31243C15.5 6.2239 15.1841 5.15875 14.5907 4.24617C13.9974 3.33359 13.1519 2.61279 12.157 2.17119C11.1621 1.72958 10.0604 1.58615 8.98553 1.75827C7.91069 1.9304 6.90888 2.4107 6.10161 3.14092C5.29434 3.87113 4.71628 4.81989 4.43754 5.87214C4.1588 6.92438 4.19137 8.03489 4.53128 9.06899C4.87119 10.1031 5.50385 11.0164 6.35252 11.698C7.20119 12.3797 8.22942 12.8005 9.3125 12.9093V16.3124C9.3125 16.4616 9.37176 16.6047 9.47725 16.7102C9.58274 16.8157 9.72582 16.8749 9.875 16.8749C10.0242 16.8749 10.1673 16.8157 10.2727 16.7102C10.3782 16.6047 10.4375 16.4616 10.4375 16.3124V12.9093C11.8243 12.7682 13.1095 12.1178 14.0446 11.084C14.9797 10.0502 15.4983 8.70641 15.5 7.31243ZM9.875 11.8124C8.98498 11.8124 8.11496 11.5485 7.37493 11.054C6.63491 10.5596 6.05814 9.85678 5.71754 9.03451C5.37695 8.21224 5.28783 7.30744 5.46147 6.43453C5.6351 5.56161 6.06368 4.75979 6.69302 4.13045C7.32236 3.50112 8.12418 3.07253 8.99709 2.8989C9.87001 2.72527 10.7748 2.81438 11.5971 3.15497C12.4193 3.49557 13.1221 4.07235 13.6166 4.81237C14.1111 5.55239 14.375 6.42242 14.375 7.31243C14.3737 8.50551 13.8992 9.64934 13.0555 10.493C12.2119 11.3366 11.0681 11.8111 9.875 11.8124Z" fill="#8A8D93" />
                                                 </svg>
-                                                <span className='doctor-profile-subheading'>{showData.profile.basic_detail_gender}</span>
+                                                <span className='doctor-profile-subheading'>{showData?.basicDetails?.partnerGender || ""}</span>
                                             </div>
                                             <div className='d-flex justify-content-center align-items-center gap-1'>
                                                 <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -308,7 +463,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                     </defs>
                                                 </svg>
 
-                                                <span className='doctor-profile-subheading'> {showData.profile.basic_detail_age} Years </span>
+                                                <span className='doctor-profile-subheading'> {showData?.basicDetails?.partnerAge || ""} Years </span>
 
                                             </div>
                                         </div>
@@ -318,13 +473,13 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                                     <path d="M17.482 12.7819L13.8016 11.1327L13.7914 11.128C13.6003 11.0462 13.3919 11.0134 13.185 11.0325C12.978 11.0516 12.7791 11.122 12.6063 11.2373C12.5859 11.2508 12.5663 11.2654 12.5477 11.2811L10.6461 12.9022C9.44141 12.317 8.19766 11.0827 7.61251 9.89359L9.23594 7.96312C9.25157 7.94359 9.26641 7.92406 9.28048 7.90297C9.39331 7.73055 9.46177 7.53291 9.47976 7.32763C9.49775 7.12236 9.46472 6.91582 9.3836 6.7264V6.71703L7.72969 3.03031C7.62246 2.78286 7.43807 2.57673 7.20406 2.44268C6.97005 2.30864 6.69895 2.25387 6.43126 2.28656C5.37264 2.42586 4.40093 2.94575 3.69761 3.74914C2.99429 4.55252 2.60747 5.58444 2.60938 6.65219C2.60938 12.8553 7.65626 17.9022 13.8594 17.9022C14.9271 17.9041 15.9591 17.5173 16.7624 16.814C17.5658 16.1106 18.0857 15.1389 18.225 14.0803C18.2578 13.8127 18.2031 13.5417 18.0692 13.3077C17.9353 13.0737 17.7293 12.8892 17.482 12.7819ZM13.8594 16.6522C11.2081 16.6493 8.66625 15.5948 6.79151 13.7201C4.91678 11.8453 3.86228 9.30346 3.85938 6.65219C3.85644 5.88929 4.1313 5.1514 4.63261 4.57633C5.13393 4.00126 5.82743 3.62833 6.5836 3.52719C6.58329 3.5303 6.58329 3.53344 6.5836 3.53656L8.22423 7.20844L6.60938 9.14125C6.59299 9.16011 6.5781 9.18022 6.56485 9.2014C6.44728 9.38181 6.37832 9.58953 6.36463 9.80442C6.35094 10.0193 6.393 10.2341 6.48673 10.428C7.19454 11.8756 8.65313 13.3233 10.1164 14.0303C10.3117 14.1232 10.5277 14.1638 10.7434 14.1482C10.9591 14.1325 11.167 14.0613 11.3469 13.9412C11.3669 13.9277 11.3862 13.9131 11.4047 13.8975L13.3039 12.2772L16.9758 13.9217C16.9758 13.9217 16.982 13.9217 16.9844 13.9217C16.8845 14.679 16.5121 15.3739 15.9369 15.8764C15.3617 16.379 14.6232 16.6548 13.8594 16.6522Z" fill="#8A8D93" />
                                                 </svg>
 
-                                                <span className='doctor-profile-subheading'>{showData.profile.basic_detail_phone}</span>
+                                                <span className='doctor-profile-subheading'>{showData?.basicDetails?.partnerContactNumber || ""}</span>
                                             </div>
                                             <div className='d-flex justify-content-center align-items-center gap-1'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
                                                     <path d="M18.2744 4.25H3.27441C3.10865 4.25 2.94968 4.31585 2.83247 4.43306C2.71526 4.55027 2.64941 4.70924 2.64941 4.875V15.5C2.64941 15.8315 2.78111 16.1495 3.01553 16.3839C3.24995 16.6183 3.56789 16.75 3.89941 16.75H17.6494C17.9809 16.75 18.2989 16.6183 18.5333 16.3839C18.7677 16.1495 18.8994 15.8315 18.8994 15.5V4.875C18.8994 4.70924 18.8336 4.55027 18.7164 4.43306C18.5991 4.31585 18.4402 4.25 18.2744 4.25ZM16.6674 5.5L10.7744 10.9023L4.88145 5.5H16.6674ZM17.6494 15.5H3.89941V6.29609L10.3518 12.2109C10.4671 12.3168 10.6179 12.3755 10.7744 12.3755C10.9309 12.3755 11.0818 12.3168 11.1971 12.2109L17.6494 6.29609V15.5Z" fill="#8A8D93" />
                                                 </svg>
-                                                <span className='doctor-profile-subheading'>{showData.profile.basic_detail_email} </span>
+                                                <span className='doctor-profile-subheading'>{showData?.basicDetails?.partnerEmail || ""} </span>
 
                                             </div>
                                         </div>
@@ -361,10 +516,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Current Medications</h6>
                                         <p className=" accordion-title-detail">
-                                            {showData.medicalHistory?.medication === 'yes'
-                                                ? showData.medicalHistory?.medicationcontent || 'Yes'
-                                                : 'No'}
-
+                                            {showData?.medicalHistory?.medications?.status == "Yes" ? showData?.medicalHistory?.medications?.medicationsDetails : showData?.medicalHistory?.medications?.status}
                                         </p>
                                     </div>
                                 </Col>
@@ -373,10 +525,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Surgeries</h6>
                                         <p className=" accordion-title-detail">
-                                            {showData.medicalHistory?.surgeries === 'yes'
-                                                ? showData.medicalHistory?.surgeriescontent || 'Yes'
-                                                : 'No'}
-
+                                            {showData?.medicalHistory?.surgeries?.status == "Yes" ? showData?.medicalHistory?.surgeries?.surgeriesDetails : showData?.medicalHistory?.surgeries?.status}
                                         </p>
                                     </div>
                                 </Col>
@@ -385,10 +534,10 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Medical condition / Allergies</h6>
 
-                                        {showData.medicalHistory?.medicalCondition?.map((item: any) => {
+                                        {showData?.medicalHistory?.conditions?.map((item: any, i: number) => {
                                             return (
-                                                <p key={item.id} className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2">
-                                                    {item.value}
+                                                <p key={i} className="accordion-title-detail d-inline-block border-box-orange-font box-border-orange me-2 mb-2">
+                                                    {item}
                                                 </p>
                                             )
                                         })}
@@ -402,7 +551,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                         <div className=" accordion-title-detail">
                                             <ul>
 
-                                                <li className='medical-emergency-fimily-history'>{showData.medicalHistory?.familyMedicalHistory || "No added family history"}</li>
+                                                <li className='medical-emergency-fimily-history'>{showData?.medicalHistory?.familyHistory || "No added family history"}</li>
 
 
                                             </ul>
@@ -413,10 +562,10 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 <Col sm={7}>
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Lifestyle</h6>
-                                        {showData.medicalHistory?.lifestyle?.map((item: any) => {
+                                        {showData?.medicalHistory?.lifestyle?.map((item: any, i: number) => {
                                             return (
-                                                <p key={item.id} className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2">
-                                                    {item?.value}
+                                                <p key={i} className="accordion-title-detail d-inline-block border-box-blue-font box-border-blue me-2 mb-2">
+                                                    {item}
                                                 </p>
                                             )
                                         })}
@@ -429,7 +578,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                         <h6 className=" contact-details-emergency">Physical Exercise</h6>
                                         <p className="accordion-title-detail border-box-orange-font box-border-orange d-inline-block ">
 
-                                            {showData.medicalHistory?.exercise}
+                                            {showData?.medicalHistory?.exerciseFrequency}
 
                                         </p>
                                     </div>
@@ -439,7 +588,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     <div className="">
                                         <h6 className=" contact-details-emergency">Stress Level</h6>
                                         <p className="accordion-title-detail d-inline-block border-box-red-font box-border-red">
-                                            {showData.medicalHistory?.stress}
+                                            {showData?.medicalHistory?.stressLevel}
                                         </p>
                                     </div>
                                 </Col>
@@ -599,11 +748,12 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                             </div>
                             <Accordion defaultActiveKey="0">
 
-                                {showData.PhysicalAssessmentData?.map((item: any, index: any) => (
+                                {showData?.physicalAssessment?.map((item: any, index: any) => (
                                     <Accordion.Item eventKey={index.toString()} className='phisical-assessment-accordion-item mb-3' key={index}>
                                         <Accordion.Header className='phisical-assessment-accordion-title-showData'>
                                             <div className='phisical-assessment-accordion-title-showData'>
-                                                {formatDate(item.date)}
+                                                {/* {formatDate(item.date)} */}
+                                                {convertDate(item.createdAt)}
                                             </div>
                                         </Accordion.Header>
                                         <Accordion.Body className='pt-0'>
@@ -695,10 +845,7 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
 
                                                             {/* <span className='phisical-assessment-accordion-showData-box-subtitle'>{item.systolic}/{item.diastolic} mmHg</span> */}
                                                             <span className='phisical-assessment-accordion-showData-box-subtitle'>
-                                                                {item.systolic}
-                                                                {item.systolic && item.diastolic && "/"}
-                                                                {item.diastolic}
-                                                                {(item.systolic || item.diastolic) && " mmHg"}
+                                                                {`${item.bloodPressure.systolic}/${item.bloodPressure.diastolic} mmHg`}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -723,8 +870,8 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                 ))}
                             </Accordion>
                         </ContentContainer>
-                        <ContentContainer className="mt-3">
-                            {[
+                        <ContentContainer className="mt-3 mb-2">
+                            {/* {[
                                 {
 
                                     ...showData.fertilityAssessment,
@@ -737,80 +884,80 @@ export default function PartnerDetail({ setActiveTab }: { setActiveTab: (tab: st
                                     fertilityTreatmentContent: showData.fertilityAssessment.fertilityTreatmentContent,
                                     surgeriesContent: showData.fertilityAssessment.surgeriesContent,
                                 },
-                            ].map((item: any, index: number) => (
-                                <div key={index} className="medical-history-details text-start">
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                        <p className="contact-details-heading mb-3">Fertility Assessment</p>
+                            ].map((item: any, index: number) => ( */}
+                            <div className="medical-history-details text-start">
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <p className="contact-details-heading mb-3">Fertility Assessment</p>
 
-                                        <Button variant="outline" className="medical-history-edit-btn medical-history-edit-btn-font mb-3" onClick={() => { setEditFertilityAssessment(true); setFormDataEditFertilityAssessment(item); }}>
-                                            <svg width="14" height="14" viewBox="0 0 14 14" className='me-1' fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z" fill="#2B4360" />
-                                            </svg> Edit
-                                        </Button>
+                                    <Button variant="outline" className="medical-history-edit-btn medical-history-edit-btn-font mb-3" onClick={() => { setEditFertilityAssessment(true); setFormDataEditFertilityAssessment(showData.fertilityAssessment); }}>
+                                        <svg width="14" height="14" viewBox="0 0 14 14" className='me-1' fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M13.5484 3.40848L10.7553 0.615983C10.5209 0.381644 10.203 0.25 9.87157 0.25C9.54011 0.25 9.22223 0.381644 8.98782 0.615983L1.28032 8.32286C1.16385 8.43861 1.0715 8.57633 1.00863 8.72803C0.945765 8.87973 0.913622 9.0424 0.914067 9.20661V11.9997C0.914067 12.3313 1.04576 12.6492 1.28018 12.8836C1.5146 13.118 1.83255 13.2497 2.16407 13.2497H12.6641C12.863 13.2497 13.0537 13.1707 13.1944 13.0301C13.3351 12.8894 13.4141 12.6986 13.4141 12.4997C13.4141 12.3008 13.3351 12.1101 13.1944 11.9694C13.0537 11.8288 12.863 11.7497 12.6641 11.7497H6.97657L13.5484 5.17661C13.6646 5.06053 13.7567 4.92271 13.8195 4.77102C13.8824 4.61933 13.9147 4.45674 13.9147 4.29255C13.9147 4.12835 13.8824 3.96576 13.8195 3.81407C13.7567 3.66238 13.6646 3.52456 13.5484 3.40848ZM4.85157 11.7497H2.41407V9.31223L7.66407 4.06223L10.1016 6.49973L4.85157 11.7497ZM11.1641 5.43723L8.72657 2.99973L9.87282 1.85348L12.3103 4.29098L11.1641 5.43723Z" fill="#2B4360" />
+                                        </svg> Edit
+                                    </Button>
 
-                                    </div>
-
-                                    <Row>
-                                        <Col md={6} sm={6}>
-                                            <div className="mb-3">
-                                                <h6 className="mb-1 contact-details-emergency">Semen Analysis</h6>
-                                                <p className="mb-2 accordion-title-detail">
-                                                    {item.semenAnalysis
-                                                        === 'yes'
-                                                        ? item.semenAnalysisContent
-                                                            ? `Yes | ${item.semenAnalysisContent}`
-                                                            : 'Yes'
-                                                        : 'No'}
-                                                </p>
-                                            </div>
-                                        </Col>
-
-                                        <Col md={6} sm={6}>
-                                            <div className="mb-3">
-                                                <h6 className="mb-1 contact-details-emergency">Fertility Issues</h6>
-                                                <p className="mb-2 accordion-title-detail">
-                                                    {item.fertilityIssues
-                                                        === 'yes'
-                                                        ? item.fertilityIssuesContent
-                                                            ? `Yes | ${item.fertilityIssuesContent}`
-                                                            : 'Yes'
-                                                        : 'No'}
-                                                </p>
-                                            </div>
-                                        </Col>
-
-                                        <Col md={6} sm={6}>
-                                            <div className="mb-3">
-                                                <h6 className="mb-1 contact-details-emergency">Fertility Treatment</h6>
-                                                <p className="mb-2 accordion-title-detail">
-
-                                                    {item.fertilityTreatment
-                                                        === 'yes'
-                                                        ? item.fertilityTreatmentContent
-                                                            ? `Yes | ${item.fertilityTreatmentContent}`
-                                                            : 'Yes'
-                                                        : 'No'}
-                                                </p>
-                                            </div>
-                                        </Col>
-
-                                        <Col md={6} sm={6}>
-                                            <div className="mb-3">
-                                                <h6 className="mb-1 contact-details-emergency">Surgeries</h6>
-                                                <p className="mb-2 accordion-title-detail">
-
-                                                    {item.surgeries
-                                                        === 'yes'
-                                                        ? item.surgeriesContent
-                                                            ? `Yes | ${item.surgeriesContent}`
-                                                            : 'Yes'
-                                                        : 'No'}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    </Row>
                                 </div>
-                            ))}
+
+                                <Row>
+                                    <Col md={6} sm={6}>
+                                        <div className="mb-3">
+                                            <h6 className="mb-1 contact-details-emergency">Semen Analysis</h6>
+                                            <p className="mb-2 accordion-title-detail">
+                                                {showData?.fertilityAssessment?.semenAnalysis?.status
+                                                    === 'Yes'
+                                                    ? showData?.fertilityAssessment.semenAnalysis.semenAnalysisDetails
+                                                        ? `Yes | ${showData?.fertilityAssessment.semenAnalysis.semenAnalysisDetails}`
+                                                        : 'Yes'
+                                                    : 'No'}
+                                            </p>
+                                        </div>
+                                    </Col>
+
+                                    <Col md={6} sm={6}>
+                                        <div className="mb-3">
+                                            <h6 className="mb-1 contact-details-emergency">Fertility Issues</h6>
+                                            <p className="mb-2 accordion-title-detail">
+                                                {showData?.fertilityAssessment?.fertilityIssues?.status
+                                                    === 'Yes'
+                                                    ? showData?.fertilityAssessment?.fertilityIssues?.fertilityIssuesDetails
+                                                        ? `Yes | ${showData?.fertilityAssessment?.fertilityIssues?.fertilityIssuesDetails}`
+                                                        : 'Yes'
+                                                    : 'No'}
+                                            </p>
+                                        </div>
+                                    </Col>
+
+                                    <Col md={6} sm={6}>
+                                        <div className="mb-3">
+                                            <h6 className="mb-1 contact-details-emergency">Fertility Treatment</h6>
+                                            <p className="mb-2 accordion-title-detail">
+
+                                                {showData?.fertilityAssessment?.fertilityTreatments?.status
+                                                    === 'Yes'
+                                                    ? showData?.fertilityAssessment?.fertilityTreatments?.fertilityTreatmentsDetails
+                                                        ? `Yes | ${showData?.fertilityAssessment?.fertilityTreatments?.fertilityTreatmentsDetails}`
+                                                        : 'Yes'
+                                                    : 'No'}
+                                            </p>
+                                        </div>
+                                    </Col>
+
+                                    <Col md={6} sm={6}>
+                                        <div className="mb-3">
+                                            <h6 className="mb-1 contact-details-emergency">Surgeries</h6>
+                                            <p className="mb-2 accordion-title-detail">
+
+                                                {showData?.fertilityAssessment?.surgeries?.status
+                                                    === 'Yes'
+                                                    ? showData.fertilityAssessment.surgeries.surgeriesDetails
+                                                        ? `Yes | ${showData.fertilityAssessment.surgeries.surgeriesDetails}`
+                                                        : 'Yes'
+                                                    : 'No'}
+                                            </p>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
+                            {/* // ))} */}
                         </ContentContainer>
                     </Col>
                 </Row>
