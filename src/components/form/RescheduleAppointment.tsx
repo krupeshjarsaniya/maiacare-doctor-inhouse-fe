@@ -11,7 +11,7 @@ import Image from "next/image";
 import SuccessImage from "@/assets/images/rescheduleAppointment.png";
 import simpleEditPro from "@/assets/images/Simpleeditpro.png";
 import Textarea from "../ui/Textarea";
-
+import { rescheduleappointment } from "@/utils/apis/apiHelper";
 import toast from "react-hot-toast";
 import { BsInfoCircle } from "react-icons/bs";
 import { RescheduleAppointmentForm } from "@/utils/types/interfaces";
@@ -131,36 +131,36 @@ export function RescheduleAppointment({
                 icon: <BsInfoCircle size={22} color="white" />,
             });
 
-            // rescheduleappointment(updatedFormData).then((response) => {
-            //     console.log("Reschedule response ", response);
+            rescheduleappointment(updatedFormData).then((response) => {
+                console.log("Reschedule response ", response);
 
-            //     setStepper((prev) => Math.max(1, prev + 1)); // stepper
-            //     setRescheduleModal?.(false);  // close main modal
-            //     setShowSuccessModal?.(true); // show success modal
-            //     setFormError(initialFormError);
-            //     toast.success(response.data.message, {
-            //         icon: <BsInfoCircle size={22} color="white" />,
-            //     });
+                setStepper((prev) => Math.max(1, prev + 1)); // stepper
+                setRescheduleModal?.(false);  // close main modal
+                setShowSuccessModal?.(true); // show success modal
+                setFormError(initialFormError);
+                toast.success(response.data.message, {
+                    icon: <BsInfoCircle size={22} color="white" />,
+                });
 
-            // }).catch((err) => {
-            //     console.log("error", err?.response);
+            }).catch((err) => {
+                console.log("error", err?.response);
 
-            //     const apiError = err?.response?.data;
+                const apiError = err?.response?.data;
 
-            //     // extract dynamic error message
-            //     const fieldError =
-            //         apiError?.details?.errors
-            //             ? Object.values(apiError.details.errors)[0]   // pick first field error
-            //             : null;
+                // extract dynamic error message
+                const fieldError =
+                    apiError?.details?.errors
+                        ? Object.values(apiError.details.errors)[0]   // pick first field error
+                        : null;
 
-            //     const message =
-            //         fieldError ||
-            //         apiError?.details?.message ||
-            //         apiError?.message ||
-            //         "Something went wrong";
+                const message =
+                    fieldError ||
+                    apiError?.details?.message ||
+                    apiError?.message ||
+                    "Something went wrong";
 
-            //     toast.error(message);
-            // });
+                toast.error(message);
+            });
 
         }
     };

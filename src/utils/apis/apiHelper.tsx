@@ -324,6 +324,9 @@ export const updatePartnerphysicalassessment = (data: any) => {
 };
 
 
+export const rescheduleappointment = (data: object) => {
+  return apiClient.post("/patient/reschedule-appointment", data);
+}
 
 
 

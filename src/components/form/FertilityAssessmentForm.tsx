@@ -74,7 +74,8 @@ export const FertilityAssessmentForm = ({
         if (!data.periodLength) errors.periodLength = "Period length is required";
         if (!data.date) errors.date = "Date is required";
         if (!data.isCycleRegular) errors.isCycleRegular = "Is cycle regular is required";
-        if (!data.menstrualIssues) errors.menstrualIssues = "Menstrual issues is required";
+           if (!data.menstrualIssues) errors.menstrualIssues = "Pregnancy is required";
+        if (data?.menstrualIssues == "yes" && !data.menstrualIssuesDetails) errors.menstrualIssuesDetails = "Menstrual issues is required";
         if (!data.pregnancy) errors.pregnancy = "Pregnancy is required";
         if (data?.pregnancy == "yes" && !data.pregnantBeforeDetails) errors.pregnantBeforeDetails = "Pregnant Before Details is required";
         if (!data.timeduration) errors.timeduration = "Duration is required";

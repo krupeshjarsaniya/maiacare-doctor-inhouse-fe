@@ -216,7 +216,8 @@ export default function MedicalHistory({
                         selectedOptionColor="var(--border-box)"
                         selectedOptionBorderColor="var(--border-box)"
                         error={formError.medicalCondition}
-                        className='fs-6'
+                        // className='fs-6'
+                          className="input-multiselect fs-6"
                     />
                 </Col>
 
@@ -249,7 +250,8 @@ export default function MedicalHistory({
                         selectedOptionColor="var(--border-box-blue)"
                         selectedOptionBorderColor="var(--border-box-blue)"
                         error={formError.lifestyle}
-                        className='fs-6'
+                        // className='fs-6'
+                           className="input-multiselect fs-6"
                     />
                 </Col>
 
